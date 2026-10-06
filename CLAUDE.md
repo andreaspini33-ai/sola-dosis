@@ -21,6 +21,14 @@
 ## Nomi (scelti da Andrea)
 - Menu = Scheda tecnica; Duello = Testa a testa (head-to-head); Bustine = Forniture; Collezione = Armadio farmaceutico (in navigazione "Armadio"); Mazzo = Piano terapeutico; Fonti = Bibliografia. Le chiavi interne (tab duello, bustine, ...) restano invariate. Nel duello "mazzo" indica ancora la pila da cui si pesca.
 
+## Testa a testa: nuove regole (prototipo in prova dal 6/10/2026)
+- Codice in src/tt.js (inserito da build.py al posto di /*@@TT@@*/). Regole complete nel documento "Sola Dosis · Testa a testa: regole (bozza)".
+- Due bracci, stesso profilo (PROFILES: p_scomp, p_fa, p_postop), stesso prontuario di reparto per profilo. Niente combattimento.
+- Esiti: risposta terapeutica (TT.CURE=40, solo farmaci indicati) ed eventi avversi (TT.AE=10 = interruzione del comitato di monitoraggio); 12 turni; vince il beneficio netto.
+- Interazioni e controindicazioni colpiscono chi prescrive; sospendere costa 1 dose; il rivale gioca eventi clinici (EVENTS).
+- Simulazioni (ttsim): partite di circa 7 turni; un giocatore prudente batte uno che ignora i rischi nel 57% (scompenso), 69% (FA), 79% (postop).
+- Il vecchio duello e la partita guidata sono ancora nel codice ma non raggiungibili dal menu; la guida va rifatta.
+
 ## Grafica
 - Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
 - Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.

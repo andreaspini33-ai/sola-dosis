@@ -355,6 +355,49 @@ body.in-duel:has(#coach .cbox) main{padding-bottom:0}
 .ts-a{font-family:var(--f-serif);font-size:1.8rem;color:#8C7B5E}
 .brand h1{cursor:pointer}
 
+/* TESTA A TESTA */
+.arena.tt{grid-template-rows:auto auto minmax(0,.7fr) auto minmax(0,1fr) auto auto auto var(--trayh);gap:5px}
+.hero.strip.tt .meter.ae .bar i{background:var(--danger)}
+.hero.strip.tt .evcount{font-family:"JetBrains Mono",var(--f-mono);font-size:.62rem;color:#8A3F8F}
+.arena.tt .boardrow.rival{opacity:.92}
+.ward .facts{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.f{font:600 .62rem var(--f-body);border-radius:6px;padding:1px 6px}
+.f.red{background:#F7E1DE;color:#9B2C1F;border:1px solid #E3B3AC}
+.f.amb{background:#FFF1D2;color:#8A5A00;border:1px solid #E8C979}
+.f.ok{background:#E3F1E8;color:#1D6B42;border:1px solid #B5D8C1}
+.riskbar{background:#FFF6E0;border:1.5px solid var(--warn);border-left-width:5px;border-radius:8px;padding:4px 9px;display:flex;flex-direction:column;gap:1px}
+.riskbar b{font-family:"JetBrains Mono",var(--f-mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.04em;color:var(--warn)}
+.riskbar span{font-size:.7rem;line-height:1.3;max-height:2.6em;overflow:hidden}
+.riskbar.ok{background:#EEF6F0;border-color:#B5D8C1}.riskbar.ok b{color:#1D6B42}
+.evrow{display:flex;gap:6px;align-items:center;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.evrow .evl{font-family:"JetBrains Mono",var(--f-mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.evchip{border:1.5px solid #8A3F8F;color:#6E2F72;background:#F6EEF7;border-radius:12px;padding:3px 10px;font:600 .74rem var(--f-body);cursor:pointer;flex:none}
+.tray .card.hand.ci{box-shadow:0 0 0 2px #9B2C1F}
+.rxalert.ci{background:#FBE9E6;border-color:#9B2C1F}.rxalert.ci b{color:#9B2C1F}
+.handpreview.evp{width:min(250px,70vw)}
+.evcard{background:#fff;border-radius:11px;overflow:hidden;box-shadow:0 20px 40px -14px rgba(0,0,0,.6);width:100%}
+.evcard .band{height:10px;background:repeating-linear-gradient(-45deg,#8A3F8F 0 9px,#6E2F72 9px 18px)}
+.evcard .in{padding:12px;display:grid;gap:8px}
+.evcard .top{display:flex;justify-content:space-between;gap:8px}
+.evcard .n{display:block;font:800 1.05rem/1.1 "Schibsted Grotesk",sans-serif}
+.evcard .t{font:400 .6rem "JetBrains Mono",monospace;text-transform:uppercase;color:#5D6873}
+.evcard .c{width:34px;height:34px;border:2px solid #1B2229;border-radius:6px;display:flex;align-items:center;justify-content:center;font:900 1rem "Schibsted Grotesk";flex:none}
+.evcard p{margin:0;font-size:.8rem;line-height:1.4;color:#3A444E}.evcard p.teach{font-style:italic;color:#5D6873}
+.profs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.profcard{text-align:left;background:#FBF8F1;border:1px solid #B9A985;outline:1px solid #B9A985;outline-offset:3px;margin:3px;padding:14px;display:flex;flex-direction:column;gap:4px;cursor:pointer;color:var(--ink)}
+.profcard:hover{background:#fff}
+.profcard .k{font:400 .62rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.profcard b{font-family:var(--f-serif);font-size:1.35rem}
+.profcard .dx{font-family:var(--f-serif);font-style:italic;font-size:1.05rem;color:#8A3F8F}
+.profcard .facts{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.profcard .pre{font-size:.78rem;color:var(--muted)}
+.rf-tab{width:100%;min-width:0!important;border-collapse:collapse;margin:10px 0;font-size:.84rem;table-layout:fixed}
+.rf-tab th,.rf-tab td{text-transform:none!important;letter-spacing:0!important;overflow-wrap:anywhere;background:none!important;font-family:var(--f-body)}
+.rf-tab thead th:first-child{width:34%}
+.rf-tab th,.rf-tab td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+.rf-tab thead th{font-family:var(--f-serif);font-size:1rem}
+.rf-tab tbody th{font-weight:600;color:var(--muted);width:34%}
+
 /* BUSTINE */
 .reveal{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
 .cell{container-type:inline-size;display:flex;justify-content:center}
@@ -914,7 +957,6 @@ function renderMenu(){
     <p class="sub">Sola Dosis, carte collezionabili di farmacologia. Uso didattico.</p>
     ${G&&!G.over&&!G.tut?`<div class="patient first"><b>Partita in corso</b><span>Hai una partita a metà.</span><div class="row" style="margin-top:8px"><button class="btn primary" data-go="resume">Riprendi</button></div></div>`:""}
     <div class="ts-list">
-      ${S.tut?"":it("0","tut","Partita guidata","Pochi turni per imparare dosi, condizioni, attacco e parata.","+30 crediti ECM")}
       ${it("1","duello","Testa a testa","Come negli studi head-to-head: due terapie attive confrontate sullo stesso paziente. Tu e il reparto rivale lo curate insieme, vince la strategia migliore.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
       ${it("2","bustine","Forniture","Nuove carte dalla farmacia: 5 per fornitura.",`${S.crediti} crediti ECM disponibili`)}
       ${it("3","collezione","Armadio farmaceutico","Le carte che possiedi, con fonti e valori.",`${nCol} su ${ALL.length} carte`)}
@@ -931,7 +973,7 @@ app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||ta
   tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
-  if(b.dataset.ov==="again"){G=null;startDuel()}else{G=null;tab="menu";render()}});
+  if(b.dataset.ov==="ttagain"){const pid=G&&G.prof;G=null;tab="duello";startTT(pid)}else if(b.dataset.ov==="again"){G=null;startDuel()}else{G=null;tab="menu";render()}});
 
 // =================== MOTORE DI GIOCO ===================
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -1269,8 +1311,22 @@ const RISK2INT={"oppioide + benzodiazepina":"i_resp","doppio serotoninergico":"i
 function rxAlert(id){const P=G.p[0];const before=risks(P);const t={uid:-1,id,atk:0,hp:1,max:1};P.board.push(t);
   const out=risks(P).filter(r=>!before.includes(r)).map(r=>{const partners=P.board.filter(u=>u!==t).filter(u=>{const k=P.board.indexOf(u);P.board.splice(k,1);const still=risks(P).includes(r);P.board.splice(k,0,u);return !still}).map(u=>D(u).n);return {r,partners:[...new Set(partners)],int:CARDS[RISK2INT[r]]}});
   P.board.pop();return out}
+function renderTTLobby(){
+  const live=G&&!G.over;
+  app.innerHTML=`<h2 class="sec">Testa a testa</h2>
+    <p class="ts-def"><i>Head-to-head</i>: studio che confronta direttamente due terapie attive, invece di confrontarne una con il placebo. Qui le due terapie sono le vostre strategie.</p>
+    <p class="sub">Tu e il braccio B curate ciascuno il vostro paziente, con lo stesso profilo. Vince il beneficio netto più alto: risposta terapeutica meno eventi avversi. Le interazioni colpiscono chi le prescrive; il rivale può solo complicarti il paziente con eventi clinici.</p>
+    ${live?`<div class="patient first" style="margin-bottom:12px"><b>Trial in corso</b><span>Hai lasciato una partita a metà.</span><div class="row" style="margin-top:8px"><button class="btn primary" id="resume">Riprendi</button></div></div>`:""}
+    <h3 class="sub3">Scegli il paziente</h3>
+    <div class="profs">${PROFILES.map(p=>`<button class="profcard" data-prof="${p.id}"><span class="k">Cartella clinica · letto ${p.bed}</span><b>${p.who}, ${p.age} anni</b><span class="dx">${p.dxl}</span><span class="facts">${p.facts.map(([c,t])=>`<span class="f ${c}">${t}</span>`).join("")}</span><span class="pre">In terapia: ${p.pre.map(id=>CARDS[id].n).join(", ")}</span></button>`).join("")}</div>
+    <p class="meta" style="margin-top:12px">Prototipo delle nuove regole: entrambi i bracci usano lo stesso prontuario di reparto, pensato per il paziente scelto. La partita guidata va rifatta per queste regole.</p>`;
+  const rs=document.getElementById("resume");if(rs)rs.onclick=()=>{duelHidden=false;render()};
+  app.querySelectorAll("[data-prof]").forEach(b=>b.onclick=()=>startTT(b.dataset.prof));
+}
 function renderDuel(){
-  if(!G||duelHidden){
+  if(G&&G.tt&&!duelHidden){renderTT();return}
+  if(!G||duelHidden){renderTTLobby();return}
+  if(false){
     const ok=S.deck.length===DECK_SIZE;
     app.innerHTML=`<h2 class="sec">Testa a testa</h2>
       <p class="ts-def"><i>Head-to-head</i>: studio che confronta direttamente due terapie attive, invece di confrontarne una con il placebo. Qui le due terapie sono le vostre strategie.</p>
@@ -1353,6 +1409,7 @@ function renderDuel(){
 }
 app.addEventListener("click",e=>{
   const det=e.target.closest("[data-detail]");if(det){showDetail(det.dataset.detail);return}
+  if(G&&G.tt)return;
   const rb=e.target.closest("[data-resp]");
   if(rb&&G&&G.pending){const pd=G.pending;G.pending=null;if(rb.dataset.resp!=="pass"){play(0,+rb.dataset.resp);checkEnd()}else log("Hai lasciato passare.");render();pd.res();return}
   const bk=e.target.closest("[data-block]");
@@ -1617,7 +1674,7 @@ function showSplash(){
     <div class="plate">${SPLASH_PLATE}</div>
     <h2 class="rise d1">Sola Dosis</h2>
     <p class="sub rise d2">Tra la dose che cura e quella che nuoce c'è la finestra terapeutica. Restaci dentro.</p>
-    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="menu">Entra</button>`:`<button class="pri" data-sp="menu">Entra</button>`}</div>
+    <div class="acts rise d3"><button class="pri" data-sp="menu">Entra</button></div>
     <div class="stat rise d3">${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse nell'armadio</div>
   </div>`;
   const close=()=>{el.classList.add("out");document.removeEventListener("keydown",onKey);setTimeout(()=>{el.remove()},500)};
@@ -1628,5 +1685,6 @@ function showSplash(){
   setTimeout(()=>{const b=el.querySelector(".pri");if(b)b.focus({preventScroll:true})},50);
 }
 
+/*@@TT@@*/
 render();showSplash();
 </script>
