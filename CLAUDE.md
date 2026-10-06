@@ -21,6 +21,8 @@
 ## Grafica
 - Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
 - Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.
+- Duello: schermata a sé in un solo schermo (strisce compatte, cartella clinica al centro con pazienti fittizi in PATIENTS, mano che scorre di lato, tocco = anteprima, pressione prolungata = scheda).
+- Avviso di prescrizione quando un tuo farmaco crea una combinazione a rischio (rxAlert, RISK2INT); referto di fine partita (refertoHTML) con appropriatezza, avvisi, interazioni e citazioni testuali.
 - Dorso carte: "Farmacia storica" (verde e oro). Proposte grafiche nel canvas Design "Proposte grafiche carte".
 
 ## Preferenze di Andrea

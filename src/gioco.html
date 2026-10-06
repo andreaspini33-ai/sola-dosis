@@ -199,7 +199,15 @@ body:has(#coach .cbox) main{padding-bottom:230px}
 @keyframes coachPulse{50%{outline-color:transparent}}
 .sndbtn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 10px;font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.fx-enter,.fx-evolve,.fx-lunge0,.fx-lunge1,.fx-hit,.fx-shake,.fx-field,.fx-pulse,.reveal .fx-flip,.coach-target{animation:none!important}.card.dying{animation:none;opacity:0}.fnum{animation-duration:1.2s}}
-.overlay{position:fixed;inset:0;background:rgba(10,16,14,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:5}
+.overlay{position:fixed;inset:0;background:rgba(43,36,24,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.box.referto{max-width:620px}
+.referto .rf-k{font-family:"JetBrains Mono",var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.referto h3{font-family:var(--f-serif)!important;text-transform:none!important;font-weight:700!important;font-size:2rem!important;margin:2px 0 6px!important}
+.referto dl{display:grid;gap:10px;margin:12px 0;border-top:1px solid var(--line);padding-top:10px}
+.referto dt{font-family:var(--f-serif);font-weight:700;font-size:1.1rem}
+.referto dd{margin:0;font-size:.86rem}
+.rf-ints{margin:4px 0 0;padding-left:18px;display:grid;gap:8px}
+.rf-ints span{font-size:.8rem;color:var(--muted)}
 .overlay .box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;max-width:520px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
 .overlay h3{font-family:var(--f-display);font-weight:850;font-stretch:75%;text-transform:uppercase;font-size:1.8rem;margin:0 0 6px}
 .detail{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start}
@@ -293,10 +301,10 @@ body.in-duel main{padding-top:0}
 .ward .logline{grid-column:1/2;text-align:left;font-size:.68rem;min-height:1.2em;line-height:1.3;max-height:2.6em;overflow:hidden}
 .ward .logline .btn{padding:2px 8px;font-size:.7rem}
 .trayrow{position:relative;min-height:0;display:flex;align-items:stretch}
-.tray{flex:1;min-width:0;container-type:size;padding-right:112px}
-.tray .hand{display:flex;justify-content:center;align-items:flex-end;height:100%;width:auto;gap:0;margin:0;--cw:calc((100cqh - 14px) * .716)}
-.tray .card.hand{font-size:calc(var(--cw) / 21);width:21em;min-height:0;height:calc(21em * 88 / 63);transform-origin:50% 130%;transform:rotate(calc(var(--d) * 2.5deg));transition:transform .15s ease,box-shadow .15s ease}
-.tray .card.hand+.card.hand{margin-left:min(4px,calc((100cqw - var(--k) * var(--cw)) / var(--k1)))}
+.tray{flex:1;min-width:0;container-type:size;margin-right:112px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.tray>.hand{display:flex;justify-content:flex-start;align-items:flex-end;height:100%;width:max-content;min-width:100%;gap:8px;margin:0;padding:0 4px;box-sizing:border-box;--cw:calc((100cqh - 20px) * .716)}
+.tray>.hand::before,.tray>.hand::after{content:"";flex:1 0 0}
+.tray .card.hand{font-size:calc(var(--cw) / 21);width:21em;min-height:0;height:calc(21em * 88 / 63);scroll-snap-align:center;flex:none;transition:transform .15s ease,box-shadow .15s ease}
 .tray .card.hand.coach-target{z-index:4;transform:translateY(-10px)}
 .tray .card.hand.picked{transform:translateY(-14px);box-shadow:0 0 0 3px var(--ink),0 10px 20px -8px rgba(0,0,0,.5);z-index:3}
 .tray .card.hand .tx,.tray .card.hand .meta,.tray .card.hand .lot{display:none}
@@ -307,6 +315,11 @@ body.in-duel main{padding-top:0}
 .handpreview .card{width:100%;font-size:calc(100cqi / 21);box-shadow:0 20px 40px -14px rgba(0,0,0,.6)}
 .handpreview .row{justify-content:center;flex-wrap:nowrap}
 .handpreview .row .btn{background:var(--surface)}.handpreview .row .btn.primary{background:var(--accent)}
+.handpreview.alert{width:min(320px,88vw)}
+.handpreview.alert>.card{width:58%;font-size:calc(58cqi / 21)}
+.rxalert{width:min(320px,86vw);box-sizing:border-box;background:#FFF6E0;border:2px solid var(--warn);border-left-width:6px;border-radius:10px;padding:8px 10px;color:var(--ink);box-shadow:0 12px 24px -12px rgba(0,0,0,.6)}
+.rxalert b{display:block;font-family:"JetBrains Mono",var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--warn);margin-bottom:2px}
+.rxalert p{margin:2px 0 0;font-size:.78rem;line-height:1.35}
 .handpreview small{font-size:.66rem;color:#F3EDE0;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 @keyframes pvIn{from{opacity:0;transform:translate(-50%,16px) scale(.96)}to{opacity:1;transform:translateX(-50%)}}
 .patient.ward.act{display:block;border:2px solid var(--warn);padding:8px 10px}
@@ -897,6 +910,7 @@ const has=(u,t)=>D(u).tags.includes(t);
 function effAtk(u,P){let e=u.atk+(isIndicated(u.id,fieldDis())?1:0);P.recs.forEach(r=>{const R=CARDS[r];if(has(u,R.tag))e+=R.e});return Math.max(0,e)}
 function isTaunt(u,P){if(D(u).ab.taunt)return true;return P.recs.some(r=>CARDS[r].taunt&&has(u,CARDS[r].tag))}
 function startTurn(i){
+  if(i===0&&!G.sim)stat().turns++;
   const P=G.p[i];P.max=Math.min(10,P.max+1);P.dose=P.max;if(P.coin){P.dose++;P.coin=false}draw(i);
   let nti=0;P.board.forEach(u=>{u.can=true;u.tap=false;if(D(u).ab.nti)nti++});
   if(nti){P.hp-=nti;fx({k:"hero",side:i,n:nti});log(`Indice terapeutico ristretto: ${i?"il rivale perde":"perdi"} ${nti} di omeostasi.`)}
@@ -940,10 +954,13 @@ const tScore=id=>CARDS[id].E+CARDS[id].T;
 function trialPairs(i){const P=G.p[i],O=G.p[1-i],o=[];P.board.forEach(a=>O.board.forEach(b=>{if(shareInd(a.id,b.id))o.push([a,b])}));return o}
 function trialEligible(side,u){const pr=trialPairs(0);if(side===0)return pr.some(p=>p[0]===u);return G.trial.a!=null&&pr.some(p=>p[0].uid===G.trial.a&&p[1]===u)}
 function tutor(P,test){const idx=P.deck.map((id,k)=>test(id)?k:-1).filter(k=>k>=0);if(!idx.length)return null;const k=idx[Math.floor(Math.random()*idx.length)];const id=P.deck.splice(k,1)[0];if(P.hand.length<8)P.hand.push(id);return id}
+function stat(){return G.st||(G.st={drugs:[],ints:[],fields:[],over:0,avoided:0,turns:0})}
 function play(i,hi,tg){
   if(canPlay(i,hi))return false;
   const P=G.p[i],O=G.p[1-i],d=CARDS[P.hand[hi]];const who=i?"Il rivale":"Tu";
   P.hand.splice(hi,1);
+  if(!G.sim){const st=stat();if(d.type==="drug"&&i===0)st.drugs.push({id:d.id,ind:isIndicated(d.id,fieldDis()),dis:G.field});
+    if(d.type==="int")st.ints.push({side:i,id:d.id});if(d.type==="dis")st.fields.push({side:i,id:d.id})}
   if(d.type==="sci"){P.dose-=d.c;const got=tutor(P,id=>sciMatch(d,id));
     if(got)log(`${who}: ${d.n} trova ${i?"una carta":CARDS[got].n}.`);else{draw(i);log(`${who}: ${d.n} non trova ${d.what}; si pesca 1 carta.`)}return true}
   if(d.type==="act"){P.dose-=d.c;
@@ -1049,10 +1066,28 @@ function checkEnd(){
   const win=res==="win"||res==="cure";const prize=res==="cure"?50:win?40:15;
   if(win)S.wins++;else S.losses++;if(res==="cure")S.cures=(S.cures||0)+1;S.crediti+=prize;save();
   const msg={win:"L'omeostasi del reparto rivale è crollata.",cure:`Il tuo paziente ha raggiunto la risposta terapeutica: ${(fieldDis()||{n:"la condizione"}).n} sotto controllo.`,lose:"L'omeostasi del tuo reparto è crollata.",losecure:"Il reparto rivale ha curato il paziente prima di te."}[res];
-  setTimeout(()=>{sfx(win?"win":"lose");ov.innerHTML=`<div class="overlay"><div class="box"><h3>${win?(res==="cure"?"Paziente curato":"Vittoria"):"Sconfitta"}</h3>
-    <p>${msg} Ricevi <b>${prize} crediti ECM</b>.</p>
-    <div class="row" style="margin-top:14px"><button class="btn primary" data-ov="again">Nuovo paziente</button><button class="btn" data-ov="packs">Vai alle bustine</button></div></div></div>`;render()},350);
+  setTimeout(()=>{sfx(win?"win":"lose");ov.innerHTML=refertoHTML(res,win,msg,prize);render()},350);
 }
+
+function refertoHTML(res,win,msg,prize){
+  const st=stat();const pts=[...new Set(st.fields.map(f=>f.id))];
+  const tot=st.drugs.length,ind=st.drugs.filter(x=>x.ind).length;
+  const noind=[...new Set(st.drugs.filter(x=>!x.ind).map(x=>CARDS[x.id].n))];
+  const intRow=x=>{const d=CARDS[x.id];return `<li><b>${d.n}</b> · ${x.side?"giocata dal rivale contro di te":"giocata da te"}<br><span>${d.f}</span>${d.q?d.q.slice(0,1).map(k=>quote(Q[k].q,Q[k].s)).join(""):`<span class="meta">Fonte non ancora inserita per questa interazione.</span>`}</li>`};
+  const ints=st.ints;
+  const lesson=st.over&&ints.some(x=>x.side===1)?`Hai ignorato ${st.over} avvis${st.over===1?"o":"i"} di prescrizione e il rivale ha sfruttato ${ints.filter(x=>x.side===1).length} interazion${ints.filter(x=>x.side===1).length===1?"e":"i"}.`:st.avoided?`Hai rinunciato a ${st.avoided} prescrizion${st.avoided===1?"e":"i"} a rischio.`:"";
+  return `<div class="overlay"><div class="box referto">
+    <span class="rf-k">Referto · ${st.turns} turn${st.turns===1?"o":"i"}</span>
+    <h3>${win?(res==="cure"?"Paziente curato":"Vittoria"):"Sconfitta"}</h3>
+    <p>${msg} Ricevi <b>${prize} crediti ECM</b>.</p>
+    <dl>
+      <div><dt>Pazienti</dt><dd>${pts.length?pts.map(id=>{const p=patientOf(id);return `${p.who}, ${p.age} anni · ${CARDS[id].n}`}).join("<br>"):"Nessuna condizione è stata messa in campo."}</dd></div>
+      <div><dt>Appropriatezza</dt><dd>${tot?`${ind} farmac${ind===1?"o":"i"} su ${tot} erano indicat${ind===1?"o":"i"} per la condizione in campo al momento della prescrizione.${noind.length?` Non indicati: ${noind.join(", ")}.`:""}`:"Non hai prescritto farmaci."}</dd></div>
+      <div><dt>Avvisi di prescrizione</dt><dd>${st.over+st.avoided?`${st.avoided} seguit${st.avoided===1?"o":"i"}, ${st.over} ignorat${st.over===1?"o":"i"}.`:"Nessun avviso in questa partita."} ${lesson}</dd></div>
+      <div><dt>Interazioni</dt><dd>${ints.length?`<ul class="rf-ints">${ints.map(intRow).join("")}</ul>`:"Nessuna interazione giocata."}</dd></div>
+    </dl>
+    <p class="meta">Uso didattico: i valori del gioco sono stime e scelte di gioco; le frasi tra virgolette sono riportate testualmente dalle fonti.</p>
+    <div class="row" style="margin-top:14px"><button class="btn primary" data-ov="again">Nuovo paziente</button><button class="btn" data-ov="packs">Vai alle bustine</button></div></div></div>`}
 
 // ----- IA -----
 // ----- istantanei: risposta nel turno avversario -----
@@ -1182,6 +1217,10 @@ function applyFx(){
 }
 const PATIENTS={d_postop:["Sig. M.",54],d_emicrania:["Sig.ra L.",34],d_fa:["Sig.ra R.",74],d_scompenso:["Sig. B.",79],d_polmonite:["Sig. G.",71],d_ansia:["Sig.ra C.",29],d_neuro:["Sig. F.",63],d_depressione:["Sig.ra T.",41],d_epilessia:["Sig. D.",26],d_schizofrenia:["Sig. P.",24],d_ipertensione:["Sig. V.",58],d_tvp:["Sig.ra N.",46],d_sca:["Sig. A.",66],d_emorragia:["Sig. E.",81],d_ivu:["Sig.ra S.",32],d_sepsi:["Sig. O.",77],d_osteo:["Sig.ra Z.",69],d_ipotiroidismo:["Sig.ra I.",52],d_ipertiroidismo:["Sig.ra U.",38],d_surrene:["Sig. H.",45]};
 function patientOf(id){const p=PATIENTS[id]||["Sig.ra R.",60];let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%997;return {who:p[0],age:p[1],bed:1+h%12}}
+const RISK2INT={"oppioide + benzodiazepina":"i_resp","doppio serotoninergico":"i_sero","rischio emorragico":"i_bleed","FANS + ACE-i + diuretico":"i_aki","statina + inibitore CYP3A4":"i_rabdo","inibitore + indice ristretto":"i_pk","doppio QT":"i_qt","risparmiatore di K⁺ + ACE-i":"i_k"};
+function rxAlert(id){const P=G.p[0];const before=risks(P);const t={uid:-1,id,atk:0,hp:1,max:1};P.board.push(t);
+  const out=risks(P).filter(r=>!before.includes(r)).map(r=>{const partners=P.board.filter(u=>u!==t).filter(u=>{const k=P.board.indexOf(u);P.board.splice(k,1);const still=risks(P).includes(r);P.board.splice(k,0,u);return !still}).map(u=>D(u).n);return {r,partners:[...new Set(partners)],int:CARDS[RISK2INT[r]]}});
+  P.board.pop();return out}
 function renderDuel(){
   if(!G||duelHidden){
     const ok=S.deck.length===DECK_SIZE;
@@ -1238,6 +1277,7 @@ function renderDuel(){
   const k=me.hand.length,hs=G.handSel;
   const hint=G.trial?(G.trial.a==null?"Trial: scegli il tuo farmaco da confrontare.":"Trial: scegli il farmaco del rivale con un'indicazione in comune.")+' <button class="btn" data-trialx="1">Annulla</button>':asel.length?"Tocca altri farmaci da aggiungere all'attacco, poi conferma.":"";
   const sel=hs!=null?CARDS[me.hand[hs]]:null;const why=sel?(myTurn?canPlay(0,hs):"non è il tuo turno"):"";
+  const rx=sel&&sel.type==="drug"&&!why?rxAlert(sel.id):[];G.rxShown=rx.length>0;
   app.innerHTML=`<div class="duel arena">
     <div class="duelbar"><button class="btn" id="tomenu" aria-label="Torna al menu">‹ Menu</button><span class="turnchip ${G.over?"":myTurn?"me":"ai"}">${G.over?"Partita conclusa":G.turn===0?"Il tuo turno":"Turno del rivale"}</span><button class="btn ghost" id="quit">${G.over?"Chiudi":"Abbandona"}</button></div>
     ${hero(ai,1)}
@@ -1254,7 +1294,7 @@ function renderDuel(){
         return cardHTML(d,"hand",{btn:true,ind:isIndicated(id,dis),extra:(w?"dim":"playable")+(hs===hi?" picked":""),attrs:`data-hand="${hi}" data-cid="${id}" style="--d:${(hi-(k-1)/2).toFixed(2)}" title="${d.n}"`})}).join("")}</div></div>
       <div class="fab">${myTurn&&asel.length?`<button class="btn primary" data-attack="1">Attacca con ${asel.length}</button>`:""}<button class="btn primary" id="end" ${myTurn?"":"disabled"}>Fine turno</button></div>
     </div>
-    ${sel?`<div class="hp-back" data-hclose="1"></div><div class="handpreview">${cardHTML(sel,"hand",{ind:isIndicated(sel.id,dis)})}<div class="row"><button class="btn primary" data-hand="${hs}" data-cid="${sel.id}" data-play="1" ${why?"disabled":""}>${why?why.charAt(0).toUpperCase()+why.slice(1):`Gioca · ${sel.from?sel.ec:sel.c} dosi`}</button><button class="btn" data-hclose="1">Chiudi</button></div><small>Tieni premuta una carta per la scheda completa.</small></div>`:""}
+    ${sel?`<div class="hp-back" data-hclose="1"></div><div class="handpreview${rx.length?" alert":""}">${cardHTML(sel,"hand",{ind:isIndicated(sel.id,dis)})}${rx.length?`<div class="rxalert" role="alert"><b>Avviso di prescrizione</b>${rx.map(a=>`<p><strong>${sel.n}${a.partners.length?" + "+a.partners.join(", "):""}</strong>: ${a.r}.${a.int?` Il rivale può rispondere con «${a.int.n}»: ${a.int.txt.replace(/^Se [^:]*: /,"")}`:""}</p>`).join("")}</div>`:""}<div class="row"><button class="btn primary" data-hand="${hs}" data-cid="${sel.id}" data-play="1" ${rx.length?'data-override="1"':""} ${why?"disabled":""}>${why?why.charAt(0).toUpperCase()+why.slice(1):rx.length?"Prescrivi comunque":`Gioca · ${sel.from?sel.ec:sel.c} dosi`}</button><button class="btn" data-hclose="1">${rx.length?"Non prescrivere":"Chiudi"}</button></div><small>Tieni premuta una carta per la scheda completa.</small></div>`:""}
   </div>`;
   applyFx();tutTick();
   document.getElementById("end").onclick=()=>{if(!myTurn)return;G.atkSel=[];G.trial=null;G.turn=1;startTurn(1);if(!G.over)aiTurn();else render()};
@@ -1279,14 +1319,14 @@ app.addEventListener("click",e=>{
       render();return}
     return}
   if(G&&tab==="duello"&&!duelHidden){
-    if(e.target.closest("[data-hclose]")){G.handSel=null;render();return}
+    if(e.target.closest("[data-hclose]")){if(G.rxShown)stat().avoided++;G.rxShown=false;G.handSel=null;render();return}
     const hp=e.target.closest("[data-hand]");
     if(hp&&hp.dataset.play===undefined){const hi=+hp.dataset.hand;G.handSel=G.handSel===hi?null:hi;render();return}
   }
   if(tab!=="duello"||!G||G.over||G.busy||G.turn!==0)return;
   if(e.target.closest("[data-attack]")){const ids=G.atkSel||[];G.atkSel=[];if(ids.length){const bl=aiChooseBlocks(0,ids);resolveCombat(0,ids,bl)}render();return}
   const h=e.target.closest("[data-hand]");
-  if(h){const hi=+h.dataset.hand;G.handSel=null;const why=canPlay(0,hi);if(why)log(`${CARDS[G.p[0].hand[hi]].n}: ${why}.`);
+  if(h){const hi=+h.dataset.hand;G.handSel=null;if(h.dataset.override)stat().over++;G.rxShown=false;const why=canPlay(0,hi);if(why)log(`${CARDS[G.p[0].hand[hi]].n}: ${why}.`);
     else if(G.p[0].hand[hi]==="a_trial"){G.trial={hi,a:null};log("Trial di fase III: scegli il tuo farmaco.")}
     else{const t=CARDS[G.p[0].hand[hi]].type;play(0,hi);checkEnd();if(t==="drug"&&!G.over)respondAI(1)}render();return}
   if(e.target.closest("[data-trialx]")){G.trial=null;log("Trial annullato.");render();return}
