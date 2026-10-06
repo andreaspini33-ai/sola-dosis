@@ -18,6 +18,11 @@
   Inibizione enzimatica: inibitore + altro farmaco a indice ristretto.
 - Ritiro dal commercio (leggendaria, 5 dosi): elimina tutti i farmaci, i recettori e la condizione; risposta a 0.
 
+## Grafica
+- Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
+- Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.
+- Dorso carte: "Farmacia storica" (verde e oro). Proposte grafiche nel canvas Design "Proposte grafiche carte".
+
 ## Preferenze di Andrea
 - Fonti sempre citate con testo testuale e DOI; dire cosa va verificato.
 - Valori stimati dichiarati come stime. Valori NNT degli analgesici da non alterare.

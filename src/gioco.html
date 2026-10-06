@@ -1,55 +1,41 @@
 <title>Sola Dosis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Schibsted+Grotesk:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Schibsted+Grotesk:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&display=swap">
 <style>
 /* Layout: banco di laboratorio. Header con schede, area di gioco centrale; le carte sono etichette di confezioni farmaceutiche. */
 :root{
-  --bg:#E7ECEA; --surface:#F9FBFA; --surface-2:#EEF2F0; --ink:#13201C; --muted:#56655F; --line:#C5CFCB;
-  --accent:#2445C2; --accent-ink:#FFFFFF; --danger:#BE3329; --good:#1D7448; --gold:#9A6A12; --warn:#A35C00;
+  --bg:#F3EDE0; --surface:#F9F5EC; --surface-2:#EFE7D6; --ink:#2B2418; --muted:#6B5D45; --line:#C9BB9A;
+  --accent:#2B2418; --accent-ink:#F3EDE0; --link:#8A3B1E; --danger:#BE3329; --good:#1D7448; --gold:#9A6A12; --warn:#A35C00;
   --c-analg:#B03F79; --c-snc:#6D47B8; --c-cardio:#BC3445; --c-emo:#8E2F2F; --c-anti:#2A8253; --c-antid:#A86E14; --c-endo:#2A6DAA;
   --c-rec:#0F7C86; --c-int:#5B5F66; --c-sci:#7A5A12; --c-act:#3E5C8A; --c-dis:#8A3F8F;
-  --paper:#FCFDFB; --stat-e:#2445C2; --stat-t:#1D7448;
+  --paper:#FBF8F1; --stat-e:#2445C2; --stat-t:#1D7448;
   --atom-o:#C2371F; --atom-n:#1F5FBF; --atom-s:#A07A00; --atom-x:#14805A; --atom-li:#7B3FA6;
   --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  --shadow:0 1px 0 rgba(19,32,28,.06),0 6px 18px -10px rgba(19,32,28,.35);
+  --f-serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --shadow:0 1px 0 rgba(43,36,24,.06),0 6px 18px -10px rgba(43,36,24,.35);
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1412; --surface:#172019; --surface-2:#1E2925; --ink:#E2EAE6; --muted:#93A39C; --line:#2E3B36;
-  --accent:#8EA2FF; --accent-ink:#0E1412; --danger:#FF7A6E; --good:#5FD093; --gold:#E3B44E; --warn:#F2A447;
-  --c-analg:#E07AB0; --c-snc:#A88BEB; --c-cardio:#F0707E; --c-emo:#D9777A; --c-anti:#62C68E; --c-antid:#E0A64A; --c-endo:#6EAEE6;
-  --c-rec:#47BFC9; --c-int:#A3A9B2; --c-sci:#D8B25A; --c-act:#8FB0E6; --c-dis:#D08AD6;
-  --paper:#1A2320; --stat-e:#4F6BE8; --stat-t:#2B8A57;
-  --atom-o:#FF7A66; --atom-n:#7FA8FF; --atom-s:#E8C14A; --atom-x:#5FD3A0; --atom-li:#C69BFF;
-  --shadow:0 1px 0 rgba(0,0,0,.4),0 8px 22px -12px rgba(0,0,0,.8); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0E1412; --surface:#172019; --surface-2:#1E2925; --ink:#E2EAE6; --muted:#93A39C; --line:#2E3B36;
-  --accent:#8EA2FF; --accent-ink:#0E1412; --danger:#FF7A6E; --good:#5FD093; --gold:#E3B44E; --warn:#F2A447;
-  --c-analg:#E07AB0; --c-snc:#A88BEB; --c-cardio:#F0707E; --c-emo:#D9777A; --c-anti:#62C68E; --c-antid:#E0A64A; --c-endo:#6EAEE6;
-  --c-rec:#47BFC9; --c-int:#A3A9B2; --c-sci:#D8B25A; --c-act:#8FB0E6; --c-dis:#D08AD6;
-  --paper:#1A2320; --stat-e:#4F6BE8; --stat-t:#2B8A57;
-  --atom-o:#FF7A66; --atom-n:#7FA8FF; --atom-s:#E8C14A; --atom-x:#5FD3A0; --atom-li:#C69BFF;
-  --shadow:0 1px 0 rgba(0,0,0,.4),0 8px 22px -12px rgba(0,0,0,.8); color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:0 40px}
 button{font:inherit;color:inherit;cursor:pointer}
-a{color:var(--accent)}
+a{color:var(--link)}
 button:focus-visible,.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1080px;margin:0 auto}
-header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-block:20px 14px;border-bottom:1px solid var(--line)}
-.brand h1{font-family:var(--f-display);font-weight:850;font-stretch:72%;font-size:2.3rem;letter-spacing:.01em;line-height:.9;margin:0;text-transform:uppercase}
-.brand p{margin:4px 0 0;color:var(--muted);font-size:.82rem;font-family:var(--f-mono)}
-.credits{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
-.credits b{color:var(--ink);font-size:1.05rem}
-nav.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-top:14px;flex-basis:100%}
-nav.tabs button{background:none;border:1px solid transparent;border-radius:6px;padding:7px 14px;font-family:var(--f-display);font-weight:700;font-stretch:85%;text-transform:uppercase;letter-spacing:.06em;font-size:.85rem;color:var(--muted)}
-nav.tabs button[aria-current="true"]{background:var(--surface);border-color:var(--line);color:var(--ink)}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-block:22px 0}
+.brand h1{font-family:var(--f-serif);font-weight:700;font-size:2rem;letter-spacing:.05em;line-height:1;margin:0}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:.72rem;font-family:"JetBrains Mono",var(--f-mono);letter-spacing:.02em}
+.credits{font-family:"JetBrains Mono",var(--f-mono);font-size:.72rem;color:var(--muted);border:1px solid #B9A985;border-radius:12px;padding:4px 10px}
+.credits b{color:var(--ink);font-size:.8rem}
+nav.tabs{display:flex;gap:2px 18px;flex-wrap:wrap;margin-top:6px;flex-basis:100%;border-bottom:1px solid var(--line)}
+nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;padding:6px 0 7px;margin-bottom:-1px;font-family:var(--f-serif);font-style:italic;font-weight:500;font-size:1.15rem;color:#7A6B52}
+nav.tabs button[aria-current="true"]{color:var(--ink);font-weight:700;border-bottom-color:var(--ink)}
 main{padding-top:18px}
-h2.sec{font-family:var(--f-display);font-weight:800;font-stretch:80%;text-transform:uppercase;font-size:1.25rem;letter-spacing:.03em;margin:0 0 4px;text-wrap:balance}
-h3.sub3{font-family:var(--f-display);font-weight:800;font-stretch:80%;text-transform:uppercase;font-size:1rem;letter-spacing:.03em;margin:22px 0 6px}
+h2.sec{font-family:var(--f-serif);font-weight:700;font-size:2rem;line-height:1.05;margin:0 0 6px;text-wrap:balance}
+h3.sub3{font-family:var(--f-serif);font-weight:700;font-size:1.4rem;margin:24px 0 6px}
 .sub{color:var(--muted);margin:0 0 16px;max-width:68ch}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px 14px;font-weight:600}
+.btn{border:1px solid var(--ink);background:transparent;border-radius:10px;padding:10px 16px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
@@ -165,6 +151,9 @@ button.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .respond{display:grid;gap:8px;padding:12px;border:2px solid var(--warn);border-radius:8px;background:var(--surface)}
 .respond b{font-family:var(--f-display);font-stretch:80%;text-transform:uppercase;font-weight:800}
 .respond span{font-size:.82rem;color:var(--muted)}
+.patient.first{display:block;border:1px solid #B9A985;outline:1px solid #B9A985;outline-offset:3px;border-radius:0;margin:3px;padding:14px;background:var(--surface)}
+.patient.first b{display:block;font-family:var(--f-serif);text-transform:none;font-size:1.3rem;font-weight:700;margin-bottom:2px}
+.patient.first span{font-size:.85rem}
 .patient.empty{border-style:dashed;border-color:var(--line)}
 .logline{font-size:.82rem;color:var(--muted);text-align:center;min-height:1.4em;font-family:var(--f-mono)}
 .handwrap{overflow-x:auto;padding:10px 2px 6px}
@@ -778,7 +767,7 @@ function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 let tab="duello",G=null,packOpen=null,colFilter="tutte";
 const fieldDis=()=>G&&G.field?CARDS[G.field]:null;
 const app=document.getElementById("app"),ov=document.getElementById("ov");
-const TABS=[["duello","Duello"],["bustine","Bustine"],["collezione","Collezione"],["mazzo","Mazzo"],["fonti","Fonti e metodo"]];
+const TABS=[["duello","Duello"],["bustine","Bustine"],["collezione","Collezione"],["mazzo","Mazzo"],["fonti","Fonti"]];
 function renderTop(){
   document.getElementById("credits").innerHTML=`<b>${S.crediti}</b> crediti ECM · ${S.wins} vittorie (${S.cures||0} per guarigione) · ${S.losses} sconfitte <button class="sndbtn" id="snd" aria-pressed="${!S.mute}">Suono: ${S.mute?"no":"sì"}</button>`;
   document.getElementById("snd").onclick=()=>{S.mute=!S.mute;save();renderTop();if(!S.mute)sfx("play")};
@@ -1101,7 +1090,7 @@ function renderDuel(){
     const ok=S.deck.length===DECK_SIZE;
     app.innerHTML=`<h2 class="sec">Duello</h2>
       <p class="sub">Il duello parte senza condizione clinica in campo. Chi gioca una carta condizione decide il contesto: i farmaci indicati di entrambi ricevono +1 efficacia e accumulano risposta terapeutica. Vinci se la tua risposta arriva a ${CURE} oppure se l'omeostasi del rivale scende a zero.</p>
-      ${S.tut?"":`<div class="patient" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
+      ${S.tut?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
       <div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia il duello</button>
       <span class="meta">${ok?`Mazzo pronto: ${DECK_SIZE} carte, ${S.deck.filter(i=>CARDS[i].type==="dis").length} condizioni cliniche`:`Il mazzo ha ${S.deck.length} carte su ${DECK_SIZE}. Completalo nella scheda Mazzo.`}</span></div>
       <h3 class="sub3">Come si gioca</h3>
