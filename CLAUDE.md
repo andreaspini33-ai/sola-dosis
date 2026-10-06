@@ -1,4 +1,4 @@
-# Note di progetto (da leggere prima di ogni modifica)
+# Sola Dosis: note di progetto (da leggere prima di ogni modifica)
 
 ## Flusso di lavoro
 - Fonte unica del gioco: `src/gioco.html`. Mai modificare a mano `index.html` o `prova/index.html`: si rigenerano.
