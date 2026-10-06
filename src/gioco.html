@@ -341,6 +341,19 @@ body.in-duel:has(#coach .cbox) main{padding-bottom:0}
 @media (min-width:760px){.hero.strip .meter small{font-size:.7rem}.arena{gap:8px}.ward .card.cond{font-size:3.2px}}
 @media (prefers-reduced-motion:reduce){.handpreview{animation:none}.tray .card.hand{transition:none}}
 
+/* SCHEDA TECNICA */
+.tecnica .ts-k{font-family:"JetBrains Mono",var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ts-list{display:grid;margin-top:14px;border-top:1px solid var(--line)}
+.ts-row{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px 4px;border:0;border-bottom:1px dotted #9C9180;background:none;text-align:left;cursor:pointer;color:var(--ink)}
+.ts-row:hover{background:var(--surface)}
+.ts-n{font-family:var(--f-serif);font-weight:700;font-size:1.6rem;color:#8C7B5E;text-align:center}
+.ts-b{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ts-b b{font-family:var(--f-serif);font-size:1.35rem;line-height:1.1}
+.ts-b span{font-size:.86rem;color:var(--muted)}
+.ts-b small{font-family:"JetBrains Mono",var(--f-mono);font-size:.68rem;color:#8A3B1E;margin-top:2px}
+.ts-a{font-family:var(--f-serif);font-size:1.8rem;color:#8C7B5E}
+.brand h1{cursor:pointer}
+
 /* BUSTINE */
 .reveal{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
 .cell{container-type:inline-size;display:flex;justify-content:center}
@@ -439,6 +452,12 @@ const SRC={
   wade86:{a:"Wade OL. Digoxin 1785-1985. I. Two hundred years of digitalis. J Clin Hosp Pharm 1986;11(1):3-9",doi:"10.1111/j.1365-2710.1986.tb00822.x"},
   anglin14:{a:"Anglin R, Yuan Y, Moayyedi P, Tse F, Armstrong D, Leontiadis GI. Risk of upper gastrointestinal bleeding with selective serotonin reuptake inhibitors with or without concurrent nonsteroidal anti-inflammatory use: a systematic review and meta-analysis. Am J Gastroenterol 2014;109(6):811-9",doi:"10.1038/ajg.2014.82"},
   juurlink03:{a:"Juurlink DN, Mamdani M, Kopp A, Laupacis A, Redelmeier DA. Drug-drug interactions among elderly patients hospitalized for drug toxicity. JAMA 2003;289(13):1652-8",doi:"10.1001/jama.289.13.1652"},
+  park15:{a:"Park TW, Saitz R, Ganoczy D, Ilgen MA, Bohnert AS. Benzodiazepine prescribing patterns and deaths from drug overdose among US veterans receiving opioid analgesics: case-cohort study. BMJ 2015;350:h2698",doi:"10.1136/bmj.h2698",sh:"Park et al., BMJ 2015"},
+  patel13:{a:"Patel AM, Shariff S, Bailey DG, Juurlink DN, Gandhi S, Mamdani M, et al. Statin toxicity from macrolide antibiotic coprescription: a population-based cohort study. Ann Intern Med 2013;158(12):869-76",doi:"10.7326/0003-4819-158-12-201306180-00004",sh:"Patel et al., Ann Intern Med 2013"},
+  liao22:{a:"Liao Y, Liu PY, Huang MS, Mau YL, Su PF, Huang TC. Risk Factors for QT Prolongation in Patients with Chronic Hydroxychloroquine Use. Acta Cardiol Sin 2022;38(6):723-735",doi:"10.6515/ACS.202211_38(6).20220415A",sh:"Liao et al., Acta Cardiol Sin 2022"},
+  meid17:{a:"Meid AD, Bighelli I, Mächler S, Mikus G, Carrà G, Castellazzi M, et al. Combinations of QTc-prolonging drugs: towards disentangling pharmacokinetic and pharmacodynamic effects in their potentially additive nature. Ther Adv Psychopharmacol 2017;7(12):251-264",doi:"10.1177/2045125317721662",sh:"Meid et al., Ther Adv Psychopharmacol 2017"},
+  zhang26:{a:"Zhang J, Wang W, Wang H, Huang C, Yao L, Zhang R, Chen J. Serotonin syndrome risk with concomitant opioid and serotonergic antidepressant use: a multinational pharmacovigilance study. Front Pharmacol 2026;17:1773721",doi:"10.3389/fphar.2026.1773721",sh:"Zhang et al., Front Pharmacol 2026"},
+  bai22:{a:"Bai AD, McKenna S, Wise H, Loeb M, Gill SS. Association of Linezolid With Risk of Serotonin Syndrome in Patients Receiving Antidepressants. JAMA Netw Open 2022;5(12):e2247426",doi:"10.1001/jamanetworkopen.2022.47426",sh:"Bai et al., JAMA Netw Open 2022"},
   lapi13:{a:"Lapi F, Azoulay L, Yin H, Nessim SJ, Suissa S. Concurrent use of diuretics, angiotensin converting enzyme inhibitors, and angiotensin receptor blockers with non-steroidal anti-inflammatory drugs and risk of acute kidney injury: nested case-control study. BMJ 2013;346:e8525",doi:"10.1136/bmj.e8525"},
 };
 const Q={
@@ -454,6 +473,12 @@ const Q={
   bleed2:{s:"anglin14",q:"The risk of upper GI bleeding was further increased with the use of both SSRI and NSAID medications (OR=4.25, 95% CI=2.82,6.42)."},
   pk1:{s:"juurlink03",q:"Patients admitted with digoxin toxicity (n = 1051) were about 12 times more likely to have been treated with clarithromycin (adjusted odds ratio, 11.7; 95% confidence interval, 7.5-18.2) in the previous week"},
   hk1:{s:"juurlink03",q:"patients treated with ACE inhibitors admitted with a diagnosis of hyperkalemia (n = 523) were about 20 times more likely to have been treated with a potassium-sparing diuretic (adjusted odds ratio, 20.3; 95% confidence interval, 13.4-30.7) in the previous week."},
+  resp1:{s:"park15",q:"Risk of death from drug overdose increased with history of benzodiazepine prescription: adjusted hazard ratios were 2.33 (95% confidence interval 2.05 to 2.64) for former prescriptions versus no prescription and 3.86 (3.49 to 4.26) for current prescriptions versus no prescription."},
+  rabdo1:{s:"patel13",q:"Compared with azithromycin, coprescription of a statin with clarithromycin or erythromycin was associated with a higher risk for hospitalization with rhabdomyolysis (absolute risk increase, 0.02% [95% CI, 0.01% to 0.03%]; relative risk [RR], 2.17 [CI, 1.04 to 4.53])"},
+  qt1:{s:"liao22",q:"In the long-term users of hydroxychloroquine, those with diabetes mellitus and concurrent use of additional QT-prolonging drugs were at a higher risk of significant QTc prolongation."},
+  qt2:{s:"meid17",q:"These observations indicate that indiscriminate combinations of QTc-prolonging drugs do not necessarily result in additive QTc prolongation and suggest that QT prolongation caused by drug combinations strongly depends on the nature of the combination partners and individual drug exposure."},
+  sero1:{s:"zhang26",q:"Concomitant SSRI/SNRI-opioid use showed exceptionally strong signals for serotonin syndrome (SSRI-opioid ROR 95.94, 95% CI 88.9-103.53; SNRI-opioid ROR 57.68, 95% CI 52.32-63.59)."},
+  sero2:{s:"bai22",q:"In this cohort study of older patients who were prescribed linezolid, serotonin syndrome occurred rarely. Concurrent antidepressants did not significantly increase the risk of serotonin syndrome."},
   aki:{s:"lapi13",q:"In contrast, current use of a triple therapy combination was associated with an increased rate of acute kidney injury (rate ratio 1.31, 95% confidence interval 1.12 to 1.53)."},
   fleming:{s:"nobel1945",q:"for the discovery of penicillin and its curative effect in various infectious diseases"},
   banting:{s:"nobel1923",q:"for the discovery of insulin"},
@@ -650,13 +675,13 @@ const RECS=[
 ];
 // Interazioni: si giocano contro l'avversario solo se nel suo campo c'è la combinazione
 const INTS=[
-{id:"i_resp",n:"Depressione respiratoria",r:"U",c:2,need:[["oppioide"],["benzo"]],txt:"Se il rivale ha in campo un oppioide e una benzodiazepina: li elimina entrambi. Il rivale perde 3 di omeostasi e 6 di risposta terapeutica.",f:"Oppioidi e benzodiazepine sommano l'effetto depressivo sul respiro."},
-{id:"i_sero",n:"Sindrome serotoninergica",r:"U",c:2,need:[["serot"],["serot"]],distinct:1,txt:"Se il rivale ha in campo due farmaci serotoninergici diversi (es. tramadolo e sertralina): li elimina. Il rivale perde 2 di omeostasi e 5 di risposta terapeutica.",f:"Il tramadolo aumenta la serotonina come gli SSRI."},
+{id:"i_resp",n:"Depressione respiratoria",r:"U",c:2,need:[["oppioide"],["benzo"]],txt:"Se il rivale ha in campo un oppioide e una benzodiazepina: li elimina entrambi. Il rivale perde 3 di omeostasi e 6 di risposta terapeutica.",f:"Oppioidi e benzodiazepine sommano l'effetto depressivo sul respiro.",q:["resp1"]},
+{id:"i_sero",n:"Sindrome serotoninergica",r:"U",c:2,need:[["serot"],["serot"]],distinct:1,txt:"Se il rivale ha in campo due farmaci serotoninergici diversi (es. tramadolo e sertralina): li elimina. Il rivale perde 2 di omeostasi e 5 di risposta terapeutica.",f:"Il tramadolo aumenta la serotonina come gli SSRI. Il segnale viene da segnalazioni spontanee; per il linezolid uno studio di coorte non ha trovato un rischio aumentato.",q:["sero1","sero2"]},
 {id:"i_bleed",n:"Sanguinamento",r:"U",c:2,need:[["fans","antiaggr","anticoag","ssri"],["fans","antiaggr","anticoag","ssri"]],sh:"2 tra FANS, antiaggreganti, anticoagulanti, SSRI/SNRI",txt:"Se il rivale ha in campo due farmaci diversi tra FANS, antiaggreganti, anticoagulanti e SSRI/SNRI (non due SSRI/SNRI tra loro): tutte quelle carte −2 tollerabilità. Il rivale perde 2 di omeostasi e 4 di risposta terapeutica.",f:"Ognuno di questi gruppi riduce l'emostasi o danneggia la mucosa; insieme il rischio di sanguinamento si somma.",q:["bleed1","bleed2"]},
 {id:"i_aki",n:"Triple whammy",r:"R",c:2,need:[["fans"],["acei"],["diuretico"]],txt:"Solo con FANS, ACE-inibitore o sartano e diuretico insieme nel campo del rivale: elimina l'ACE-inibitore e il diuretico. Il rivale perde 4 di omeostasi e 6 di risposta terapeutica.",f:"Nello studio di Lapi et al. aumenta il danno renale acuto la tripla associazione, non la doppia.",q:["aki","aki2"]},
-{"id": "i_qt", "n": "Prolungamento del QT", "r": "U", "c": 2, "need": [["qt"], ["qt"]], "distinct": 1, "dtag": "qt", "txt": "Se il rivale ha in campo due farmaci che allungano il QT: li elimina. Il rivale perde 3 di omeostasi e 6 di risposta terapeutica.", "f": "Il rischio di torsione di punta cresce sommando i farmaci che prolungano il QT."},
+{"id": "i_qt", "n": "Prolungamento del QT", "r": "U", "c": 2, "need": [["qt"], ["qt"]], "distinct": 1, "dtag": "qt", "txt": "Se il rivale ha in campo due farmaci che allungano il QT: li elimina. Il rivale perde 3 di omeostasi e 6 di risposta terapeutica.", "f": "Sommare farmaci che allungano il QT aumenta il rischio di QTc marcatamente prolungato, ma l'effetto dipende dai farmaci combinati e dall'esposizione.", "q": ["qt1", "qt2"]},
 {"id": "i_k", "n": "Iperkaliemia", "r": "U", "c": 2, "need": [["kspar"], ["acei"]], "txt": "Se il rivale ha in campo un risparmiatore di potassio e un ACE-inibitore o sartano: elimina il risparmiatore. Il rivale perde 2 di omeostasi e 4 di risposta terapeutica.", "f": "Spironolattone e blocco del sistema renina-angiotensina riducono entrambi l'escrezione di potassio.", "q": ["hk1"]},
-{id:"i_rabdo",n:"Rabdomiolisi",r:"U",c:2,need:[["statina"],["cyp3a4inib"]],txt:"Se il rivale ha una statina e un inibitore del CYP3A4: elimina la statina. Il rivale perde 2 di omeostasi e 4 di risposta terapeutica.",f:"Gli inibitori del CYP3A4 aumentano l'esposizione alle statine metabolizzate da questo enzima."},
+{id:"i_rabdo",n:"Rabdomiolisi",r:"U",c:2,need:[["statina"],["cyp3a4inib"]],txt:"Se il rivale ha una statina e un inibitore del CYP3A4: elimina la statina. Il rivale perde 2 di omeostasi e 4 di risposta terapeutica.",f:"Gli inibitori del CYP3A4 aumentano l'esposizione alle statine metabolizzate da questo enzima.",q:["rabdo1"]},
 {id:"i_pk",n:"Inibizione enzimatica",r:"R",c:2,need:[["inhib"],["nti"]],sh:"inibitore + indice ristretto",txt:"Se il rivale ha in campo un inibitore enzimatico e un altro farmaco a indice terapeutico ristretto: elimina i farmaci a indice ristretto. Il rivale perde 3 di omeostasi e 5 di risposta terapeutica.",f:"Un inibitore del metabolismo o del trasporto aumenta l'esposizione all'altro farmaco; se il margine terapeutico è stretto si arriva presto alla tossicità.",q:["pk1"]},
 ];
 // Scienziati: prendono dal mazzo una carta legata alla propria scoperta (se non c'è, peschi 1)
@@ -870,20 +895,42 @@ function sfx(k){if(S.mute)return;try{AC=AC||new (window.AudioContext||window.web
 function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 // =================== UI ===================
 let duelHidden=false;
-let tab="duello",G=null,packOpen=null,colFilter="tutte";
+let tab="menu",G=null,packOpen=null,colFilter="tutte";
 const fieldDis=()=>G&&G.field?CARDS[G.field]:null;
 const app=document.getElementById("app"),ov=document.getElementById("ov");
-const TABS=[["duello","Duello"],["bustine","Bustine"],["collezione","Collezione"],["mazzo","Mazzo"],["fonti","Fonti"]];
+const TABS=[["menu","Scheda tecnica"],["duello","Duello"],["bustine","Bustine"],["collezione","Collezione"],["mazzo","Mazzo"],["fonti","Fonti"]];
 function renderTop(){
   document.getElementById("credits").innerHTML=`<b>${S.crediti}</b> crediti ECM · ${S.wins} vittorie (${S.cures||0} per guarigione) · ${S.losses} sconfitte <button class="sndbtn" id="snd" aria-pressed="${!S.mute}">Suono: ${S.mute?"no":"sì"}</button>`;
   document.getElementById("snd").onclick=()=>{S.mute=!S.mute;save();renderTop();if(!S.mute)sfx("play")};
   document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button data-tab="${k}" aria-current="${tab===k}">${l}</button>`).join("");
 }
-function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc})[tab]()}
+function renderMenu(){
+  const nCol=Object.keys(S.col).length,ok=S.deck.length===DECK_SIZE;
+  const it=(n,k,t,d,x)=>`<button class="ts-row" data-go="${k}"><span class="ts-n">${n}</span><span class="ts-b"><b>${t}</b><span>${d}</span>${x?`<small>${x}</small>`:""}</span><span class="ts-a" aria-hidden="true">›</span></button>`;
+  app.innerHTML=`<div class="tecnica">
+    <span class="ts-k">Riassunto delle caratteristiche del gioco</span>
+    <h2 class="sec">Scheda tecnica</h2>
+    <p class="sub">Sola Dosis, carte collezionabili di farmacologia. Uso didattico.</p>
+    ${G&&!G.over&&!G.tut?`<div class="patient first"><b>Duello in corso</b><span>Hai una partita a metà.</span><div class="row" style="margin-top:8px"><button class="btn primary" data-go="resume">Riprendi</button></div></div>`:""}
+    <div class="ts-list">
+      ${S.tut?"":it("0","tut","Partita guidata","Pochi turni per imparare dosi, condizioni, attacco e parata.","+30 crediti ECM")}
+      ${it("1","duello","Duello","Tu e il reparto rivale curate lo stesso paziente.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
+      ${it("2","bustine","Bustine","Nuove carte: 5 per bustina.",`${S.crediti} crediti ECM disponibili`)}
+      ${it("3","collezione","Collezione","Le carte che possiedi, con fonti e valori.",`${nCol} su ${ALL.length} carte`)}
+      ${it("4","mazzo","Mazzo","Le 20 carte che porti in reparto.",ok?"mazzo pronto":`${S.deck.length} su ${DECK_SIZE} carte`)}
+      ${it("5","fonti","Fonti e metodo","Da dove vengono i numeri delle carte.","")}
+    </div></div>`;
+}
+function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({menu:renderMenu,duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc})[tab]()}
 document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;render()});
+document.querySelector(".brand h1").addEventListener("click",()=>{tab="menu";render()});
+app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||tab!=="menu")return;const k=b.dataset.go;
+  if(k==="tut"){tab="duello";startTutorial();return}
+  if(k==="resume"){tab="duello";duelHidden=false;render();return}
+  tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
-  if(b.dataset.ov==="again"){G=null;startDuel()}else{G=null;tab="bustine";render()}});
+  if(b.dataset.ov==="again"){G=null;startDuel()}else{G=null;tab="menu";render()}});
 
 // =================== MOTORE DI GIOCO ===================
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -1073,7 +1120,7 @@ function refertoHTML(res,win,msg,prize){
   const st=stat();const pts=[...new Set(st.fields.map(f=>f.id))];
   const tot=st.drugs.length,ind=st.drugs.filter(x=>x.ind).length;
   const noind=[...new Set(st.drugs.filter(x=>!x.ind).map(x=>CARDS[x.id].n))];
-  const intRow=x=>{const d=CARDS[x.id];return `<li><b>${d.n}</b> · ${x.side?"giocata dal rivale contro di te":"giocata da te"}<br><span>${d.f}</span>${d.q?d.q.slice(0,1).map(k=>quote(Q[k].q,Q[k].s)).join(""):`<span class="meta">Fonte non ancora inserita per questa interazione.</span>`}</li>`};
+  const intRow=x=>{const d=CARDS[x.id];return `<li><b>${d.n}</b> · ${x.side?"giocata dal rivale contro di te":"giocata da te"}<br><span>${d.f}</span>${d.q?d.q.map(k=>quote(Q[k].q,Q[k].s)).join(""):`<span class="meta">Fonte non ancora inserita per questa interazione.</span>`}</li>`};
   const ints=st.ints;
   const lesson=st.over&&ints.some(x=>x.side===1)?`Hai ignorato ${st.over} avvis${st.over===1?"o":"i"} di prescrizione e il rivale ha sfruttato ${ints.filter(x=>x.side===1).length} interazion${ints.filter(x=>x.side===1).length===1?"e":"i"}.`:st.avoided?`Hai rinunciato a ${st.avoided} prescrizion${st.avoided===1?"e":"i"} a rischio.`:"";
   return `<div class="overlay"><div class="box referto">
@@ -1087,7 +1134,7 @@ function refertoHTML(res,win,msg,prize){
       <div><dt>Interazioni</dt><dd>${ints.length?`<ul class="rf-ints">${ints.map(intRow).join("")}</ul>`:"Nessuna interazione giocata."}</dd></div>
     </dl>
     <p class="meta">Uso didattico: i valori del gioco sono stime e scelte di gioco; le frasi tra virgolette sono riportate testualmente dalle fonti.</p>
-    <div class="row" style="margin-top:14px"><button class="btn primary" data-ov="again">Nuovo paziente</button><button class="btn" data-ov="packs">Vai alle bustine</button></div></div></div>`}
+    <div class="row" style="margin-top:14px"><button class="btn primary" data-ov="again">Nuovo paziente</button><button class="btn" data-ov="menu">Scheda tecnica</button></div></div></div>`}
 
 // ----- IA -----
 // ----- istantanei: risposta nel turno avversario -----
@@ -1298,7 +1345,7 @@ function renderDuel(){
   </div>`;
   applyFx();tutTick();
   document.getElementById("end").onclick=()=>{if(!myTurn)return;G.atkSel=[];G.trial=null;G.turn=1;startTurn(1);if(!G.over)aiTurn();else render()};
-  document.getElementById("tomenu").onclick=()=>{if(G.over){G=null}else{duelHidden=true}render()};
+  document.getElementById("tomenu").onclick=()=>{if(G.over){G=null}else{duelHidden=true}tab="menu";render()};
   document.getElementById("quit").onclick=()=>{if(G.over){G=null;render();return}
     const q=document.getElementById("quit");if(q.dataset.sure){G.p[0].hp=0;checkEnd()}else{q.dataset.sure=1;q.textContent="Confermi? Conta come sconfitta"}};
 }
@@ -1568,14 +1615,14 @@ function showSplash(){
     <div class="plate">${SPLASH_PLATE}</div>
     <h2 class="rise d1">Sola Dosis</h2>
     <p class="sub rise d2">Tra la dose che cura e quella che nuoce c'è la finestra terapeutica. Restaci dentro.</p>
-    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="play">Gioca subito</button>`:`<button class="pri" data-sp="play">Gioca</button><button class="sec" data-sp="pack">Apri una bustina · ${S.crediti} crediti ECM</button>`}</div>
+    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="menu">Entra</button>`:`<button class="pri" data-sp="menu">Entra</button>`}</div>
     <div class="stat rise d3">${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse in collezione</div>
   </div>`;
   const close=()=>{el.classList.add("out");document.removeEventListener("keydown",onKey);setTimeout(()=>{el.remove()},500)};
   const onKey=e=>{if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();el.querySelector("[data-sp]").click()}};
   document.addEventListener("keydown",onKey);
   el.addEventListener("click",e=>{const b=e.target.closest("[data-sp]");if(!b)return;const a=b.dataset.sp;close();
-    if(a==="tut"){tab="duello";startTutorial()}else if(a==="pack"){tab="bustine";render()}else{tab="duello";if(!G)startDuel();else render()}});
+    if(a==="tut"){tab="duello";startTutorial()}else{tab="menu";render()}});
   setTimeout(()=>{const b=el.querySelector(".pri");if(b)b.focus({preventScroll:true})},50);
 }
 
