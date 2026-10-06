@@ -1,6 +1,6 @@
 // Service worker di Sola Dosis. La versione cambia a ogni rilascio: il browser
 // vede un file diverso, installa il nuovo worker e la pagina mostra "Aggiorna".
-const VERSION = "2026.10.06-2";
+const VERSION = "2026.10.06-3";
 const SCOPE = self.registration.scope;
 const CACHE = "sd-app-" + SCOPE + "-" + VERSION;
 const FONTS = "sd-fonts";

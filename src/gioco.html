@@ -1,6 +1,6 @@
 <title>Sola Dosis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Schibsted+Grotesk:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Cinzel:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Schibsted+Grotesk:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap">
 <style>
 /* Layout: banco di laboratorio. Header con schede, area di gioco centrale; le carte sono etichette di confezioni farmaceutiche. */
 :root{
@@ -222,37 +222,31 @@ blockquote{margin:4px 0 0;padding:6px 10px;border-left:3px solid var(--line);bac
 .help{font-size:.82rem;color:var(--muted);max-width:72ch;display:grid;gap:8px}
 .help b{color:var(--ink)}
 
-/* SCHERMATA INIZIALE */
-#splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px 16px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;color:#F3E7C0;
-  background:radial-gradient(circle at 50% 38%,rgba(201,162,39,.16),transparent 55%),repeating-radial-gradient(circle at 50% 38%,rgba(201,162,39,.09) 0 1px,transparent 1px 9px),radial-gradient(circle at 50% 40%,#16634B,#0B3A2C 70%,#072A20);transition:opacity .45s ease,visibility .45s}
+/* SCHERMATA INIZIALE: erbario */
+#splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px 16px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;background:#F3EDE0;color:#2B2418;text-align:center;transition:opacity .45s ease,visibility .45s}
 #splash.out{opacity:0;visibility:hidden}
-#splash .sp-in{display:flex;flex-direction:column;align-items:center;gap:18px;width:min(560px,100%);text-align:center}
-#splash .fan{position:relative;width:min(400px,100%);height:min(250px,58vw);margin-bottom:4px}
-#splash .fan .cell{position:absolute;left:50%;bottom:0;width:min(150px,28vw);transform-origin:50% 120%;animation:spDeal .9s cubic-bezier(.2,.8,.2,1) both}
-#splash .fan .cell:nth-child(1){--r:-14deg;--x:-112%;animation-delay:.15s}
-#splash .fan .cell:nth-child(2){--r:0deg;--x:-50%;z-index:2;animation-delay:.3s}
-#splash .fan .cell:nth-child(3){--r:14deg;--x:12%;animation-delay:.45s}
-#splash .fan .cell{transform:translateX(var(--x)) rotate(var(--r))}
-#splash .fan .card{box-shadow:0 18px 30px -14px rgba(0,0,0,.7),0 0 0 1px rgba(201,162,39,.35);pointer-events:none}
-@keyframes spDeal{from{opacity:0;transform:translateX(-50%) translateY(40%) rotate(0deg)}to{opacity:1;transform:translateX(var(--x)) rotate(var(--r))}}
-#splash .ttl{margin:0;font:700 clamp(2.4rem,9vw,3.6rem)/1 "Cinzel",serif;letter-spacing:.14em;text-transform:uppercase;padding-left:.14em;
-  background:linear-gradient(100deg,#B8901C 0%,#F6E3A1 42%,#C9A227 55%,#F6E3A1 70%,#B8901C 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:spShine 5s ease-in-out 1s infinite}
-@keyframes spShine{0%,100%{background-position:100% 0}50%{background-position:0 0}}
-#splash .rule{display:flex;align-items:center;gap:12px;width:min(340px,90%);color:#C9A227;font:600 .7rem "Cinzel",serif;letter-spacing:.32em;text-transform:uppercase}
-#splash .rule::before,#splash .rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,#C9A227)}
-#splash .rule::after{background:linear-gradient(90deg,#C9A227,transparent)}
-#splash .sub{margin:0;font:400 .95rem/1.45 "IBM Plex Sans",system-ui,sans-serif;color:#E9DDB4;max-width:34ch}
-#splash .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:4px}
-#splash .acts button{font:700 .95rem "IBM Plex Sans",system-ui,sans-serif;border-radius:10px;padding:12px 20px;cursor:pointer;min-width:150px}
-#splash .acts .pri{background:linear-gradient(#E2C35A,#C9A227);color:#0B3A2C;border:0;box-shadow:0 6px 16px -6px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5)}
-#splash .acts .sec{background:transparent;color:#F3E7C0;border:1.5px solid rgba(226,195,90,.7)}
-#splash .acts button:focus-visible{outline:3px solid #F6E3A1;outline-offset:3px}
-#splash .stat{font:400 .72rem "JetBrains Mono",ui-monospace,monospace;color:#C9B77A;letter-spacing:.04em}
-#splash .rise{animation:spRise .7s ease both}
-#splash .d1{animation-delay:.55s}#splash .d2{animation-delay:.7s}#splash .d3{animation-delay:.85s}#splash .d4{animation-delay:1s}
-@keyframes spRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#splash .fan .cell,#splash .rise,#splash .ttl{animation:none}#splash{transition:none}}
-
+#splash .sp-in{display:flex;flex-direction:column;align-items:center;width:min(360px,100%)}
+#splash .plate{position:relative;height:min(400px,46vh);aspect-ratio:3/4;max-width:calc(100% - 10px);border:1px solid #8C7B5E;outline:1px solid #8C7B5E;outline-offset:4px;margin:6px 4px 0}
+#splash .plate svg{position:absolute;inset:0;width:100%;height:100%}
+#splash .lab{font:italic 500 11px "Cormorant Garamond",Georgia,serif;fill:#3B3122}
+#splash .lab2{font:400 7.5px "JetBrains Mono",ui-monospace,monospace;fill:#7A6B52;letter-spacing:.04em}
+#splash .ink path,#splash .ink ellipse{stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 2.2s ease forwards}
+#splash .ink .p2{animation-delay:.35s}#splash .ink .p3{animation-delay:.7s}
+#splash .tint{opacity:0;animation:spFade 1s ease 1.8s forwards}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+@keyframes spFade{to{opacity:1}}
+#splash h2{font:700 clamp(36px,11vw,44px)/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.06em;margin:26px 0 4px}
+#splash .sub{font:italic 500 17px/1.3 "Cormorant Garamond",Georgia,serif;color:#5C4F38;margin:0 0 20px;max-width:30ch}
+#splash .acts{display:grid;gap:4px;width:100%}
+#splash .acts button{width:100%;border-radius:10px;padding:13px 16px;font:700 15px "IBM Plex Sans",system-ui,sans-serif;cursor:pointer;border:0}
+#splash .acts .pri{background:#2B2418;color:#F3EDE0}
+#splash .acts .sec{background:transparent;color:#2B2418;font-weight:600;font-size:13px;padding:10px}
+#splash .acts button:focus-visible{outline:2px solid #2B2418;outline-offset:3px}
+#splash .stat{font:400 10px "JetBrains Mono",ui-monospace,monospace;color:#7A6B52;letter-spacing:.04em;margin-top:6px}
+#splash .rise{opacity:0;animation:spRise .7s ease forwards}
+#splash .d1{animation-delay:.6s}#splash .d2{animation-delay:.8s}#splash .d3{animation-delay:1s}
+@keyframes spRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#splash .ink path,#splash .ink ellipse{animation:none;stroke-dasharray:none}#splash .tint,#splash .rise{animation:none;opacity:1}#splash{transition:none}}
 /* BUSTINE */
 .reveal{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
 .cell{container-type:inline-size;display:flex;justify-content:center}
@@ -1395,17 +1389,34 @@ function renderSrc(){
 try{document.documentElement.lang="it"}catch(e){}
 window.__F={TUT,startTutorial,catDeck,CATS,DRUGS,buildMonoDeck,monoInfo,S:()=>S,aiChooseAttackers,aiChooseBlocks,resolveCombat,canAttack,responseOptions,respondAI,CARDS,DIS,G:()=>G,set:(x)=>G=x,newPlayer,aiDeck,startTurn,draw,aiChoose,play,effAtk,checkEnd,canPlay};
 // =================== SCHERMATA INIZIALE ===================
+const SPLASH_PLATE=`<svg viewBox="0 0 300 400" aria-hidden="true">
+  <g class="ink" fill="none" stroke="#3B3122" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+   <path pathLength="1" d="M62 360C60 300 66 230 58 150"/>
+   <path pathLength="1" d="M60 300c-18-6-30-20-34-38 14 2 28 12 34 30"/><path pathLength="1" d="M61 250c14-10 30-12 40-4-12 8-26 10-40 6"/>
+   <ellipse pathLength="1" cx="58" cy="132" rx="15" ry="19"/><path pathLength="1" d="M45 122h26"/><path pathLength="1" d="M44 132h28"/><path pathLength="1" d="M46 142h24"/><path pathLength="1" d="M48 113l10-5 10 5"/>
+   <path pathLength="1" d="M58 113c-22-10-38-2-42 14 10 6 26 2 42-14z"/><path pathLength="1" d="M58 113c22-10 38-2 42 14-10 6-26 2-42-14z"/>
+   <path class="p2" pathLength="1" d="M150 368C150 300 152 200 150 70"/>
+   <path class="p2" pathLength="1" d="M150 330c-26-4-42-18-46-38 22 0 38 14 46 38z"/><path class="p2" pathLength="1" d="M150 318c26-4 42-18 46-38-22 0-38 14-46 38z"/>
+   <path class="p2" pathLength="1" d="M150 90c-8 2-14 10-14 20 6 2 12-2 14-6"/><path class="p2" pathLength="1" d="M150 112c8 2 14 10 14 20-6 2-12-2-14-6"/><path class="p2" pathLength="1" d="M150 134c-9 2-16 11-16 22 7 2 13-2 16-7"/><path class="p2" pathLength="1" d="M150 158c9 2 16 11 16 22-7 2-13-2-16-7"/><path class="p2" pathLength="1" d="M150 182c-10 2-18 12-18 24 8 2 14-2 18-8"/><path class="p2" pathLength="1" d="M150 208c10 2 18 12 18 24-8 2-14-2-18-8"/>
+   <path class="p3" pathLength="1" d="M246 360C240 300 250 220 236 120c-4-30 4-50 14-66"/>
+   <path class="p3" pathLength="1" d="M240 250c-18 6-26 22-26 40"/><path class="p3" pathLength="1" d="M238 200c18 0 30 12 34 30"/><path class="p3" pathLength="1" d="M238 160c-16 2-26 14-28 30"/><path class="p3" pathLength="1" d="M240 120c14-2 24 8 28 22"/><path class="p3" pathLength="1" d="M246 82c-12 2-20 10-22 22"/>
+   <path class="p3" pathLength="1" d="M214 290c2-8 6-14 10-18"/><path class="p3" pathLength="1" d="M272 230c-4-6-8-10-14-12"/><path class="p3" pathLength="1" d="M210 190c4-6 8-8 14-10"/><path class="p3" pathLength="1" d="M268 142c-2-6-6-10-12-12"/><path class="p3" pathLength="1" d="M224 104c4-4 8-6 14-6"/>
+  </g>
+  <g class="tint"><g fill="#9B2C1F" opacity=".22"><path d="M58 113c-22-10-38-2-42 14 10 6 26 2 42-14z"/><path d="M58 113c22-10 38-2 42 14-10 6-26 2-42-14z"/></g>
+  <g fill="#7B4A8C" opacity=".3"><path d="M150 90c-8 2-14 10-14 20 6 2 12-2 14-6z"/><path d="M150 112c8 2 14 10 14 20-6 2-12-2-14-6z"/><path d="M150 134c-9 2-16 11-16 22 7 2 13-2 16-7z"/><path d="M150 158c9 2 16 11 16 22-7 2-13-2-16-7z"/><path d="M150 182c-10 2-18 12-18 24 8 2 14-2 18-8z"/><path d="M150 208c10 2 18 12 18 24-8 2-14-2-18-8z"/></g></g>
+  <text x="58" y="385" text-anchor="middle" class="lab">Papaver somniferum</text><text x="58" y="395" text-anchor="middle" class="lab2">MORFINA</text>
+  <text x="150" y="385" text-anchor="middle" class="lab">Digitalis purpurea</text><text x="150" y="395" text-anchor="middle" class="lab2">DIGITALE</text>
+  <text x="246" y="385" text-anchor="middle" class="lab">Salix alba</text><text x="246" y="395" text-anchor="middle" class="lab2">SALICINA</text>
+ </svg>`;
 function showSplash(){
   const el=document.getElementById("splash");if(!el)return;
-  const fan=["s_fleming","morfina","r_mu"].filter(id=>CARDS[id]).map(id=>`<div class="cell">${cardHTML(CARDS[id],"full",{extra:"tcg"})}</div>`).join("");
   const first=!S.tut;
   el.innerHTML=`<div class="sp-in">
-    <div class="fan" aria-hidden="true">${fan}</div>
-    <h2 class="ttl rise d1">Sola Dosis</h2>
-    <div class="rule rise d2">Dosis sola facit venenum</div>
-    <p class="sub rise d2">Carte collezionabili di farmacologia. Scegli il farmaco giusto per il paziente, evita le interazioni, cura prima del rivale.</p>
-    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="play">Gioca subito</button>`:`<button class="pri" data-sp="play">Gioca</button><button class="sec" data-sp="pack">Apri una bustina</button>`}</div>
-    <div class="stat rise d4">${S.crediti} crediti ECM · ${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse in collezione</div>
+    <div class="plate">${SPLASH_PLATE}</div>
+    <h2 class="rise d1">Sola Dosis</h2>
+    <p class="sub rise d2">Tra la dose che cura e quella che nuoce c'è la finestra terapeutica. Restaci dentro.</p>
+    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="play">Gioca subito</button>`:`<button class="pri" data-sp="play">Gioca</button><button class="sec" data-sp="pack">Apri una bustina · ${S.crediti} crediti ECM</button>`}</div>
+    <div class="stat rise d3">${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse in collezione</div>
   </div>`;
   const close=()=>{el.classList.add("out");document.removeEventListener("keydown",onKey);setTimeout(()=>{el.remove()},500)};
   const onKey=e=>{if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();el.querySelector("[data-sp]").click()}};
