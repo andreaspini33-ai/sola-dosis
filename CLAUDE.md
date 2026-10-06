@@ -21,12 +21,14 @@
 ## Nomi (scelti da Andrea)
 - Menu = Scheda tecnica; Duello = Testa a testa (head-to-head); Bustine = Forniture; Collezione = Armadio farmaceutico (in navigazione "Armadio"); Mazzo = Piano terapeutico; Fonti = Bibliografia. Le chiavi interne (tab duello, bustine, ...) restano invariate. Nel duello "mazzo" indica ancora la pila da cui si pesca.
 
-## Testa a testa: nuove regole (prototipo in prova dal 6/10/2026)
-- Codice in src/tt.js (inserito da build.py al posto di /*@@TT@@*/). Regole complete nel documento "Sola Dosis · Testa a testa: regole (bozza)".
-- Due bracci, stesso profilo (PROFILES: p_scomp, p_fa, p_postop), stesso prontuario di reparto per profilo. Niente combattimento.
-- Esiti: risposta terapeutica (TT.CURE=40, solo farmaci indicati) ed eventi avversi (TT.AE=10 = interruzione del comitato di monitoraggio); 12 turni; vince il beneficio netto.
-- Interazioni e controindicazioni colpiscono chi prescrive; sospendere costa 1 dose; il rivale gioca eventi clinici (EVENTS).
-- Simulazioni (ttsim): partite di circa 7 turni; un giocatore prudente batte uno che ignora i rischi nel 57% (scompenso), 69% (FA), 79% (postop).
+## Testa a testa: nuove regole (prototipo in prova, modello a pilastri dal 6/10/2026)
+- Codice in src/tt.js (inserito da build.py al posto di /*@@TT@@*/). Regole: documento "Sola Dosis · Testa a testa: regole (bozza)" (sezione Aggiornamento in testa).
+- Due bracci, stesso profilo (PROFILES: p_scomp, p_fa, p_postop), stesso prontuario di reparto. Niente combattimento, niente dosi-moneta.
+- Controllo della malattia 0-100% = combinazione alla Bliss dei pilastri terapeutici del profilo (1 - prodotto dei complementi); un farmaco per pilastro, il secondo è una duplicazione.
+- Ogni turno è una visita con 2 azioni: iniziare (dose 1), titolare su/giù (livelli 1-3: 50%, 80%, 100% dell'effetto), sospendere, giocare un evento clinico.
+- Rischi = probabilità di evento avverso per visita (RISK_AE, PR), raddoppiate dai fattori del profilo; controindicazione +2 subito; sospendere una terapia cronica necessaria +1.
+- Punti = controllo×10 a ogni visita, 10 visite; vince il beneficio netto = punti − 5×eventi avversi; 10 eventi = interruzione del comitato di monitoraggio.
+- Sim (IA contro IA, 400 partite): controllo finale ~62% scompenso, ~75% FA, ~64% postop; chi ignora i rischi perde quasi sempre.
 - Il vecchio duello e la partita guidata sono ancora nel codice ma non raggiungibili dal menu; la guida va rifatta.
 
 ## Grafica

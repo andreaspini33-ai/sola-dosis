@@ -356,7 +356,22 @@ body.in-duel:has(#coach .cbox) main{padding-bottom:0}
 .brand h1{cursor:pointer}
 
 /* TESTA A TESTA */
-.arena.tt{grid-template-rows:auto auto minmax(0,.7fr) auto minmax(0,1fr) auto auto auto var(--trayh);gap:5px}
+.arena.tt{grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto auto var(--trayh);gap:5px}
+.fut{display:flex;flex-direction:column;gap:3px;min-height:0;overflow-y:auto}
+.fut.rival{flex-direction:row;flex-wrap:wrap;gap:4px;max-height:3.4em;overflow:hidden}
+.fut-h{font-family:"JetBrains Mono",var(--f-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.fut-empty{font-family:"JetBrains Mono",var(--f-mono);font-size:.7rem;color:var(--muted);padding:6px 2px}
+.fut-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) auto auto;gap:8px;align-items:center;text-align:left;padding:7px 10px;border-radius:8px;border:1px solid var(--line);border-left:5px solid var(--cc);background:#fff;color:var(--ink);font:inherit;cursor:pointer}
+.fut-row .fn{font:700 .86rem "Schibsted Grotesk",sans-serif;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fut-row .fn em{font:400 .58rem "JetBrains Mono",monospace;color:var(--muted);font-style:normal;text-transform:uppercase}
+.fut-row .fr{font-size:.7rem;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fut-row .fd{display:flex;gap:2px}.fut-row .fd i{width:7px;height:12px;border-radius:2px;border:1px solid var(--ink)}.fut-row .fd i.on{background:var(--ink)}
+.fut-row .ff{font:600 .62rem var(--f-body);min-width:3.6em;text-align:right}
+.fut-row.ok .ff{color:#1D6B42}.fut-row.risk{background:#FFF8E8}.fut-row.risk .ff{color:var(--warn)}
+.fut-row.dup{background:#FFF1D2}.fut-row.dup .ff{color:#8A5A00}.fut-row.ci{background:#FBE9E6}.fut-row.ci .ff{color:#9B2C1F}
+.fut-row.skip{opacity:.55}.fut-row.sel{box-shadow:0 0 0 2px var(--ink)}
+.fut.rival .fut-row{display:inline-flex;gap:6px;padding:2px 8px;border-left-width:4px;cursor:default}
+.fut.rival .fut-row .fr,.fut.rival .fut-row .ff{display:none}.fut.rival .fut-row .fn{font-size:.72rem}
 .hero.strip.tt .meter.ae .bar i{background:var(--danger)}
 .hero.strip.tt .evcount{font-family:"JetBrains Mono",var(--f-mono);font-size:.62rem;color:#8A3F8F}
 .arena.tt .boardrow.rival{opacity:.92}
@@ -383,6 +398,17 @@ body.in-duel:has(#coach .cbox) main{padding-bottom:0}
 .evcard .t{font:400 .6rem "JetBrains Mono",monospace;text-transform:uppercase;color:#5D6873}
 .evcard .c{width:34px;height:34px;border:2px solid #1B2229;border-radius:6px;display:flex;align-items:center;justify-content:center;font:900 1rem "Schibsted Grotesk";flex:none}
 .evcard p{margin:0;font-size:.8rem;line-height:1.4;color:#3A444E}.evcard p.teach{font-style:italic;color:#5D6873}
+.arena.tt .card>.top .dose{visibility:hidden}
+.arena.tt .ward{grid-template-columns:minmax(0,1fr)}.arena.tt .ward .condtile{display:none}.arena.tt .ward .dx{cursor:zoom-in;text-decoration:underline dotted}
+.arena.tt .ward .chart b{font-size:1.05rem}.arena.tt .ward .facts,.arena.tt .ward .pillars{gap:3px;margin-top:2px}
+.ward .pillars{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.pil{font:600 .6rem var(--f-body);border-radius:6px;padding:1px 6px;border:1px dashed #B9A985;color:#8C7B5E;background:transparent}
+.pil.on{border-style:solid;border-color:#1D6B42;color:#1D6B42;background:#E3F1E8}
+.pil.dup{border-style:solid;border-color:#A35C00;color:#8A5A00;background:#FFF1D2}
+.hero.strip.tt .pts{font-family:"JetBrains Mono",var(--f-mono);font-size:.66rem;color:var(--ink);font-weight:600;margin-right:8px}
+.handpreview .row.tri{flex-wrap:wrap;gap:6px}
+.rxalert p.w{color:#7A1F14}
+.spark{color:#0F7C86;display:block;width:100%;max-width:120px;height:auto}
 .profs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
 .profcard{text-align:left;background:#FBF8F1;border:1px solid #B9A985;outline:1px solid #B9A985;outline-offset:3px;margin:3px;padding:14px;display:flex;flex-direction:column;gap:4px;cursor:pointer;color:var(--ink)}
 .profcard:hover{background:#fff}
@@ -1450,12 +1476,12 @@ app.addEventListener("click",e=>{
 
 // pressione prolungata (o tasto destro) su una carta del duello: scheda completa
 let lpT=null,lpFired=false,lpXY=null;
-app.addEventListener("pointerdown",e=>{const c=e.target.closest(".arena .card");if(!c)return;const id=c.dataset.cid||c.dataset.detail;if(!id)return;
+app.addEventListener("pointerdown",e=>{const c=e.target.closest(".arena .card, .arena .fut-row");if(!c)return;const id=c.dataset.cid||c.dataset.detail;if(!id)return;
   lpFired=false;lpXY=[e.clientX,e.clientY];clearTimeout(lpT);lpT=setTimeout(()=>{lpFired=true;buzz(15);showDetail(id)},450)});
 ["pointerup","pointercancel","pointerleave"].forEach(ev=>app.addEventListener(ev,()=>clearTimeout(lpT)));
 app.addEventListener("pointermove",e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
 document.addEventListener("click",e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
-app.addEventListener("contextmenu",e=>{const c=e.target.closest(".arena .card");if(!c)return;e.preventDefault();const id=c.dataset.cid||c.dataset.detail;if(id)showDetail(id)});
+app.addEventListener("contextmenu",e=>{const c=e.target.closest(".arena .card, .arena .fut-row");if(!c)return;e.preventDefault();const id=c.dataset.cid||c.dataset.detail;if(id)showDetail(id)});
 
 // =================== BUSTINE ===================
 function rollRarity(guar){const r=Math.random()*100;if(guar)return r<4?"L":r<24?"R":"U";return r<1?"L":r<7?"R":r<29?"U":"C"}
