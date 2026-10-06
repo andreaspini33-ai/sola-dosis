@@ -222,9 +222,46 @@ blockquote{margin:4px 0 0;padding:6px 10px;border-left:3px solid var(--line);bac
 .help{font-size:.82rem;color:var(--muted);max-width:72ch;display:grid;gap:8px}
 .help b{color:var(--ink)}
 
+/* SCHERMATA INIZIALE */
+#splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px 16px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;color:#F3E7C0;
+  background:radial-gradient(circle at 50% 38%,rgba(201,162,39,.16),transparent 55%),repeating-radial-gradient(circle at 50% 38%,rgba(201,162,39,.09) 0 1px,transparent 1px 9px),radial-gradient(circle at 50% 40%,#16634B,#0B3A2C 70%,#072A20);transition:opacity .45s ease,visibility .45s}
+#splash.out{opacity:0;visibility:hidden}
+#splash .sp-in{display:flex;flex-direction:column;align-items:center;gap:18px;width:min(560px,100%);text-align:center}
+#splash .fan{position:relative;width:min(400px,100%);height:min(250px,58vw);margin-bottom:4px}
+#splash .fan .cell{position:absolute;left:50%;bottom:0;width:min(150px,28vw);transform-origin:50% 120%;animation:spDeal .9s cubic-bezier(.2,.8,.2,1) both}
+#splash .fan .cell:nth-child(1){--r:-14deg;--x:-112%;animation-delay:.15s}
+#splash .fan .cell:nth-child(2){--r:0deg;--x:-50%;z-index:2;animation-delay:.3s}
+#splash .fan .cell:nth-child(3){--r:14deg;--x:12%;animation-delay:.45s}
+#splash .fan .cell{transform:translateX(var(--x)) rotate(var(--r))}
+#splash .fan .card{box-shadow:0 18px 30px -14px rgba(0,0,0,.7),0 0 0 1px rgba(201,162,39,.35);pointer-events:none}
+@keyframes spDeal{from{opacity:0;transform:translateX(-50%) translateY(40%) rotate(0deg)}to{opacity:1;transform:translateX(var(--x)) rotate(var(--r))}}
+#splash .ttl{margin:0;font:700 clamp(2.4rem,9vw,3.6rem)/1 "Cinzel",serif;letter-spacing:.14em;text-transform:uppercase;padding-left:.14em;
+  background:linear-gradient(100deg,#B8901C 0%,#F6E3A1 42%,#C9A227 55%,#F6E3A1 70%,#B8901C 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:spShine 5s ease-in-out 1s infinite}
+@keyframes spShine{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+#splash .rule{display:flex;align-items:center;gap:12px;width:min(340px,90%);color:#C9A227;font:600 .7rem "Cinzel",serif;letter-spacing:.32em;text-transform:uppercase}
+#splash .rule::before,#splash .rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,#C9A227)}
+#splash .rule::after{background:linear-gradient(90deg,#C9A227,transparent)}
+#splash .sub{margin:0;font:400 .95rem/1.45 "IBM Plex Sans",system-ui,sans-serif;color:#E9DDB4;max-width:34ch}
+#splash .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:4px}
+#splash .acts button{font:700 .95rem "IBM Plex Sans",system-ui,sans-serif;border-radius:10px;padding:12px 20px;cursor:pointer;min-width:150px}
+#splash .acts .pri{background:linear-gradient(#E2C35A,#C9A227);color:#0B3A2C;border:0;box-shadow:0 6px 16px -6px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+#splash .acts .sec{background:transparent;color:#F3E7C0;border:1.5px solid rgba(226,195,90,.7)}
+#splash .acts button:focus-visible{outline:3px solid #F6E3A1;outline-offset:3px}
+#splash .stat{font:400 .72rem "JetBrains Mono",ui-monospace,monospace;color:#C9B77A;letter-spacing:.04em}
+#splash .rise{animation:spRise .7s ease both}
+#splash .d1{animation-delay:.55s}#splash .d2{animation-delay:.7s}#splash .d3{animation-delay:.85s}#splash .d4{animation-delay:1s}
+@keyframes spRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#splash .fan .cell,#splash .rise,#splash .ttl{animation:none}#splash{transition:none}}
+
 /* BUSTINE */
 .reveal{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
-.reveal .card{width:13.5em;font-size:12px}
+.cell{container-type:inline-size;display:flex;justify-content:center}
+.card.tcg{width:100%;font-size:calc(100cqi / 22.8);aspect-ratio:63/88;min-height:0;border-radius:4.6cqi}
+.card.tcg .art{min-height:0}
+.card.tcg .tx{max-height:5.5em;-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent)}
+.card.tcg .tx .ev,.card.tcg .tx .fact{display:none}
+.reveal .cell{width:min(200px,calc(50vw - 32px))}
+.reveal .back{width:100%;border-radius:4.6cqi}
 .back{width:162px;aspect-ratio:63/88;border-radius:11px;position:relative;overflow:hidden;padding:0;cursor:pointer;background:repeating-radial-gradient(circle at 50% 50%,rgba(201,162,39,.16) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 45%,#16634B,#0B3A2C 75%);border:4px solid #0B3A2C;box-shadow:inset 0 0 0 1.5px #C9A227,inset 0 0 0 4px #0B3A2C,inset 0 0 0 5px rgba(201,162,39,.6),var(--shadow);color:#E2C35A;font:700 .72rem "Cinzel",serif;letter-spacing:.2em;text-transform:uppercase}
 .back svg{position:absolute;inset:0;width:100%;height:100%}
 .back .bl{position:absolute;left:0;right:0;bottom:9%;text-align:center}
@@ -237,7 +274,7 @@ blockquote{margin:4px 0 0;padding:6px 10px;border-left:3px solid var(--line);bac
 .odds{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
 
 /* COLLEZIONE */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,calc(50vw - 38px)),1fr));gap:14px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:3px 11px;font-size:.78rem}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -286,6 +323,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:n
   </header>
   <main id="app"></main>
 </div>
+<div id="splash" role="dialog" aria-modal="true" aria-label="Sola Dosis"></div>
 <div id="ov"></div>
 <div id="coach"></div>
 
@@ -1186,7 +1224,7 @@ function renderPacks(){
       <button class="btn" id="rec" ${ex?"":"disabled"}>Ricicla doppioni (${ex} × 5 crediti)</button></div>
     <p class="odds" style="margin-top:10px">Probabilità per carta: comune 71% · non comune 22% · rara 6% · leggendaria 1%. Si riciclano solo le copie oltre il massimo da mazzo (2, oppure 1 per le leggendarie).</p>
     ${S.crediti<PACK_COST&&!packOpen?`<p class="sub">Crediti insufficienti. Vinci un duello per guadagnarne.</p>`:""}
-    <div class="reveal">${packOpen?packOpen.cards.map((id,k)=>packOpen.shown[k]?cardHTML(CARDS[id],"full",{isNew:packOpen.isNew[k],btn:true,attrs:`data-detail="${id}"`}):`<button class="back" data-flip="${k}" aria-label="Rivela carta">${BACKSVG}<span class="bl">Sola Dosis</span><small>tocca per rivelare</small></button>`).join(""):""}</div>`;
+    <div class="reveal">${packOpen?packOpen.cards.map((id,k)=>`<div class="cell">${packOpen.shown[k]?cardHTML(CARDS[id],"full",{extra:"tcg",isNew:packOpen.isNew[k],btn:true,attrs:`data-detail="${id}"`}):`<button class="back" data-flip="${k}" aria-label="Rivela carta">${BACKSVG}<span class="bl">Sola Dosis</span><small>tocca per rivelare</small></button>`}</div>`).join(""):""}</div>`;
   document.getElementById("buy").onclick=openPack;
   const a=document.getElementById("all");if(a)a.onclick=()=>{packOpen.shown=packOpen.shown.map(()=>true);sfx(packOpen.cards.some(id=>"RL".includes(CARDS[id].r))?"rare":"flip");render();app.querySelectorAll(".reveal > *").forEach((c,k)=>{c.style.animationDelay=(k*90)+"ms";c.classList.add("fx-flip")})};
   document.getElementById("rec").onclick=recycle;
@@ -1201,7 +1239,7 @@ function renderCol(){
   app.innerHTML=`<h2 class="sec">Collezione</h2>
     <p class="progress">${owned} su ${ALL.length} carte scoperte · tocca una carta per vedere da dove vengono i suoi numeri</p>
     <div class="chips"><button class="chip" data-f="tutte" aria-pressed="${colFilter==="tutte"}">Tutte</button>${ORDER.map(k=>`<button class="chip" data-f="${k}" aria-pressed="${colFilter===k}">${CLS[k].n}</button>`).join("")}</div>
-    ${`<div class="grid">${list.map(d=>S.col[d.id]?cardHTML(d,"full",{badge:"×"+S.col[d.id],btn:true,attrs:`data-detail="${d.id}"`}):cardHTML(d,"full",{extra:"locked",btn:true,attrs:`data-detail="${d.id}"`})).join("")}</div>`}`;
+    ${`<div class="grid">${list.map(d=>`<div class="cell">${S.col[d.id]?cardHTML(d,"full",{extra:"tcg",badge:"×"+S.col[d.id],btn:true,attrs:`data-detail="${d.id}"`}):cardHTML(d,"full",{extra:"locked tcg",btn:true,attrs:`data-detail="${d.id}"`})}</div>`).join("")}</div>`}`;
   app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{colFilter=b.dataset.f;render()});
 }
 
@@ -1356,5 +1394,26 @@ function renderSrc(){
 // esposto per i test
 try{document.documentElement.lang="it"}catch(e){}
 window.__F={TUT,startTutorial,catDeck,CATS,DRUGS,buildMonoDeck,monoInfo,S:()=>S,aiChooseAttackers,aiChooseBlocks,resolveCombat,canAttack,responseOptions,respondAI,CARDS,DIS,G:()=>G,set:(x)=>G=x,newPlayer,aiDeck,startTurn,draw,aiChoose,play,effAtk,checkEnd,canPlay};
-render();
+// =================== SCHERMATA INIZIALE ===================
+function showSplash(){
+  const el=document.getElementById("splash");if(!el)return;
+  const fan=["s_fleming","morfina","r_mu"].filter(id=>CARDS[id]).map(id=>`<div class="cell">${cardHTML(CARDS[id],"full",{extra:"tcg"})}</div>`).join("");
+  const first=!S.tut;
+  el.innerHTML=`<div class="sp-in">
+    <div class="fan" aria-hidden="true">${fan}</div>
+    <h2 class="ttl rise d1">Sola Dosis</h2>
+    <div class="rule rise d2">Dosis sola facit venenum</div>
+    <p class="sub rise d2">Carte collezionabili di farmacologia. Scegli il farmaco giusto per il paziente, evita le interazioni, cura prima del rivale.</p>
+    <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="play">Gioca subito</button>`:`<button class="pri" data-sp="play">Gioca</button><button class="sec" data-sp="pack">Apri una bustina</button>`}</div>
+    <div class="stat rise d4">${S.crediti} crediti ECM · ${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse in collezione</div>
+  </div>`;
+  const close=()=>{el.classList.add("out");document.removeEventListener("keydown",onKey);setTimeout(()=>{el.remove()},500)};
+  const onKey=e=>{if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();el.querySelector("[data-sp]").click()}};
+  document.addEventListener("keydown",onKey);
+  el.addEventListener("click",e=>{const b=e.target.closest("[data-sp]");if(!b)return;const a=b.dataset.sp;close();
+    if(a==="tut"){tab="duello";startTutorial()}else if(a==="pack"){tab="bustine";render()}else{tab="duello";if(!G)startDuel();else render()}});
+  setTimeout(()=>{const b=el.querySelector(".pri");if(b)b.focus({preventScroll:true})},50);
+}
+
+render();showSplash();
 </script>
