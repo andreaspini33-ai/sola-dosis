@@ -28,7 +28,7 @@ header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-
 .brand p{margin:3px 0 0;color:var(--muted);font-size:.72rem;font-family:"JetBrains Mono",var(--f-mono);letter-spacing:.02em}
 .credits{font-family:"JetBrains Mono",var(--f-mono);font-size:.72rem;color:var(--muted);border:1px solid #B9A985;border-radius:12px;padding:4px 10px}
 .credits b{color:var(--ink);font-size:.8rem}
-nav.tabs{display:flex;gap:2px 18px;flex-wrap:wrap;margin-top:6px;flex-basis:100%;border-bottom:1px solid var(--line)}
+nav.tabs{display:flex;gap:2px 16px;flex-wrap:wrap;margin-top:6px;flex-basis:100%;border-bottom:1px solid var(--line)}
 nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;padding:6px 0 7px;margin-bottom:-1px;font-family:var(--f-serif);font-style:italic;font-weight:500;font-size:1.15rem;color:#7A6B52}
 nav.tabs button[aria-current="true"]{color:var(--ink);font-weight:700;border-bottom-color:var(--ink)}
 main{padding-top:18px}
@@ -236,6 +236,20 @@ blockquote{margin:4px 0 0;padding:6px 10px;border-left:3px solid var(--line);bac
 #splash .d1{animation-delay:.6s}#splash .d2{animation-delay:.8s}#splash .d3{animation-delay:1s}
 @keyframes spRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#splash .ink path,#splash .ink ellipse{animation:none;stroke-dasharray:none}#splash .tint,#splash .rise{animation:none;opacity:1}#splash{transition:none}}
+/* DUELLO: schermata a sé */
+body.in-duel header.top,body.in-duel #sd-foot{display:none}
+body.in-duel{background:#E9E0CB;background-image:linear-gradient(rgba(139,120,85,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(139,120,85,.09) 1px,transparent 1px);background-size:22px 22px;background-attachment:fixed}
+body.in-duel .wrap{max-width:1180px}
+body.in-duel main{padding-top:10px}
+body.in-duel .duel{animation:arenaIn .35s ease both}
+@keyframes arenaIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.duelbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 0;background:linear-gradient(#E9E0CB 70%,rgba(233,224,203,0))}
+.duelbar .btn{padding:7px 12px;font-size:.85rem;background:var(--surface)}
+.duelbar .dbt{flex:1;font-family:var(--f-serif);font-weight:700;font-size:1.5rem}
+.turnchip{font-family:"JetBrains Mono",var(--f-mono);font-size:.72rem;padding:5px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+.turnchip.me{background:#2B2418;color:#F3EDE0;border-color:#2B2418}
+@media (prefers-reduced-motion:reduce){body.in-duel .duel{animation:none}}
+
 /* BUSTINE */
 .reveal{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0}
 .cell{container-type:inline-size;display:flex;justify-content:center}
@@ -764,6 +778,7 @@ function sfx(k){if(S.mute)return;try{AC=AC||new (window.AudioContext||window.web
     lose:()=>{[392,330,262].forEach((f,i)=>tone(f,.3,"triangle",.06,i*.16))}})[k]?.()}catch(e){}}
 function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 // =================== UI ===================
+let duelHidden=false;
 let tab="duello",G=null,packOpen=null,colFilter="tutte";
 const fieldDis=()=>G&&G.field?CARDS[G.field]:null;
 const app=document.getElementById("app"),ov=document.getElementById("ov");
@@ -773,7 +788,7 @@ function renderTop(){
   document.getElementById("snd").onclick=()=>{S.mute=!S.mute;save();renderTop();if(!S.mute)sfx("play")};
   document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button data-tab="${k}" aria-current="${tab===k}">${l}</button>`).join("");
 }
-function render(){if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc})[tab]()}
+function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc})[tab]()}
 document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;render()});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
@@ -790,6 +805,7 @@ function aiDeck(){
 }
 function newPlayer(deck,name){return {name,hp:20,max:0,dose:0,deck:shuffle(deck.slice()),hand:[],board:[],recs:[],grave:[],fat:0,cure:0}}
 function startDuel(){
+  duelHidden=false;
   G={field:null,p:[newPlayer(S.deck,"Il tuo reparto"),newPlayer(aiDeck(),"Reparto rivale")],turn:0,sel:null,busy:false,over:false,log:"Tocca a te."};G.p[1].coin=true;
   for(let i=0;i<3;i++)draw(0);for(let i=0;i<4;i++)draw(1);
   startTurn(0);render();
@@ -1031,7 +1047,7 @@ const TUT=[
  {t:"Tocca a te",x:"Hai le basi. Toccando una carta nella Collezione vedi da dove vengono i suoi numeri. Continua la partita da solo: ricevi 30 crediti ECM per aver completato la guida.",next:1,end:1},
 ];
 const TUTAI=[{play:["metoprololo"]},{play:[],attack:1}];
-function startTutorial(){
+function startTutorial(){duelHidden=false;
   const fill=["paracetamolo","naprossene","codeina","ibuprofene","diazepam","amoxicillina","naprossene","paracetamolo","tramadolo","metformina","codeina"];
   G={field:null,p:[newPlayer([],"Il tuo reparto"),newPlayer([],"Reparto rivale")],turn:0,busy:false,over:false,log:"Partita guidata.",tut:{i:0,ai:0}};
   const me=G.p[0],ai=G.p[1];
@@ -1086,12 +1102,12 @@ function applyFx(){
   if((G.dying||[]).length){clearTimeout(G.dyT);G.dyT=setTimeout(()=>{if(!G)return;G.dying=(G.dying||[]).filter(d=>Date.now()-d.t<700);if(tab==="duello")render()},720)}
 }
 function renderDuel(){
-  if(!G){
+  if(!G||duelHidden){
     const ok=S.deck.length===DECK_SIZE;
     app.innerHTML=`<h2 class="sec">Duello</h2>
       <p class="sub">Il duello parte senza condizione clinica in campo. Chi gioca una carta condizione decide il contesto: i farmaci indicati di entrambi ricevono +1 efficacia e accumulano risposta terapeutica. Vinci se la tua risposta arriva a ${CURE} oppure se l'omeostasi del rivale scende a zero.</p>
-      ${S.tut?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
-      <div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia il duello</button>
+      ${S.tut||(G&&!G.over)?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
+      ${G&&!G.over?`<div class="patient first" style="margin-bottom:12px"><b>Duello in corso</b><span>Hai lasciato una partita a metà: riprendila da dove eri rimasto.</span></div><div class="row" style="margin-top:12px"><button class="btn primary" id="resume">Riprendi il duello</button><button class="btn" id="go" ${ok?"":"disabled"}>Nuovo duello</button>`:`<div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia il duello</button>`}
       <span class="meta">${ok?`Mazzo pronto: ${DECK_SIZE} carte, ${S.deck.filter(i=>CARDS[i].type==="dis").length} condizioni cliniche`:`Il mazzo ha ${S.deck.length} carte su ${DECK_SIZE}. Completalo nella scheda Mazzo.`}</span></div>
       <h3 class="sub3">Come si gioca</h3>
       <div class="help">
@@ -1107,7 +1123,9 @@ function renderDuel(){
         <div><b>Ricompense.</b> Guarigione 50 crediti ECM, vittoria 40, sconfitta 15. Una bustina costa ${PACK_COST}.</div>
       </div>`;
     const b=document.getElementById("go");if(b)b.onclick=startDuel;
-    document.getElementById("tut").onclick=startTutorial;tutTick();
+    const tb=document.getElementById("tut");if(tb)tb.onclick=startTutorial;
+    const rs=document.getElementById("resume");if(rs)rs.onclick=()=>{duelHidden=false;render()};
+    tutTick();
     return;
   }
   const me=G.p[0],ai=G.p[1];const myTurn=G.turn===0&&!G.busy&&!G.over;
@@ -1134,6 +1152,7 @@ function renderDuel(){
     :(ghosts(i)||`<span class="empty">${i?"Nessun farmaco in campo":"Il tuo campo è vuoto"}</span>`);
   const ghosts=i=>(G.dying||[]).filter(d=>d.side===i&&Date.now()-d.t<700).map(d=>cardHTML(D(d.u),"board",{unit:{...d.u,hp:Math.max(0,d.u.hp)},eff:d.u.atk,extra:"dying"})).join("");
   app.innerHTML=`<div class="duel">
+    <div class="duelbar"><button class="btn" id="tomenu" aria-label="Torna al menu">‹ Menu</button><span class="dbt">Duello</span><span class="turnchip ${G.over?"":myTurn?"me":"ai"}">${G.over?"Partita conclusa":G.turn===0?"Il tuo turno":"Turno del rivale"}</span></div>
     ${fieldDis()?`<div class="patient"><b>${fieldDis().n}</b><span>Carta campo · indicati +1 efficacia: ${fieldDis().ind.map(i=>CARDS[i].n).join(", ")}.</span></div>`:`<div class="patient empty"><b>Nessuna condizione in campo</b><span>Gioca una carta condizione per attivare la risposta terapeutica.</span></div>`}
     ${hero(ai,1)}
     <div class="boardrow">${brow(ai,1)}</div>
@@ -1149,6 +1168,7 @@ function renderDuel(){
   </div>`;
   applyFx();tutTick();
   document.getElementById("end").onclick=()=>{if(!myTurn)return;G.atkSel=[];G.trial=null;G.turn=1;startTurn(1);if(!G.over)aiTurn();else render()};
+  document.getElementById("tomenu").onclick=()=>{if(G.over){G=null}else{duelHidden=true}render()};
   document.getElementById("quit").onclick=()=>{if(G.over){G=null;render();return}
     const q=document.getElementById("quit");if(q.dataset.sure){G.p[0].hp=0;checkEnd()}else{q.dataset.sure=1;q.textContent="Confermi? Conta come sconfitta"}};
 }
