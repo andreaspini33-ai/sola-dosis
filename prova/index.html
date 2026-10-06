@@ -300,6 +300,9 @@ body.in-duel main{padding-top:0}
 .ward .chart b{font-family:var(--f-serif);font-size:1.15rem;line-height:1.1;text-transform:none;font-weight:700}
 .ward .chart .dx{font-family:var(--f-serif);font-style:italic;font-size:1rem;color:var(--c-dis);line-height:1.15}
 .ward .chart small{font-size:.66rem;color:var(--muted)}
+.condtile{grid-row:1/3;grid-column:2;width:74px;aspect-ratio:63/88;border:0;border-top:7px solid var(--c-dis);border-radius:7px;background:#fff;box-shadow:0 4px 10px -6px rgba(0,0,0,.45);padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;cursor:zoom-in;color:var(--c-dis)}
+.condtile .ct-art{flex:1;width:100%;position:relative}.condtile .ct-art svg{position:absolute;inset:0;width:100%;height:100%}
+.condtile .ct-l{font:600 .52rem "JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .ward .card.cond{font-size:3px;width:21em;grid-row:1/3;grid-column:2;cursor:zoom-in}
 .arena .ward .card.cond .nm{font-size:1.25em;hyphens:none;overflow-wrap:normal}
 .ward .logline{grid-column:1/2;text-align:left;font-size:.68rem;min-height:1.2em;line-height:1.3;max-height:2.6em;overflow:hidden}
@@ -1256,7 +1259,7 @@ function renderDuel(){
     <div class="boardrow" style="--n:${nAi}">${brow(ai,1)}</div>
     ${(C&&C.res)||G.pending?`<div class="patient ward act">${C&&C.res?`<div class="respond inward"><b>Il rivale attacca</b><span>${C.atk.map(id=>{const x=G.p[1].board.find(z=>z.uid===id);return x?`${D(x).n} (${effAtk(x,ai)})`:""}).join(", ")}. Se non pari perdi ${C.atk.filter(id=>!C.blocks[id]||!C.blocks[id].length).reduce((z,id)=>{const x=G.p[1].board.find(q=>q.uid===id);return z+(x?effAtk(x,ai):0)},0)} di omeostasi.</span><span>${C.pick?`Scegli chi para <b>${D(G.p[1].board.find(x=>x.uid===C.pick)).n}</b> toccando un tuo farmaco non impegnato.`:"Tocca un attaccante, poi un tuo farmaco per pararlo."}</span><div class="row"><button class="btn primary" data-block="ok">Conferma parate</button><button class="btn" data-block="none">Nessuna parata</button></div></div>`:""}${G.pending?`<div class="respond inward"><b>Puoi rispondere</b><span>${G.log}</span><div class="row">${G.pending.opts.map(hi=>`<button class="btn primary" data-resp="${hi}">Gioca ${CARDS[me.hand[hi]].n} (${CARDS[me.hand[hi]].c} dosi)</button>`).join("")}<button class="btn" data-resp="pass">Lascia passare</button></div></div>`:""}</div>`:`<div class="patient ward${dis?"":" empty"}">
       <div class="chart">${dis?`<span class="lbl">Cartella clinica · letto ${pt.bed}</span><b>${pt.who}, ${pt.age} anni</b><span class="dx">${dis.n}</span><small>indicati +1 efficacia</small>`:`<span class="lbl">Cartella clinica</span><b>In attesa di diagnosi</b><small>Gioca una carta condizione per attivare la risposta terapeutica.</small>`}</div>
-      ${dis?cardHTML(dis,"board",{btn:true,extra:"cond",attrs:`data-detail="${dis.id}" data-cid="${dis.id}" aria-label="Dettagli ${dis.n}"`}):""}
+      ${dis?`<button class="condtile card" data-detail="${dis.id}" data-cid="${dis.id}" aria-label="Dettagli ${dis.n}"><span class="ct-art">${g(dis)}</span><span class="ct-l">carta campo</span></button>`:""}
       <div class="logline" aria-live="polite">${hint||((G.busy?"Turno del rivale… ":"")+G.log)}</div>
     </div>`}
     <div class="boardrow mine" style="--n:${nMe}">${brow(me,0)}</div>
