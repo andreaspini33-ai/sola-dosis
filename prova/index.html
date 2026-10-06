@@ -357,6 +357,7 @@ body.in-duel:has(#coach .cbox) main{padding-bottom:0}
 @media (prefers-reduced-motion:reduce){.handpreview{animation:none}.tray .card.hand{transition:none}}
 
 /* SCHEDA TECNICA */
+.ts-def{font-family:var(--f-serif);font-size:1.05rem;color:#5C4F38;margin:0 0 10px;max-width:60ch;border-left:2px solid #B9A985;padding-left:10px}
 .tecnica .ts-k{font-family:"JetBrains Mono",var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .ts-list{display:grid;margin-top:14px;border-top:1px solid var(--line)}
 .ts-row{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px 4px;border:0;border-bottom:1px dotted #9C9180;background:none;text-align:left;cursor:pointer;color:var(--ink)}
@@ -720,7 +721,7 @@ SCIS.forEach(d=>d.txt=`Prendi dal mazzo ${d.what}. Se non c'è, peschi 1 carta.`
 const ACTS=[
 {id:"a_review",n:"Revisione sistematica",r:"C",c:2,txt:"Peschi 2 carte.",f:"Sintesi di tutti gli studi disponibili su una domanda."},
 {id:"a_nota",n:"Nota AIFA",r:"U",c:2,txt:"Il rivale scarta una carta a caso dalla mano.",f:"Le Note AIFA definiscono le condizioni di rimborsabilità di alcuni farmaci."},
-{id:"a_pront",n:"Prontuario terapeutico",r:"U",c:1,txt:"Prendi dal mazzo un farmaco indicato per il paziente di questo duello.",f:"Elenco dei farmaci disponibili, con indicazioni e condizioni d'uso."},
+{id:"a_pront",n:"Prontuario terapeutico",r:"U",c:1,txt:"Prendi dal mazzo un farmaco indicato per il paziente di questa partita.",f:"Elenco dei farmaci disponibili, con indicazioni e condizioni d'uso."},
 {id:"a_trial",n:"Trial di fase III",r:"R",c:3,txt:"Confronta un tuo farmaco con uno del rivale che ha un'indicazione in comune: esce quello con efficacia + tollerabilità più bassa. A parità, nessun effetto.",f:"Studio randomizzato su larga scala; il confronto diretto tra due farmaci attivi si chiama head-to-head."},
 {id:"a_ritiro",n:"Ritiro dal commercio",r:"L",c:5,txt:"Tutti i farmaci in campo, tuoi e del rivale, vanno tra gli eliminati. Escono anche tutti i recettori e la condizione clinica: risposta terapeutica azzerata per entrambi.",f:"Un farmaco può essere ritirato per motivi di sicurezza emersi dopo l'immissione in commercio, come rofecoxib (2004) e cerivastatina (2001)."},
 {id:"a_repo",n:"Riposizionamento",r:"U",c:2,txt:"Riprendi in mano l'ultimo tuo farmaco eliminato.",f:"Uso di un farmaco già noto per una nuova indicazione."},
@@ -913,7 +914,7 @@ let duelHidden=false;
 let tab="menu",G=null,packOpen=null,colFilter="tutte";
 const fieldDis=()=>G&&G.field?CARDS[G.field]:null;
 const app=document.getElementById("app"),ov=document.getElementById("ov");
-const TABS=[["menu","Scheda tecnica"],["duello","Duello"],["bustine","Bustine"],["collezione","Collezione"],["mazzo","Mazzo"],["fonti","Fonti"]];
+const TABS=[["menu","Scheda tecnica"],["duello","Testa a testa"],["bustine","Forniture"],["collezione","Armadio"],["mazzo","Piano terapeutico"],["fonti","Bibliografia"]];
 function renderTop(){
   document.getElementById("credits").innerHTML=`<b>${S.crediti}</b> crediti ECM · ${S.wins} vittorie (${S.cures||0} per guarigione) · ${S.losses} sconfitte <button class="sndbtn" id="snd" aria-pressed="${!S.mute}">Suono: ${S.mute?"no":"sì"}</button>`;
   document.getElementById("snd").onclick=()=>{S.mute=!S.mute;save();renderTop();if(!S.mute)sfx("play")};
@@ -926,14 +927,14 @@ function renderMenu(){
     <span class="ts-k">Riassunto delle caratteristiche del gioco</span>
     <h2 class="sec">Scheda tecnica</h2>
     <p class="sub">Sola Dosis, carte collezionabili di farmacologia. Uso didattico.</p>
-    ${G&&!G.over&&!G.tut?`<div class="patient first"><b>Duello in corso</b><span>Hai una partita a metà.</span><div class="row" style="margin-top:8px"><button class="btn primary" data-go="resume">Riprendi</button></div></div>`:""}
+    ${G&&!G.over&&!G.tut?`<div class="patient first"><b>Partita in corso</b><span>Hai una partita a metà.</span><div class="row" style="margin-top:8px"><button class="btn primary" data-go="resume">Riprendi</button></div></div>`:""}
     <div class="ts-list">
       ${S.tut?"":it("0","tut","Partita guidata","Pochi turni per imparare dosi, condizioni, attacco e parata.","+30 crediti ECM")}
-      ${it("1","duello","Duello","Tu e il reparto rivale curate lo stesso paziente.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
-      ${it("2","bustine","Bustine","Nuove carte: 5 per bustina.",`${S.crediti} crediti ECM disponibili`)}
-      ${it("3","collezione","Collezione","Le carte che possiedi, con fonti e valori.",`${nCol} su ${ALL.length} carte`)}
-      ${it("4","mazzo","Mazzo","Le 20 carte che porti in reparto.",ok?"mazzo pronto":`${S.deck.length} su ${DECK_SIZE} carte`)}
-      ${it("5","fonti","Fonti e metodo","Da dove vengono i numeri delle carte.","")}
+      ${it("1","duello","Testa a testa","Come negli studi head-to-head: due terapie attive confrontate sullo stesso paziente. Tu e il reparto rivale lo curate insieme, vince la strategia migliore.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
+      ${it("2","bustine","Forniture","Nuove carte dalla farmacia: 5 per fornitura.",`${S.crediti} crediti ECM disponibili`)}
+      ${it("3","collezione","Armadio farmaceutico","Le carte che possiedi, con fonti e valori.",`${nCol} su ${ALL.length} carte`)}
+      ${it("4","mazzo","Piano terapeutico","Le 20 carte che porti in reparto.",ok?"mazzo pronto":`${S.deck.length} su ${DECK_SIZE} carte`)}
+      ${it("5","fonti","Bibliografia","Fonti e metodo: da dove vengono i numeri delle carte.","")}
     </div></div>`;
 }
 function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({menu:renderMenu,duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc})[tab]()}
@@ -1219,7 +1220,7 @@ const TUT=[
  {t:"Più farmaci, più risposta",x:"Hai 3 dosi: gioca Ibuprofene. Anche lui è indicato.",hl:'[data-hand][data-cid="ibuprofene"]',gate:'[data-hand][data-cid="ibuprofene"]',done:()=>!!myB("ibuprofene")},
  {t:"Attaccare",x:"Ora attacca: tocca Tramadolo, poi premi «Attacca con 1». Il rivale deciderà se parare.",hl:'[data-unit][data-cid="tramadolo"], [data-attack]',gate:'[data-unit][data-cid="tramadolo"], [data-attack]',done:()=>{const t=myB("tramadolo");return !t||t.tap||!t.can}},
  {t:"Impegnato",x:"Dopo l'attacco Tramadolo resta impegnato e non potrà parare nel turno del rivale; un farmaco con Vigilanza, come Metoprololo, invece sì. Attaccare o tenersi pronti a parare è la scelta di ogni turno.",next:1},
- {t:"Tocca a te",x:"Hai le basi. Toccando una carta nella Collezione vedi da dove vengono i suoi numeri. Continua la partita da solo: ricevi 30 crediti ECM per aver completato la guida.",next:1,end:1},
+ {t:"Tocca a te",x:"Hai le basi. Toccando una carta nell'Armadio farmaceutico vedi da dove vengono i suoi numeri. Continua la partita da solo: ricevi 30 crediti ECM per aver completato la guida.",next:1,end:1},
 ];
 const TUTAI=[{play:["metoprololo"]},{play:[],attack:1}];
 function startTutorial(){duelHidden=false;
@@ -1286,23 +1287,24 @@ function rxAlert(id){const P=G.p[0];const before=risks(P);const t={uid:-1,id,atk
 function renderDuel(){
   if(!G||duelHidden){
     const ok=S.deck.length===DECK_SIZE;
-    app.innerHTML=`<h2 class="sec">Duello</h2>
-      <p class="sub">Il duello parte senza condizione clinica in campo. Chi gioca una carta condizione decide il contesto: i farmaci indicati di entrambi ricevono +1 efficacia e accumulano risposta terapeutica. Vinci se la tua risposta arriva a ${CURE} oppure se l'omeostasi del rivale scende a zero.</p>
+    app.innerHTML=`<h2 class="sec">Testa a testa</h2>
+      <p class="ts-def"><i>Head-to-head</i>: studio che confronta direttamente due terapie attive, invece di confrontarne una con il placebo. Qui le due terapie sono le vostre strategie.</p>
+      <p class="sub">La partita parte senza condizione clinica in campo. Chi gioca una carta condizione decide il contesto: i farmaci indicati di entrambi ricevono +1 efficacia e accumulano risposta terapeutica. Vinci se la tua risposta arriva a ${CURE} oppure se l'omeostasi del rivale scende a zero.</p>
       ${S.tut||(G&&!G.over)?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
-      ${G&&!G.over?`<div class="patient first" style="margin-bottom:12px"><b>Duello in corso</b><span>Hai lasciato una partita a metà: riprendila da dove eri rimasto.</span></div><div class="row" style="margin-top:12px"><button class="btn primary" id="resume">Riprendi il duello</button><button class="btn" id="go" ${ok?"":"disabled"}>Nuovo duello</button>`:`<div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia il duello</button>`}
-      <span class="meta">${ok?`Mazzo pronto: ${DECK_SIZE} carte, ${S.deck.filter(i=>CARDS[i].type==="dis").length} condizioni cliniche`:`Il mazzo ha ${S.deck.length} carte su ${DECK_SIZE}. Completalo nella scheda Mazzo.`}</span></div>
+      ${G&&!G.over?`<div class="patient first" style="margin-bottom:12px"><b>Partita in corso</b><span>Hai lasciato una partita a metà: riprendila da dove eri rimasto.</span></div><div class="row" style="margin-top:12px"><button class="btn primary" id="resume">Riprendi la partita</button><button class="btn" id="go" ${ok?"":"disabled"}>Nuova partita</button>`:`<div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia la partita</button>`}
+      <span class="meta">${ok?`Piano terapeutico pronto: ${DECK_SIZE} carte, ${S.deck.filter(i=>CARDS[i].type==="dis").length} condizioni cliniche`:`Il piano terapeutico ha ${S.deck.length} carte su ${DECK_SIZE}. Completalo nella scheda Piano terapeutico.`}</span></div>
       <h3 class="sub3">Come si gioca</h3>
       <div class="help">
         <div><b>Turno.</b> Ricevi una dose in più a ogni turno, fino a 10. Tocca una carta in mano per giocarla.</div>
         <div><b>Attacco e parata.</b> Come a Magic: nel tuo turno tocchi i farmaci con cui attaccare e confermi. L'attacco va al reparto rivale, ma il rivale può parare con i suoi farmaci non impegnati, anche più di uno sullo stesso attaccante. Un attaccante parato e chi lo para si scambiano i danni (efficacia contro tollerabilità); uno non parato toglie la sua efficacia all'omeostasi. Chi attacca resta impegnato e non può parare fino al tuo turno successivo, quindi attaccare con tutto ti lascia scoperto. Un farmaco appena entrato non può attaccare, ma può già parare. Quando attacca il rivale, tocchi un suo attaccante e poi il tuo farmaco che para.</div>
         <div><b>Condizione clinica.</b> È una carta campo: ce n'è una sola, condivisa. Se ne giochi un'altra sostituisce la precedente e azzera la risposta terapeutica di entrambi. Conviene giocarla quando i tuoi farmaci indicati sono più forti di quelli del rivale.</div>
         <div><b>Risposta terapeutica.</b> All'inizio del tuo turno i tuoi farmaci in campo indicati per la condizione sommano la loro efficacia alla tua risposta. Arrivi a ${CURE} e il paziente è curato.</div>
-        <div><b>Efficacia e tollerabilità.</b> Per gli analgesici derivano da NNT e dati di sicurezza pubblicati; puoi leggere la fonte toccando la carta nella Collezione o nella scheda Fonti. Più effetti avversi significa meno tollerabilità.</div>
+        <div><b>Efficacia e tollerabilità.</b> Per gli analgesici derivano da NNT e dati di sicurezza pubblicati; puoi leggere la fonte toccando la carta nell'Armadio farmaceutico o nella Bibliografia. Più effetti avversi significa meno tollerabilità.</div>
         <div><b>Evoluzioni.</b> Alcuni farmaci (freccia ↑ sul costo) si giocano solo sopra il farmaco da cui evolvono, pagando la differenza: paracetamolo → paracetamolo + codeina, ibuprofene → diclofenac → etoricoxib, tramadolo → morfina → fentanil, metformina → insulina. L'evoluzione non garantisce più efficacia: guarda i numeri.</div>
         <div><b>Recettori.</b> Restano in gioco (massimo 2) e potenziano i farmaci che agiscono su di essi. <b>Interazioni.</b> Sono istantanei: funzionano solo se il rivale ha in campo la combinazione a rischio, ma puoi giocarle anche nel suo turno, appena mette in campo il farmaco che la completa. Per farlo ti servono dosi di riserva: quelle che non spendi nel tuo turno restano disponibili fino all'inizio del turno successivo. Un avviso arancione ti segnala quando sei tu a esporti.</div>
         <div><b>Scienziati e azioni.</b> Uno scienziato prende dal mazzo una carta legata alla sua scoperta (Fleming un beta-lattamico, Vane un FANS). Revisione sistematica fa pescare 2 carte, Nota AIFA fa scartare il rivale, Prontuario trova un farmaco indicato per il paziente, Riposizionamento riporta in mano un farmaco eliminato. Trial di fase III confronta un tuo farmaco con uno del rivale che ha un'indicazione in comune ed elimina quello con efficacia + tollerabilità più bassa: può anche darti torto.</div>
         <div><b>Abilità.</b> Rapido attacca nel turno in cui entra. Vigilanza: attaccare non lo impegna, quindi può parare anche nel turno del rivale. Antagonista elimina il gruppo bersaglio. Inibitore aumenta l'efficacia delle tue carte, Induttore riduce quella delle rivali. Indice ristretto costa 1 di omeostasi per turno.</div>
-        <div><b>Ricompense.</b> Guarigione 50 crediti ECM, vittoria 40, sconfitta 15. Una bustina costa ${PACK_COST}.</div>
+        <div><b>Ricompense.</b> Guarigione 50 crediti ECM, vittoria 40, sconfitta 15. Una fornitura costa ${PACK_COST}.</div>
       </div>`;
     const b=document.getElementById("go");if(b)b.onclick=startDuel;
     const tb=document.getElementById("tut");if(tb)tb.onclick=startTutorial;
@@ -1426,13 +1428,13 @@ function extras(){let n=0;for(const id in S.col){const d=CARDS[id];if(d)n+=Math.
 function recycle(){for(const id in S.col){const d=CARDS[id];if(!d)continue;const ex=Math.max(0,S.col[id]-maxCopies(d));if(ex){S.col[id]-=ex;S.crediti+=5*ex}}save();render()}
 function renderPacks(){
   const ex=extras();
-  app.innerHTML=`<h2 class="sec">Bustine</h2>
-    <p class="sub">Ogni bustina contiene 5 carte tra farmaci, recettori e interazioni. L'ultima è almeno non comune.</p>
-    <div class="row"><button class="btn primary" id="buy" ${S.crediti>=PACK_COST?"":"disabled"}>Apri una bustina (${PACK_COST} crediti)</button>
+  app.innerHTML=`<h2 class="sec">Forniture</h2>
+    <p class="sub">Ogni fornitura contiene 5 carte tra farmaci, recettori e interazioni. L'ultima è almeno non comune.</p>
+    <div class="row"><button class="btn primary" id="buy" ${S.crediti>=PACK_COST?"":"disabled"}>Ricevi una fornitura (${PACK_COST} crediti)</button>
       ${packOpen&&packOpen.shown.includes(false)?'<button class="btn" id="all">Rivela tutte</button>':""}
       <button class="btn" id="rec" ${ex?"":"disabled"}>Ricicla doppioni (${ex} × 5 crediti)</button></div>
-    <p class="odds" style="margin-top:10px">Probabilità per carta: comune 71% · non comune 22% · rara 6% · leggendaria 1%. Si riciclano solo le copie oltre il massimo da mazzo (2, oppure 1 per le leggendarie).</p>
-    ${S.crediti<PACK_COST&&!packOpen?`<p class="sub">Crediti insufficienti. Vinci un duello per guadagnarne.</p>`:""}
+    <p class="odds" style="margin-top:10px">Probabilità per carta: comune 71% · non comune 22% · rara 6% · leggendaria 1%. Si riciclano solo le copie oltre il massimo per piano terapeutico (2, oppure 1 per le leggendarie).</p>
+    ${S.crediti<PACK_COST&&!packOpen?`<p class="sub">Crediti insufficienti. Vinci una partita per guadagnarne.</p>`:""}
     <div class="reveal">${packOpen?packOpen.cards.map((id,k)=>`<div class="cell">${packOpen.shown[k]?cardHTML(CARDS[id],"full",{extra:"tcg",isNew:packOpen.isNew[k],btn:true,attrs:`data-detail="${id}"`}):`<button class="back" data-flip="${k}" aria-label="Rivela carta">${BACKSVG}<span class="bl">Sola Dosis</span><small>tocca per rivelare</small></button>`}</div>`).join(""):""}</div>`;
   document.getElementById("buy").onclick=openPack;
   const a=document.getElementById("all");if(a)a.onclick=()=>{packOpen.shown=packOpen.shown.map(()=>true);sfx(packOpen.cards.some(id=>"RL".includes(CARDS[id].r))?"rare":"flip");render();app.querySelectorAll(".reveal > *").forEach((c,k)=>{c.style.animationDelay=(k*90)+"ms";c.classList.add("fx-flip")})};
@@ -1445,7 +1447,7 @@ function renderPacks(){
 function renderCol(){
   const owned=ALL.filter(d=>S.col[d.id]).length;
   const list=ALL.filter(d=>colFilter==="tutte"||d.cl===colFilter);
-  app.innerHTML=`<h2 class="sec">Collezione</h2>
+  app.innerHTML=`<h2 class="sec">Armadio farmaceutico</h2>
     <p class="progress">${owned} su ${ALL.length} carte scoperte · tocca una carta per vedere da dove vengono i suoi numeri</p>
     <div class="chips"><button class="chip" data-f="tutte" aria-pressed="${colFilter==="tutte"}">Tutte</button>${ORDER.map(k=>`<button class="chip" data-f="${k}" aria-pressed="${colFilter===k}">${CLS[k].n}</button>`).join("")}</div>
     ${`<div class="grid">${list.map(d=>`<div class="cell">${S.col[d.id]?cardHTML(d,"full",{extra:"tcg",badge:"×"+S.col[d.id],btn:true,attrs:`data-detail="${d.id}"`}):cardHTML(d,"full",{extra:"locked tcg",btn:true,attrs:`data-detail="${d.id}"`})}</div>`).join("")}</div>`}`;
@@ -1482,7 +1484,7 @@ function buildMonoDeck(dis){
   ALL.filter(d=>d.type==="drug"&&!d.from&&own(d.id)&&!dis.ind.includes(d.id)).sort((a,b)=>cardScore(b)-cardScore(a)).forEach(d=>{if(!risky(d.id))add(d.id,2)});
   S.deck=deck;save();
   const n=deck.filter(id=>dis.ind.includes(id)).length;
-  monoMsg=`Mazzo «${dis.n}»: ${deck.length} carte, di cui ${n} farmaci indicati, ${cnt[dis.id]||0} carte condizione, ${deck.filter(id=>CARDS[id].type==="rec").length} recettori, ${deck.filter(id=>CARDS[id].type==="sci").length} scienziati.${n<8?" Hai pochi farmaci indicati: apri altre bustine per rinforzarlo.":""}${deck.length<DECK_SIZE?` Mancano ${DECK_SIZE-deck.length} carte: la collezione non basta.`:""}`;
+  monoMsg=`Piano «${dis.n}»: ${deck.length} carte, di cui ${n} farmaci indicati, ${cnt[dis.id]||0} carte condizione, ${deck.filter(id=>CARDS[id].type==="rec").length} recettori, ${deck.filter(id=>CARDS[id].type==="sci").length} scienziati.${n<8?" Hai pochi farmaci indicati: ricevi altre forniture per rinforzarlo.":""}${deck.length<DECK_SIZE?` Mancano ${DECK_SIZE-deck.length} carte: l'armadio non basta.`:""}`;
   render();
 }
 let monoMsg="";
@@ -1513,7 +1515,7 @@ function buildCatDeck(cl){
   const own=id=>Math.min(S.col[id]||0,maxCopies(CARDS[id]));
   S.deck=catDeck(cl,own);save();
   const n=S.deck.filter(id=>CARDS[id].cl===cl).length;
-  monoMsg=`Mazzo «${CLS[cl].n}»: ${S.deck.length} carte, ${n} farmaci della categoria, ${S.deck.filter(id=>CARDS[id].type==="dis").length} condizioni, ${S.deck.filter(id=>CARDS[id].type==="rec").length} bersagli.${n<10?" Hai ancora poche carte di questa categoria: apri altre bustine.":""}${S.deck.length<DECK_SIZE?` Mancano ${DECK_SIZE-S.deck.length} carte.`:""}`;
+  monoMsg=`Piano «${CLS[cl].n}»: ${S.deck.length} carte, ${n} farmaci della categoria, ${S.deck.filter(id=>CARDS[id].type==="dis").length} condizioni, ${S.deck.filter(id=>CARDS[id].type==="rec").length} bersagli.${n<10?" Hai ancora poche carte di questa categoria: ricevi altre forniture.":""}${S.deck.length<DECK_SIZE?` Mancano ${DECK_SIZE-S.deck.length} carte.`:""}`;
   render();
 }
 function autoDeck(){
@@ -1544,19 +1546,19 @@ function renderDeck(){
       <span class="s">${stat}${side==="col"?` · ${inD}/${lim}`:` · ×${inD}`}</span>
       ${side==="col"?`<button data-add="${d.id}" aria-label="Aggiungi ${d.n}" ${inD>=lim||n>=DECK_SIZE?"disabled":""}>+</button>`:`<button data-rem="${d.id}" aria-label="Togli ${d.n}">−</button>`}</div>`};
   const deckCards=Object.keys(dc).map(i=>CARDS[i]).sort((a,b)=>ORDER.indexOf(a.cl)-ORDER.indexOf(b.cl)||a.c-b.c);
-  app.innerHTML=`<h2 class="sec">Mazzo</h2>
-    <p class="sub">Servono esattamente ${DECK_SIZE} carte, al massimo 2 copie per carta e 1 per le leggendarie. Un'evoluzione senza la sua base nel mazzo non si potrà mai giocare.</p>
+  app.innerHTML=`<h2 class="sec">Piano terapeutico</h2>
+    <p class="sub">Servono esattamente ${DECK_SIZE} carte, al massimo 2 copie per carta e 1 per le leggendarie. Un'evoluzione senza la sua base nel piano non si potrà mai giocare.</p>
     <div class="row" style="margin-bottom:14px"><button class="btn" id="auto">Componi in automatico</button><button class="btn" id="clr">Svuota</button></div>
-    <h3 class="sub3">Mazzo per categoria</h3>
-    <p class="sub">Costruisce il mazzo con le tue carte di una sola categoria terapeutica, con le condizioni, i bersagli e gli scienziati collegati.</p>
+    <h3 class="sub3">Piano per categoria</h3>
+    <p class="sub">Costruisce il piano con le tue carte di una sola categoria terapeutica, con le condizioni, i bersagli e gli scienziati collegati.</p>
     <div class="chips">${CATS.map(c=>{const n=ALL.filter(d=>d.type==="drug"&&d.cl===c&&S.col[d.id]).length,t=DRUGS.filter(d=>d.cl===c).length;return `<button class="chip" data-cat="${c}" ${n?"":"disabled"}>${CLS[c].n} · ${n}/${t} farmaci</button>`}).join("")}</div>
-    <h3 class="sub3">Mazzo mono-indicazione</h3>
-    <p class="sub">Costruisce il mazzo con le tue carte attorno a una sola condizione: la carta condizione, i farmaci indicati con le loro evoluzioni, i recettori e gli scienziati collegati, il Prontuario per trovarli.</p>
-    <div class="chips">${DIS.filter(d=>monoInfo(d).ind.length).map(d=>{const m=monoInfo(d);return `<button class="chip" data-mono="${d.id}" ${m.ind.length?"":"disabled"} title="${m.ind.length?m.ind.map(i=>CARDS[i].n).join(", "):"nessun farmaco indicato nella collezione"}">${d.n} · ${m.copies} indicati${m.hasDis?"":" · senza carta condizione"}</button>`}).join("")}</div>
+    <h3 class="sub3">Piano mono-indicazione</h3>
+    <p class="sub">Costruisce il piano con le tue carte attorno a una sola condizione: la carta condizione, i farmaci indicati con le loro evoluzioni, i recettori e gli scienziati collegati, il Prontuario per trovarli.</p>
+    <div class="chips">${DIS.filter(d=>monoInfo(d).ind.length).map(d=>{const m=monoInfo(d);return `<button class="chip" data-mono="${d.id}" ${m.ind.length?"":"disabled"} title="${m.ind.length?m.ind.map(i=>CARDS[i].n).join(", "):"nessun farmaco indicato nell'armadio"}">${d.n} · ${m.copies} indicati${m.hasDis?"":" · senza carta condizione"}</button>`}).join("")}</div>
     ${monoMsg?`<p class="sub" style="color:var(--ink)">${monoMsg}</p>`:""}
     <div class="deckgrid">
       <div class="list" aria-label="Carte possedute">${owned.map(d=>row(d,"col")).join("")}</div>
-      <div class="list" aria-label="Mazzo"><div class="deckhead"><span>Mazzo</span><span class="${n===DECK_SIZE?"ok":"ko"}">${n}/${DECK_SIZE}</span></div>
+      <div class="list" aria-label="Piano terapeutico"><div class="deckhead"><span>Piano terapeutico</span><span class="${n===DECK_SIZE?"ok":"ko"}">${n}/${DECK_SIZE}</span></div>
         ${orphan.length?`<div class="deckhead"><span class="ko">Senza base: ${[...new Set(orphan)].join(", ")}</span></div>`:""}
         <div class="curve" aria-label="Curva dei costi">${curve.map((v,k)=>`<div><span>${v||""}</span><i style="height:${v/mx*48}px"></i><span>${k===6?"7+":k+1}</span></div>`).join("")}</div>
         ${deckCards.length?deckCards.map(d=>row(d,"deck")).join(""):'<div class="li"><span></span><span class="n"><small>Aggiungi carte dalla colonna a sinistra.</small></span></div>'}
@@ -1574,7 +1576,7 @@ function renderDeck(){
 function renderSrc(){
   const an=DRUGS.filter(d=>d.cl==="analg");
   const est=DRUGS.filter(d=>!d.ev).map(d=>d.n);
-  app.innerHTML=`<h2 class="sec">Fonti e metodo</h2>
+  app.innerHTML=`<h2 class="sec">Bibliografia</h2>
     <p class="sub">Come sono stati calcolati i numeri delle carte, con il testo originale delle fonti.</p>
     <h3 class="sub3">Regola per l'efficacia</h3>
     <p class="sub">Efficacia = 10 ÷ NNT, arrotondata e limitata tra 1 e 6. L'NNT è quello per ottenere almeno il 50% di sollievo dal dolore in 4-6 ore rispetto al placebo, dopo una singola dose nel dolore postoperatorio. Lo stesso esito per tutti gli analgesici rende i valori confrontabili tra loro. Per le altre classi non esiste un esito comune, quindi efficacia e tollerabilità sono stime didattiche.</p>
@@ -1593,7 +1595,7 @@ function renderSrc(){
     <h3 class="sub3">Valori stimati</h3>
     <p class="sub">${est.join(", ")}.</p>
     <h3 class="sub3">Strutture chimiche</h3>
-    <p class="sub">Le strutture sono disegnate in 2D a partire dallo SMILES riportato nella scheda Wikipedia di ciascun farmaco, che indica anche il CID di PubChem. Per ogni molecola la formula ricalcolata dallo SMILES coincide con quella dichiarata. Insulina, eparina, protamina, idarucizumab e vancomicina sono mostrati come schemi. Tocca una carta nella Collezione per vedere formula e CID.</p>
+    <p class="sub">Le strutture sono disegnate in 2D a partire dallo SMILES riportato nella scheda Wikipedia di ciascun farmaco, che indica anche il CID di PubChem. Per ogni molecola la formula ricalcolata dallo SMILES coincide con quella dichiarata. Insulina, eparina, protamina, idarucizumab e vancomicina sono mostrati come schemi. Tocca una carta nell'Armadio farmaceutico per vedere formula e CID.</p>
     <h3 class="sub3">Regimi di fornitura</h3>
     <p class="sub">Le etichette Senza ricetta, Ricetta e Stupefacenti semplificano la normativa italiana e vanno verificate per ogni confezione: dosaggio e formulazione cambiano il regime.</p>
     <h3 class="sub3">Bibliografia</h3>
@@ -1631,7 +1633,7 @@ function showSplash(){
     <h2 class="rise d1">Sola Dosis</h2>
     <p class="sub rise d2">Tra la dose che cura e quella che nuoce c'è la finestra terapeutica. Restaci dentro.</p>
     <div class="acts rise d3">${first?`<button class="pri" data-sp="tut">Partita guidata</button><button class="sec" data-sp="menu">Entra</button>`:`<button class="pri" data-sp="menu">Entra</button>`}</div>
-    <div class="stat rise d3">${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse in collezione</div>
+    <div class="stat rise d3">${S.wins} vittorie · ${Object.keys(S.col).length} carte diverse nell'armadio</div>
   </div>`;
   const close=()=>{el.classList.add("out");document.removeEventListener("keydown",onKey);setTimeout(()=>{el.remove()},500)};
   const onKey=e=>{if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();el.querySelector("[data-sp]").click()}};
@@ -1652,7 +1654,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.06-8</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.06-9</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;

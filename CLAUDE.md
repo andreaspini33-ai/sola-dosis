@@ -18,6 +18,9 @@
   Inibizione enzimatica: inibitore + altro farmaco a indice ristretto.
 - Ritiro dal commercio (leggendaria, 5 dosi): elimina tutti i farmaci, i recettori e la condizione; risposta a 0.
 
+## Nomi (scelti da Andrea)
+- Menu = Scheda tecnica; Duello = Testa a testa (head-to-head); Bustine = Forniture; Collezione = Armadio farmaceutico (in navigazione "Armadio"); Mazzo = Piano terapeutico; Fonti = Bibliografia. Le chiavi interne (tab duello, bustine, ...) restano invariate. Nel duello "mazzo" indica ancora la pila da cui si pesca.
+
 ## Grafica
 - Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
 - Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.
