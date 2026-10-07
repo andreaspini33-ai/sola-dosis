@@ -643,6 +643,19 @@ body.focus main{padding-top:0}
 .done-l .stats{grid-template-columns:1fr 1fr}
 .profcard{background:#fff;border:2px solid var(--line);border-bottom-width:5px;outline:0;border-radius:20px;margin:0 0 10px}
 .profcard b{font-family:var(--f-ui);font-weight:900;font-size:1.25rem}
+
+.why{display:flex;gap:12px;align-items:flex-start}
+.qthumb{flex:none;width:96px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:zoom-in}
+.qthumb .cell{width:96px;display:block;transition:transform .15s}.qthumb:hover .cell{transform:rotate(-2deg) scale(1.03)}
+.qthumb .card{box-shadow:0 2px 0 rgba(0,0,0,.12),0 8px 16px -10px rgba(0,0,0,.5)}
+.qlink{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:.75rem;color:var(--sky)}.qlink svg{width:14px;height:14px}
+.wt{min-width:0;flex:1}.wt h4{margin:0 0 4px;font-weight:900;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.rq{display:block;margin:6px 0 2px;padding:8px 10px;background:rgba(255,255,255,.75);border-left:3px solid currentColor;border-radius:0 10px 10px 0;font-style:italic;quotes:"«" "»"}
+.rq::before{content:open-quote}.rq::after{content:close-quote}
+.src{display:block;color:var(--muted);font-size:.75rem}
+.more{margin:6px 0 0;color:var(--muted);font-size:.88rem}
+.ans{margin:0 0 8px}
+.overlay{z-index:80}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
@@ -1085,7 +1098,7 @@ function showDetail(id){
   const d=CARDS[id];let rows="";
   if(d.type==="drug"){
     rows+=`<div><dt>Regime di fornitura (nel gioco)</dt><dd>${TIER[d.tier].n}</dd></div>`;
-    rows+=`<div><dt>Efficacia ${d.E}</dt><dd>${d.ev?`Calcolata come 10 ÷ NNT, arrotondata (NNT ${d.ev.nnt}, ${d.ev.dose}; esito: almeno il 50% di sollievo dal dolore in 4-6 ore rispetto al placebo).${quote(d.ev.q,d.ev.s)}`:"Valore stimato: non ho un NNT confrontabile con gli altri analgesici."}</dd></div>`;
+    rows+=`<div><dt>Efficacia ${d.E}</dt><dd>${d.ev?`Calcolata come 10 ÷ NNT, arrotondata (NNT ${d.ev.nnt}, ${d.ev.dose}; esito: almeno il 50% di sollievo dal dolore in 4-6 ore rispetto al placebo).${quote(d.ev.q,d.ev.s)}`:(d.cl==="analg"?"Valore stimato: non ho un NNT confrontabile con gli altri analgesici.":"Valore stimato, da verificare.")}</dd></div>`;
     rows+=`<div><dt>Tollerabilità ${d.T}</dt><dd>${d.td?d.td.txt+d.td.q.map(k=>quote(Q[k].q,Q[k].s)).join(""):"Valore stimato, da verificare."}</dd></div>`;
     rows+=`<div><dt>Struttura</dt><dd>${SMETA[d.id]?`Formula ${SMETA[d.id][0]} · PubChem CID ${SMETA[d.id][1]}. Disegno 2D dallo SMILES della scheda Wikipedia «${SMETA[d.id][2].replace(/_/g," ")}»; la formula ricalcolata dallo SMILES coincide con quella dichiarata.${d.id==="iperico"?" È l'iperforina, uno dei costituenti dell'estratto di iperico.":""}${d.id==="litio"?" Il farmaco è il carbonato di litio.":""}${d.id==="dabigatran"?" È la molecola attiva; il farmaco in commercio è il profarmaco dabigatran etexilato.":""}${d.id==="valproato"?" La scheda riporta la formula del sale sodico; qui è disegnato l'acido valproico, la cui formula è stata ricalcolata dallo SMILES.":""}${d.id==="olanzapina"?" Dallo SMILES sono stati tolti i simboli di geometria del doppio legame, che il programma di disegno non accetta.":""}`:SCHN[d.id]||""}</dd></div>`;
     rows+=`<div><dt>Costo</dt><dd>${d.c} dosi${d.from?`; come evoluzione di ${CARDS[d.from].n} costa ${d.ec}`:""}. Calcolato da efficacia, tollerabilità e abilità.</dd></div>`;
