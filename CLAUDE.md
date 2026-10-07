@@ -41,6 +41,7 @@
 - Da correggere nel modello del duello: il tag inhib + nti conta come interazione anche coppie senza base (es. valproato o antifungini con litio).
 
 ## Grafica
+- Dal 7/10/2026 interfaccia "amichevole" ibrida (scelta da Andrea): struttura alla Brilliant (schede grandi con bordo 3D, barra di avanzamento, Verifica e riscontro dal basso, schermata di fine con crediti) sui colori caldi dell'erbario; font UI Nunito, Cormorant solo per il marchio. Navigazione in basso su telefono (NAV: Home, Formazione, Testa a testa, Forniture, Armadio), in alto su schermo largo. Piano terapeutico e Bibliografia dalla Home. Classi nuove: .daycard, .tile, .stats, .pnode, .qz-*, .opt, .drug, .done, .hchip (non usare .hero e .chip: esistono già nel duello e nell'armadio). Esercizi in modalità schermo pieno (body.focus).
 - Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
 - Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.
 - Duello: schermata a sé in un solo schermo (strisce compatte, cartella clinica al centro con pazienti fittizi in PATIENTS, mano che scorre di lato, tocco = anteprima, pressione prolungata = scheda).

@@ -224,93 +224,117 @@ function exEndQuiz(){
     const prev=Object.keys(E.daily).sort().pop();
     E.streak=(prev&&exDayN(EX.day)-exDayN(prev)===1)?(E.streak||0)+1:1;
     E.daily[EX.day]={ok:okb,n:base.length};save();
-    msg=`Giro visita del ${y}: ${okb} su ${base.length}. ${okb>=8?"Bonus di 5 crediti. ":""}Giorni consecutivi: ${E.streak}.`}
+    msg=okb>=8?"Con 8 risposte giuste o più hai preso anche il bonus di 5 crediti.":"Con 8 risposte giuste o più c'è un bonus di 5 crediti. Domani ci riprovi."}
   else{got=exAward(EX.ok,true);msg=`${EX.ok} risposte giuste su ${EX.qs.length}.`}
   EX.done={got,msg};render()}
 
-// ---------- disegno ----------
-function exHead(k,t,sub){return `<span class="ts-k">${k}</span><h2 class="sec">${t}</h2>${sub?`<p class="sub">${sub}</p>`:""}`}
+// ---------- disegno (stile amichevole: barra di avanzamento, Verifica, riscontro dal basso) ----------
+const EX_OK=["Esatto!","Perfetto!","Giusto!","Ottimo!","Proprio così!"],EX_KO=["Non proprio.","Quasi.","Non è così.","Riproviamo la prossima volta."];
+function exStreak(){const E=exState(),last=Object.keys(E.daily).sort().pop();if(!last)return 0;return exDayN(exToday())-exDayN(last)<=1?(E.streak||1):0}
+const exTop=(n,tot,k)=>`<div class="qz-top"><button class="qz-x" data-ex="home" aria-label="Esci">${ic("x")}</button><div class="qz-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${tot}" aria-valuenow="${n}"><i style="width:${Math.max(4,n/tot*100)}%"></i></div><span class="qz-n">${k}</span></div>`;
+function exDoneHTML(title,got,lines,btns,score){
+  return `<div class="done"><div class="burst">${SPRIG}</div><p class="qz-kick">${title}</p><h2 class="sec">${score}</h2>
+    <div class="won">+${got}<span>crediti ECM</span></div><div class="done-l">${lines}</div></div>
+    <div class="qz-foot"><div class="in btns">${btns}</div></div>`}
 function exQuizHTML(){
   if(EX.done){
-    const errs=EX.qs.filter(q=>q.res===false);
-    return `<div class="ex">${exHead(EX.mode==="daily"?"Giro visita":"Indicazioni","Fine della sessione")}
-      <div class="patient first"><b>${EX.done.got} crediti ECM</b><span>${EX.done.msg}${EX.mode!=="daily"&&exState().got>=EX_CAP?" Hai raggiunto il massimo di oggi per gli esercizi liberi.":""}</span></div>
-      ${errs.length?`<h3 class="ex-h">Da ripassare</h3><p class="sub">Queste domande tornano domani, poi a intervalli crescenti (1, 3, 7, 14, 30 giorni) finché non le sbagli più.</p><ul class="ex-err">${errs.map(q=>`<li>${q.prompt.replace(/<[^>]+>/g,"")} <b>${q.opts.find(o=>o.id===q.ok).l}</b></li>`).join("")}</ul>`:""}
-      <div class="row" style="margin-top:14px;gap:8px"><button class="btn primary" data-ex="home">Torna alla formazione</button>${EX.mode==="ind"?`<button class="btn" data-ex="ind">Altre 10 domande</button>`:""}</div></div>`}
-  const q=EX.qs[EX.i],a=EX.ans;
-  const opt=o=>{let c="ex-opt";if(a){if(o.id===q.ok)c+=" good";else if(o.id===a)c+=" bad"}
-    return `<button class="${c}" data-exo="${o.id}" ${a?"disabled":""}><span>${o.l}</span>${o.s?`<small>${o.s}</small>`:""}</button>`};
-  let fb="";
+    const errs=EX.qs.filter(q=>q.res===false),okN=EX.qs.filter(q=>q.res).length;
+    const capMsg=EX.mode!=="daily"&&exState().got>=EX_CAP?`<p class="note">Hai raggiunto il massimo di oggi per gli esercizi liberi (${EX_CAP} crediti).</p>`:"";
+    const lines=`${EX.mode==="daily"?`<div class="stats"><div class="stat"><b>${okN}/${EX.qs.length}</b><span>risposte giuste</span></div><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div></div>`:""}
+      <p>${EX.done.msg}</p>${capMsg}
+      ${errs.length?`<div class="rev"><h3>${ic("repeat")} Da ripassare</h3><p class="note">Tornano domani, poi dopo 3, 7, 14 e 30 giorni finché non le sbagli più.</p><ul>${errs.map(q=>`<li>${q.prompt.replace(/<[^>]+>/g,"")} <b>${q.opts.find(o=>o.id===q.ok).l}</b></li>`).join("")}</ul></div>`:""}`;
+    const btns=`<button class="btn primary big" data-ex="home">Continua</button>${EX.mode==="ind"?`<button class="btn big" data-ex="ind">Altre 10 domande</button>`:""}`;
+    const score=okN===EX.qs.length?"Tutto giusto!":okN>=EX.qs.length*.7?"Ottimo lavoro!":okN>=EX.qs.length*.4?"Buon allenamento!":"Ogni errore è un ripasso";
+    return exDoneHTML(EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:"Indicazioni",EX.done.got,lines,btns,score)}
+  const q=EX.qs[EX.i],a=EX.ans,sel=EX.sel;
+  const L="ABCD";
+  const opt=(o,j)=>{let c="opt";if(a){if(o.id===q.ok)c+=" good";else if(o.id===a)c+=" bad";else c+=" dim"}else if(o.id===sel)c+=" sel";
+    return `<button class="${c}" data-exo="${o.id}" ${a?"disabled":""}><span class="L">${a&&o.id===q.ok?ic("check"):L[j]}</span><span class="ot">${o.l}</span>${o.s?`<small>${o.s}</small>`:""}</button>`};
+  let foot;
   if(a){const good=a===q.ok,ik=q.int&&CARDS[q.int];
     const lgn=q.t==="ic"?q.opts.map(o=>exLGnote(o.id,q.key.slice(3),o.id===a)).join(""):q.t==="id"?q.opts.map(o=>exLGnote(q.key.slice(3),o.id,o.id===a)).join(""):"";
-    fb=`<div class="ex-fb ${good?"good":"bad"}"><b>${good?"Giusto.":"Non è così."}</b> ${q.note}${lgn}
-      ${ik&&ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div>
-      <div class="row" style="margin-top:10px"><button class="btn primary" data-ex="next">${EX.i+1<EX.qs.length?"Avanti":"Vedi il risultato"}</button></div>`}
-  const k=EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:"Indicazioni";
-  return `<div class="ex">${exHead(k,`Domanda ${EX.i+1} di ${EX.qs.length}`)}
-    <div class="ex-bar"><i style="width:${EX.i/EX.qs.length*100}%"></i></div>
-    ${q.rev?`<span class="ex-tag">Ripasso</span>`:""}
-    <p class="ex-q">${q.prompt}</p>
-    <div class="ex-opts">${q.opts.map(opt).join("")}</div>${fb}
-    <div class="row" style="margin-top:16px"><button class="btn" data-ex="home">Esci</button></div></div>`}
+    const msg=(good?EX_OK:EX_KO)[EX.i%(good?EX_OK:EX_KO).length];
+    foot=`<div class="qz-foot ${good?"good":"bad"}"><div class="in"><div class="fb-h"><span class="badge">${ic(good?"check":"x")}</span>${msg}</div>
+      <div class="fb-t">${good?"":`Risposta giusta: <b>${q.opts.find(o=>o.id===q.ok).l}</b>. `}${q.note}${lgn}${ik&&ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div>
+      <button class="btn big ${good?"primary":"red"}" data-ex="next">Continua</button></div></div>`}
+  else foot=`<div class="qz-foot"><div class="in"><button class="btn primary big" data-ex="check" ${sel?"":"disabled"}>Verifica</button></div></div>`;
+  const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:"Indicazioni";
+  return `<div class="qz">${exTop(EX.i+(a?1:0),EX.qs.length,`${EX.i+1}/${EX.qs.length}`)}
+    <div class="qz-body"><p class="qz-kick">${q.rev?`${ic("repeat")} Ripasso`:k}</p>
+    <p class="qz-q">${q.prompt}</p>
+    <div class="opts">${q.opts.map(opt).join("")}</div></div>${foot}</div>`}
 function exCpHTML(){
   const T=EX.tables[EX.round];
-  if(EX.done)return `<div class="ex">${exHead("Coppie pericolose","Fine della sessione")}
-    <div class="patient first"><b>${EX.done.got} crediti ECM</b><span>${EX.done.msg}</span></div>
-    <div class="row" style="margin-top:14px;gap:8px"><button class="btn primary" data-ex="home">Torna alla formazione</button><button class="btn" data-ex="cp">Altri 3 carrelli</button></div></div>`;
+  if(EX.done){const tot=EX.tables.reduce((z,T)=>z+T.combos.length,0),fnd=EX.tables.reduce((z,T)=>z+(T.gave?0:T.found.length),0);
+    return exDoneHTML("Coppie pericolose",EX.done.got,`<div class="stats"><div class="stat"><b>${fnd}/${tot}</b><span>combinazioni trovate</span></div><div class="stat"><b>${EX.tables.reduce((z,T)=>z+T.wrong,0)}</b><span>segnalazioni sbagliate</span></div></div><p>${EX.done.msg}</p>`,
+      `<button class="btn primary big" data-ex="home">Continua</button><button class="btn big" data-ex="cp">Altri 3 carrelli</button>`,fnd===tot?"Occhio clinico!":"Carrelli controllati")}
   const all=T.found.length===T.combos.length;
   const pill=id=>{const d=CARDS[id],on=T.sel.includes(id),inF=T.found.some(f=>T.combos[f].ids.includes(id));
-    return `<button class="ex-drug${on?" on":""}${inF?" hit":""}" data-exd="${id}" ${all?"disabled":""} style="--cc:${CLS[d.cl].c}"><b>${d.n}</b><small>${CLS[d.cl].n}</small></button>`};
-  const found=T.found.map(f=>{const c=T.combos[f];return c.r.map(rk=>{const ik=CARDS[RISK2INT[rk]];
-    return `<div class="ex-found"><b>${ik.n}</b>: ${c.ids.map(exN).join(" + ")}<p>${ik.f}</p>${ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div>`}).join("")}).join("");
-  const miss=all?"":"";
-  return `<div class="ex">${exHead("Coppie pericolose",`Carrello ${EX.round+1} di 3`,"Sei farmaci sullo stesso carrello della terapia. Seleziona due o tre farmaci che insieme fanno una delle 8 interazioni del gioco e premi «Segnala». Le combinazioni da trovare sono da 1 a 3.")}
-    <p class="ex-count">Trovate ${T.found.length} su ${T.combos.length} · segnalazioni sbagliate ${T.wrong}</p>
-    <div class="ex-grid">${T.ids.map(pill).join("")}</div>
-    ${T.msg?`<p class="ex-msg">${T.msg}</p>`:""}
-    <div class="row" style="margin-top:12px;gap:8px">${all?`<button class="btn primary" data-ex="cpnext">${EX.round<2?"Carrello successivo":"Vedi il risultato"}</button>`:
-      `<button class="btn primary" data-ex="flag" ${T.sel.length<2?"disabled":""}>Segnala</button><button class="btn" data-ex="giveup">Mostra le risposte</button>`}</div>
-    ${found}${miss}
-    <p class="ex-note">Conta solo le 8 interazioni del gioco. Ho tolto dai carrelli i farmaci e le coppie con altre interazioni importanti, per non darti torto quando hai ragione.</p>
-    <div class="row" style="margin-top:12px"><button class="btn" data-ex="home">Esci</button></div></div>`}
+    return `<button class="drug${on?" on":""}${inF?" hit":""}" data-exd="${id}" ${all?"disabled":""} style="--cc:${CLS[d.cl].c}"><span class="dot"></span><b>${d.n}</b><small>${CLS[d.cl].n}</small>${on?`<span class="tick">${ic("check")}</span>`:""}</button>`};
+  const found=T.found.slice().reverse().map(f=>{const c=T.combos[f];return c.r.map(rk=>{const ik=CARDS[RISK2INT[rk]];
+    return `<div class="found"><span class="fi">${ic("pair")}</span><div><b>${ik.n}</b><span>${c.ids.map(exN).join(" + ")}</span><p>${ik.f}</p>${ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div></div>`}).join("")}).join("");
+  let foot;
+  if(T.last)foot=`<div class="qz-foot ${T.last.k}"><div class="in"><div class="fb-h"><span class="badge">${ic(T.last.k==="good"?"check":T.last.k==="bad"?"x":"info")}</span>${T.last.h}</div><div class="fb-t">${T.last.t}</div><button class="btn big ${T.last.k==="bad"?"red":"primary"}" data-ex="${all?"cpnext":"cpok"}">${all?(EX.round<2?"Carrello successivo":"Vedi il risultato"):"Continua"}</button></div></div>`;
+  else if(all)foot=`<div class="qz-foot"><div class="in"><button class="btn primary big" data-ex="cpnext">${EX.round<2?"Carrello successivo":"Vedi il risultato"}</button></div></div>`;
+  else foot=`<div class="qz-foot"><div class="in btns"><button class="btn primary big" data-ex="flag" ${T.sel.length<2?"disabled":""}>Segnala${T.sel.length?` (${T.sel.length})`:""}</button><button class="lnk" data-ex="giveup">Mostra le risposte</button></div></div>`;
+  return `<div class="qz">${exTop(EX.round+(all?1:0),3,`Carrello ${EX.round+1}/3`)}
+    <div class="qz-body"><p class="qz-kick">Coppie pericolose</p>
+    <p class="qz-q">Quali farmaci di questo carrello fanno un'interazione?</p>
+    <p class="qz-hint">Tocca 2 o 3 farmaci, poi «Segnala». Da trovare: <b>${T.found.length} su ${T.combos.length}</b>.</p>
+    <div class="drugs">${T.ids.map(pill).join("")}</div>
+    ${found?`<div class="founds">${found}</div>`:""}
+    <p class="note">Conta solo le 8 interazioni del gioco. Ho tolto dai carrelli i farmaci e le coppie con altre interazioni importanti, per non darti torto quando hai ragione.</p></div>${foot}</div>`}
 function exHomeHTML(){
-  const E=exState(),t=exToday(),dd=E.daily[t],due=exDue().length;
-  const it=(n,k,tt,d,x)=>`<button class="ts-row" data-ex="${k}"><span class="ts-n">${n}</span><span class="ts-b"><b>${tt}</b><span>${d}</span>${x?`<small>${x}</small>`:""}</span><span class="ts-a" aria-hidden="true">›</span></button>`;
-  return `<div class="tecnica">${exHead("Formazione a distanza","Formazione ECM","Esercizi brevi da fare da soli. Le risposte giuste danno crediti ECM da spendere nelle Forniture.")}
-    <div class="ts-list">
-      ${it("1","daily",`Giro visita del ${exLabel(t)}`,"Dieci domande, uguali per tutti oggi. Se ne sbagli qualcuna, torna nei giorni seguenti per il ripasso.",dd?`fatto: ${dd.ok} su ${dd.n} · giorni consecutivi ${E.streak||1}`:"2 crediti per risposta giusta, 5 di bonus da 8 in su")}
-      ${it("2","ind","Indicazioni","Abbina farmaco e condizione clinica, nei due sensi.","1 credito per risposta giusta")}
-      ${it("3","cp","Coppie pericolose","Trova sul carrello le associazioni a rischio.","2 crediti per combinazione trovata, 1 in meno per ogni errore")}
+  const E=exState(),t=exToday(),dd=E.daily[t],due=exDue().length,left=Math.max(0,EX_CAP-E.got);
+  const node=(k,icon,col,tt,d,x,state)=>`<button class="pnode ${state||""}" data-ex="${k}" style="--tc:var(--${col});--tl:var(--${col}-l)"><span class="pc">${state==="done"?ic("check"):ic(icon)}</span><span class="pt"><b>${tt}</b><span>${d}</span>${x?`<small>${x}</small>`:""}</span></button>`;
+  return `<div class="home"><p class="hello">Formazione ECM</p><h2 class="sec">Allenati un po' ogni giorno</h2>
+    <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${left}</b><span>crediti liberi rimasti oggi</span></div><div class="stat"><b>${due}</b><span>da ripassare</span></div></div>
+    <div class="path">
+      ${node("daily","visit","green",`Giro visita del ${exLabel(t)}`,"10 domande uguali per tutti oggi, più il tuo ripasso.",dd?`Fatto: ${dd.ok} su ${dd.n}`:"2 crediti per risposta giusta, +5 da 8 in su",dd?"done":"now")}
+      ${node("ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica, nei due sensi.","1 credito per risposta giusta")}
+      ${node("cp","pair","red","Coppie pericolose","Trova sul carrello le associazioni a rischio.","2 crediti per combinazione, 1 in meno per errore")}
     </div>
-    <p class="ex-note">Oggi dagli esercizi liberi: ${E.got} di ${EX_CAP} crediti. Il giro visita non ha limite. ${due?`Domande da ripassare oggi: ${due}.`:"Nessuna domanda da ripassare oggi."}</p></div>`}
+    <p class="note">Gli esercizi liberi danno al massimo ${EX_CAP} crediti al giorno; il giro visita non ha limite.</p></div>`}
 function renderEcm(){
   if(!EX)app.innerHTML=exHomeHTML();
-  else if(EX.mode==="dailydone"){const E=exState(),d=E.daily[exToday()];app.innerHTML=`<div class="ex">${exHead("Giro visita","Già fatto oggi")}<div class="patient first"><b>${d.ok} su ${d.n}</b><span>Il prossimo giro visita è domani. Intanto puoi allenarti con gli esercizi liberi.</span></div><div class="row" style="margin-top:14px"><button class="btn primary" data-ex="home">Torna alla formazione</button></div></div>`}
+  else if(EX.mode==="dailydone"){const d=exState().daily[exToday()];
+    app.innerHTML=exDoneHTML("Giro visita","0",`<p>Hai già fatto il giro visita di oggi (${d.ok} su ${d.n}). Il prossimo è domani: intanto puoi allenarti con Indicazioni e Coppie pericolose.</p>`,`<button class="btn primary big" data-ex="home">Torna alla formazione</button>`,"Già fatto oggi")}
   else if(EX.mode==="cp")app.innerHTML=exCpHTML();
   else app.innerHTML=exQuizHTML()}
+function exCheck(){const q=EX.qs[EX.i];if(EX.ans||!EX.sel)return;EX.ans=EX.sel;q.res=EX.ans===q.ok;if(q.res)EX.ok++;
+  exMark(q.key,q.res);save();sfx(q.res?"cure":"hit");render()}
+function exNext(){EX.ans=null;EX.sel=null;EX.i++;if(EX.i>=EX.qs.length)exEndQuiz();else{render();window.scrollTo(0,0)}}
 app.addEventListener("click",e=>{
   if(tab!=="ecm")return;
   const b=e.target.closest("[data-ex],[data-exo],[data-exd]");if(!b||b.disabled)return;
-  if(b.dataset.exo!==undefined){const q=EX.qs[EX.i];if(EX.ans)return;EX.ans=b.dataset.exo;q.res=EX.ans===q.ok;if(q.res)EX.ok++;
-    exMark(q.key,q.res);save();sfx(q.res?"heal":"hit");render();return}
-  if(b.dataset.exd!==undefined){const T=EX.tables[EX.round],id=b.dataset.exd;T.msg="";
+  if(b.dataset.exo!==undefined){if(EX.ans)return;EX.sel=b.dataset.exo;sfx("play");render();return}
+  if(b.dataset.exd!==undefined){const T=EX.tables[EX.round],id=b.dataset.exd;if(T.last)return;
     T.sel=T.sel.includes(id)?T.sel.filter(x=>x!==id):T.sel.length<3?[...T.sel,id]:T.sel;render();return}
   const k=b.dataset.ex;
   if(k==="home"){EX=null;render();window.scrollTo(0,0);return}
   if(k==="daily"){exStartDaily();return}
   if(k==="ind"){exStartInd();return}
   if(k==="cp"){exStartCp();return}
-  if(k==="next"){EX.ans=null;EX.i++;if(EX.i>=EX.qs.length)exEndQuiz();else render();return}
+  if(k==="check"){exCheck();return}
+  if(k==="next"){exNext();return}
+  if(k==="cpok"){EX.tables[EX.round].last=null;render();return}
   if(k==="flag"){const T=EX.tables[EX.round],s=T.sel.slice().sort().join("|");
     const f=T.combos.findIndex(c=>c.ids.join("|")===s);
-    if(f>=0&&!T.found.includes(f)){T.found.push(f);EX.pts+=2;T.sel=[];sfx("cure")}
-    else if(f>=0){T.msg="Questa l'hai già trovata."}
-    else if(exRisk(T.sel).length){T.msg="C'è una combinazione a rischio, ma hai selezionato anche un farmaco che non serve. Toglilo e riprova."}
-    else{T.wrong++;EX.pts-=1;T.sel=[];T.msg="Questa associazione non è tra le 8 interazioni del gioco.";sfx("hit")}
+    if(f>=0&&!T.found.includes(f)){T.found.push(f);EX.pts+=2;T.sel=[];sfx("cure");const c=T.combos[f];
+      T.last={k:"good",h:T.found.length===T.combos.length?"Carrello completato!":"Trovata!",t:c.r.map(rk=>`<b>${CARDS[RISK2INT[rk]].n}</b>: ${c.ids.map(exN).join(" + ")}.`).join(" ")+" La fonte è qui sotto, tra le combinazioni trovate."}}
+    else if(f>=0)T.last={k:"info",h:"Già trovata",t:"Questa combinazione l'hai già segnalata."};
+    else if(exRisk(T.sel).length)T.last={k:"info",h:"Ci sei quasi",t:"C'è una combinazione a rischio, ma hai selezionato anche un farmaco che non serve. Toglilo e riprova."};
+    else{T.wrong++;EX.pts-=1;T.sel=[];sfx("hit");T.last={k:"bad",h:"Non è tra le interazioni del gioco",t:"Questa associazione non fa nessuna delle 8 interazioni del gioco. Riprova con un'altra coppia."}}
     render();return}
-  if(k==="giveup"){const T=EX.tables[EX.round];T.combos.forEach((c,i)=>{if(!T.found.includes(i))T.found.push(i)});T.gave=1;T.sel=[];T.msg="Ecco le combinazioni che mancavano. Questo carrello non dà altri crediti.";render();return}
+  if(k==="giveup"){const T=EX.tables[EX.round];T.combos.forEach((c,i)=>{if(!T.found.includes(i))T.found.push(i)});T.gave=1;T.sel=[];
+    T.last={k:"info",h:"Ecco le risposte",t:"Le combinazioni che mancavano sono qui sotto. Questo carrello non dà altri crediti."};render();return}
   if(k==="cpnext"){if(EX.round<2){EX.round++;EX.tables.push(exTable(Math.random));render()}
     else{const tot=EX.tables.reduce((z,T)=>z+T.combos.length,0);const got=exAward(EX.pts,true);
       EX.done={got,msg:`Punti ${EX.pts} su ${tot*2} possibili.${exState().got>=EX_CAP?" Hai raggiunto il massimo di oggi per gli esercizi liberi.":""}`};render()}
     window.scrollTo(0,0);return}
 });
+document.addEventListener("keydown",e=>{
+  if(tab!=="ecm"||!EX||EX.done||!EX.qs||e.target.closest("input,textarea"))return;
+  const n="1234abcd".indexOf(e.key.toLowerCase());
+  if(n>=0&&!EX.ans){const o=EX.qs[EX.i].opts[n%4];if(o){EX.sel=o.id;render()}}
+  else if(e.key==="Enter"){e.preventDefault();EX.ans?exNext():exCheck()}});
