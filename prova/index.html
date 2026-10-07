@@ -2114,7 +2114,7 @@ const exExp=(drugId,dis)=>dis.ind.includes(drugId)&&!EX_GEN.has(drugId+"|"+dis.i
 Object.assign(SRC,{
   lg_esc_sca23:{a:"Byrne RA, et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44(38):3720-3826",sh:"ESC 2023, sindromi coronariche acute",doi:"10.1093/eurheartj/ehad191"},
   lg_esc_fa24:{a:"Van Gelder IC, et al. 2024 ESC Guidelines for the management of atrial fibrillation. Eur Heart J 2024;45(36):3314-3414",sh:"ESC 2024, fibrillazione atriale",doi:"10.1093/eurheartj/ehae176"},
-  lg_esc_hf21:{a:"McDonagh TA, et al. 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure. Eur Heart J 2021;42(36):3599-3726",sh:"ESC 2021, scompenso cardiaco",doi:"10.1093/eurheartj/ehab368"},
+  lg_esc_hf26:{a:"Køber L, Adamo M, et al. 2026 ESC Guidelines for the management of heart failure. Eur Heart J 2026;00:1-112",sh:"ESC 2026, scompenso cardiaco",doi:"10.1093/eurheartj/ehag100"},
   lg_nice_gad:{a:"NICE. Generalised anxiety disorder and panic disorder in adults: management. Clinical guideline CG113, 2011 (ultimo aggiornamento aprile 2026)",sh:"NICE CG113",url:"https://www.nice.org.uk/guidance/cg113/chapter/1-Guidance"},
   lg_neupsig25:{a:"Soliman N, et al. Pharmacotherapy and non-invasive neuromodulation for neuropathic pain: a systematic review and meta-analysis. Lancet Neurol 2025;24(5):413-428",sh:"NeuPSIG 2025 (Soliman et al.)",doi:"10.1016/S1474-4422(25)00068-7"},
   lg_ssc26:{a:"Prescott HC, et al. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026. Crit Care Med 2026;54(4):725-812",sh:"Surviving Sepsis Campaign 2026",doi:"10.1097/CCM.0000000000007075"},
@@ -2128,7 +2128,7 @@ const EX_LG={
   "rosuvastatina|d_sca":{s:"lg_esc_sca23",q:"It is recommended that high-dose statin therapy is initiated or continued as early as possible, regardless of initial LDL-C values.",g:"Classe I, livello A",sec:1},
   "bisoprololo|d_sca":{s:"lg_esc_sca23",q:"Beta-blockers are recommended in ACS patients with LVEF ≤40% regardless of HF symptoms.",g:"Classe I, livello A; non nomina il bisoprololo",sec:1},
   "bisoprololo|d_fa":{s:"lg_esc_fa24",q:"Beta-blockers, diltiazem, verapamil, or digoxin are recommended as first-choice drugs to control heart rate and reduce symptoms in patients with AF and left ventricular ejection fraction (LVEF) > 40%.",g:"controllo della frequenza; classe non verificata",sec:1},
-  "metoprololo|d_scompenso":{s:"lg_esc_hf21",q:"Beta-blockers have been shown to reduce mortality and morbidity in patients with HFrEF, in addition to treatment with an ACE-I and diuretic.",g:"il metoprololo con prove è il succinato a rilascio prolungato (tabella 8); la linea guida ESC 2026 sullo scompenso non è stata ancora letta"},
+  "metoprololo|d_scompenso":{s:"lg_esc_hf26",q:"A beta-blocker is recommended in stable patients with symptomatic HFrEF to reduce the risk of HFH and death.",g:"Classe I, livello A; il testo nomina bisoprololo, metoprololo succinato a rilascio prolungato e carvedilolo"},
   "sertralina|d_ansia":{s:"lg_nice_gad",q:"If a person with GAD chooses drug treatment, offer a selective serotonin reuptake inhibitor (SSRI). Consider offering sertraline first because it is the most cost-effective drug, but note that at the time of publication (January 2011) sertraline did not have UK marketing authorisation for this indication.",g:"raccomandazione 1.2.23"},
   "venlafaxina|d_neuro":{s:"lg_neupsig25",q:"a strong recommendation for use of TCAs, α2δ-ligands, and SNRIs as first-line treatments",g:"dall'abstract; la tabella 2 nomina la venlafaxina tra gli SNRI di prima linea"},
   "idrocortisone|d_sepsi":{s:"lg_ssc26",q:"For adults with septic shock, we 'suggest' using IV corticosteroids.",g:"raccomandazione condizionale, certezza bassa; solo nello shock settico",sec:1},
@@ -2401,7 +2401,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-3</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-4</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;
