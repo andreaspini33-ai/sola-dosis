@@ -648,7 +648,7 @@ body.focus main{padding-top:0}
 .qthumb{flex:none;width:96px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:zoom-in}
 .qthumb .cell{width:96px;display:block;transition:transform .15s}.qthumb:hover .cell{transform:rotate(-2deg) scale(1.03)}
 .qthumb .card{box-shadow:0 2px 0 rgba(0,0,0,.12),0 8px 16px -10px rgba(0,0,0,.5)}
-.qlink{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:.75rem;color:var(--sky)}.qlink svg{width:14px;height:14px}
+.qlink{white-space:nowrap;font-size:.7rem!important;display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:.75rem;color:var(--sky)}.qlink svg{width:14px;height:14px}
 .wt{min-width:0;flex:1}.wt h4{margin:0 0 4px;font-weight:900;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
 .rq{display:block;margin:6px 0 2px;padding:8px 10px;background:rgba(255,255,255,.75);border-left:3px solid currentColor;border-radius:0 10px 10px 0;font-style:italic;quotes:"«" "»"}
 .rq::before{content:open-quote}.rq::after{content:close-quote}
@@ -670,6 +670,10 @@ body.focus main{padding-top:0}
 .opt:hover:not(:disabled):not(.sel){border-color:var(--line-d);background:#FFFDF8}
 .qz-q{font-size:1.5rem}
 @media (min-width:700px){.qz-q{font-size:1.75rem}.opts{grid-template-columns:1fr 1fr}.opt{min-height:64px}}
+
+.tgx{margin-top:10px;background:rgba(255,255,255,.75);border:2px solid rgba(0,0,0,.06);border-radius:14px;padding:10px 12px}
+.tgx h5{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-weight:900;font-size:.95rem;color:var(--teal)}.tgx h5 svg{width:18px;height:18px;flex:none}
+.tgx dl{margin:0;display:grid;gap:2px}.tgx dt{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:4px}.tgx dd{margin:0;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
