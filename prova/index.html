@@ -1164,7 +1164,7 @@ const IC={home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
   pair:'<circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>',
   visit:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/>',
   repeat:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M20 4v5h-5M4 20v-5h5"/>',
-  play:'<path d="M7 4l13 8-13 8z"/>'};
+  play:'<path d="M7 4l13 8-13 8z"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'};
 const ic=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||""}</svg>`;
 const SPRIG=`<svg class="sprig" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 128C52 96 78 60 118 14"/><path d="M48 98c-14-1-24-9-27-23 14 0 24 9 27 23z"/><path d="M62 80c-4-14 1-26 13-34 4 14-1 26-13 34z"/><path d="M76 62c-14-3-21-14-21-28 13 3 21 14 21 28z"/><path d="M92 42c-1-13 5-22 17-28 1 13-5 22-17 28z"/><circle cx="118" cy="14" r="5"/><circle cx="104" cy="22" r="3.5"/></svg>`;
 const NAV=[["menu","Home","home"],["ecm","Formazione","cap"],["duello","Testa a testa","scale"],["bustine","Forniture","box"],["collezione","Armadio","cab"]];
@@ -1190,6 +1190,7 @@ function renderMenu(){
     <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti ECM</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
     <h3 class="sect-h">Allenati</h3>
     ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","1 credito per risposta giusta")}
+    ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","1 credito per risposta giusta")}
     ${tile("ecm:cp","pair","red","Coppie pericolose","Trova le associazioni a rischio sul carrello.","2 crediti per combinazione trovata")}
     <h3 class="sect-h">Gioca</h3>
     ${tile("duello","scale","plum","Testa a testa","Come negli studi head-to-head: due terapie sullo stesso paziente, vince la strategia migliore.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
@@ -1207,7 +1208,7 @@ document.querySelector(".brand h1").addEventListener("click",()=>{tab="menu";ren
 app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||tab!=="menu")return;const k=b.dataset.go;
   if(k==="tut"){tab="duello";startTutorial();return}
   if(k==="resume"){tab="duello";duelHidden=false;render();return}
-  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():exStartCp();window.scrollTo(0,0);return}
+  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():m==="tg"?exStartTg():exStartCp();window.scrollTo(0,0);return}
   tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
@@ -2345,6 +2346,8 @@ function exQfromKey(key,r){
   if(t==="ic"){const d=EX_DIS().find(x=>x.id===id);return d&&exQcond(d,r)}
   if(t==="id")return exQdrug(id,r);
   if(t==="cp")return exQpair(r,id);
+  if(t==="tg")return DTG[id]&&CARDS[id]?exQtgDrug(id,r):null;
+  if(t==="tt")return TG[id]?exQtgTarget(id,r):null;
   return null}
 
 // ---------- Coppie pericolose ----------
@@ -2441,6 +2444,106 @@ function exAward(n,capped){
   const E=exState();if(capped)n=Math.max(0,Math.min(n,EX_CAP-E.got));
   n=Math.max(0,Math.round(n));if(capped)E.got+=n;S.crediti+=n;save();return n}
 
+
+// ---------- Bersagli ----------
+// Bersaglio molecolare principale dei farmaci (meccanismo d'azione, sezione 5.1 degli RCP; da verificare).
+// Esclusi i farmaci con meccanismo incerto o multiplo (paracetamolo, metformina, valproato, litio, amiodarone...).
+// Distrattori sempre da un gruppo diverso da quelli dei bersagli del farmaco, per non dare torto a chi ha ragione.
+const TG={
+  mu:["Recettore µ-oppioide","dol","Recettore accoppiato a proteine Gi/o: riduce la trasmissione del dolore."],
+  cox1:["COX-1","dol","Ciclossigenasi costitutiva: prostaglandine protettive della mucosa e trombossano piastrinico."],
+  cox2:["COX-2","dol","Ciclossigenasi inducibile nell'infiammazione."],
+  ht1:["Recettori 5-HT1B/1D","dol","Recettori serotoninergici: vasocostrizione dei vasi cranici e meno rilascio di neuropeptidi."],
+  gaba:["Recettore GABA-A (sito delle benzodiazepine)","snc","Canale al cloro: le benzodiazepine aumentano l'effetto del GABA."],
+  sert:["Trasportatore della serotonina (SERT)","snc","Riporta la serotonina nel terminale presinaptico."],
+  net:["Trasportatore della noradrenalina (NET)","snc","Riporta la noradrenalina nel terminale presinaptico."],
+  d2:["Recettore dopaminergico D2","snc","Recettore accoppiato a Gi/o, bersaglio degli antipsicotici."],
+  ht2a:["Recettore 5-HT2A","snc","Recettore serotoninergico bloccato dagli antipsicotici atipici."],
+  a2d:["Subunità α2δ dei canali del calcio","snc","Subunità accessoria dei canali del calcio voltaggio-dipendenti nei neuroni."],
+  nav:["Canale del sodio voltaggio-dipendente","snc","Il blocco riduce le scariche ripetitive dei neuroni."],
+  sv2a:["Proteina delle vescicole sinaptiche SV2A","snc","Proteina coinvolta nel rilascio dei neurotrasmettitori."],
+  b1:["Recettore adrenergico β1","cv","Recettore prevalente nel cuore: frequenza e contrattilità."],
+  ace:["Enzima di conversione dell'angiotensina (ACE)","cv","Trasforma l'angiotensina I in angiotensina II e degrada la bradichinina."],
+  at1:["Recettore AT1 dell'angiotensina II","cv","Media vasocostrizione e secrezione di aldosterone."],
+  nep:["Neprilisina","cv","Enzima che degrada i peptidi natriuretici."],
+  mr:["Recettore dei mineralcorticoidi","cv","Recettore nucleare dell'aldosterone."],
+  nkcc2:["Cotrasportatore Na-K-2Cl (NKCC2)","cv","Riassorbe il sodio nell'ansa di Henle."],
+  ncc:["Cotrasportatore Na-Cl (NCC)","cv","Riassorbe il sodio nel tubulo contorto distale."],
+  cav:["Canale del calcio di tipo L","cv","Fa entrare il calcio nelle cellule muscolari lisce dei vasi e nel cuore."],
+  nak:["Na⁺/K⁺ ATPasi","cv","Pompa di membrana; la sua inibizione aumenta il calcio nel miocardio."],
+  hmg:["HMG-CoA reduttasi","cv","Enzima limitante della sintesi del colesterolo."],
+  vkor:["Vitamina K epossido reduttasi (VKORC1)","emo","Ricicla la vitamina K necessaria ai fattori II, VII, IX e X."],
+  xa:["Fattore Xa","emo","Converte la protrombina in trombina."],
+  iia:["Trombina (fattore IIa)","emo","Trasforma il fibrinogeno in fibrina."],
+  at3:["Antitrombina","emo","Inibitore naturale della trombina e del fattore Xa, potenziato dalle eparine."],
+  p2y12:["Recettore piastrinico P2Y12","emo","Recettore dell'ADP che attiva le piastrine."],
+  plg:["Plasminogeno","emo","Precursore della plasmina, che scioglie la fibrina."],
+  ins:["Recettore dell'insulina","endo","Recettore tirosin-chinasico."],
+  katp:["Canale del potassio ATP-dipendente (SUR1)","endo","La sua chiusura nelle cellule β fa liberare insulina."],
+  dpp4:["Dipeptidil peptidasi 4 (DPP-4)","endo","Enzima che degrada le incretine GLP-1 e GIP."],
+  glp1:["Recettore del GLP-1","endo","Aumenta la secrezione di insulina dipendente dal glucosio."],
+  sglt2:["Cotrasportatore sodio-glucosio SGLT2","endo","Riassorbe il glucosio nel tubulo prossimale."],
+  ppar:["Recettore PPARγ","endo","Recettore nucleare che aumenta la sensibilità all'insulina."],
+  tr:["Recettore degli ormoni tiroidei","endo","Recettore nucleare della triiodotironina."],
+  tpo:["Tireoperossidasi","endo","Enzima della sintesi degli ormoni tiroidei."],
+  gr:["Recettore dei glucocorticoidi","endo","Recettore nucleare che regola la trascrizione genica."],
+  fpps:["Farnesil pirofosfato sintasi","endo","Enzima degli osteoclasti inibito dai bisfosfonati azotati."],
+  pbp:["Proteine leganti la penicillina (PBP)","anti","Enzimi della sintesi del peptidoglicano della parete batterica."],
+  dala:["Terminale D-Ala-D-Ala del peptidoglicano","anti","Precursore della parete batterica a cui si lega la vancomicina."],
+  r50:["Subunità ribosomiale 50S","anti","Subunità maggiore del ribosoma batterico."],
+  r30:["Subunità ribosomiale 30S","anti","Subunità minore del ribosoma batterico."],
+  gyr:["DNA girasi e topoisomerasi IV","anti","Enzimi che regolano il superavvolgimento del DNA batterico."],
+  dhfr:["Diidrofolato reduttasi e diidropteroato sintasi","anti","Due enzimi della sintesi dei folati batterici."],
+  cyp51:["14α-demetilasi fungina","anti","Enzima della sintesi dell'ergosterolo."],
+  rnap:["RNA polimerasi batterica","anti","Enzima della trascrizione batterica."],
+  hivp:["Proteasi dell'HIV","anti","Enzima che matura le proteine del virus."]
+};
+const DTG={morfina:["mu"],fentanil:["mu"],ossicodone:["mu"],buprenorfina:["mu"],codeina:["mu"],tramadolo:["mu","sert","net"],naloxone:["mu"],
+  ibuprofene:["cox1","cox2"],naprossene:["cox1","cox2"],diclofenac:["cox1","cox2"],ketorolac:["cox1","cox2"],aspirina:["cox1","cox2"],celecoxib:["cox2"],etoricoxib:["cox2"],
+  sumatriptan:["ht1"],diazepam:["gaba"],midazolam:["gaba"],lorazepam:["gaba"],alprazolam:["gaba"],flumazenil:["gaba"],
+  sertralina:["sert"],fluoxetina:["sert"],escitalopram:["sert"],venlafaxina:["sert","net"],
+  aloperidolo:["d2"],olanzapina:["d2","ht2a"],clozapina:["d2","ht2a"],pregabalin:["a2d"],carbamazepina:["nav"],levetiracetam:["sv2a"],
+  metoprololo:["b1"],bisoprololo:["b1"],ramipril:["ace"],enalapril:["ace"],losartan:["at1"],sacval:["at1","nep"],spironolattone:["mr"],
+  furosemide:["nkcc2"],idroclorotiazide:["ncc"],amlodipina:["cav"],digossina:["nak"],atorvastatina:["hmg"],rosuvastatina:["hmg"],
+  warfarin:["vkor"],acenocumarolo:["vkor"],apixaban:["xa"],rivaroxaban:["xa"],edoxaban:["xa"],dabigatran:["iia"],
+  eparina:["at3","xa","iia"],enoxaparina:["at3","xa","iia"],fondaparinux:["at3","xa"],clopidogrel:["p2y12"],prasugrel:["p2y12"],ticagrelor:["p2y12"],
+  alteplase:["plg"],tranexamico:["plg"],insulina:["ins"],glargine:["ins"],gliclazide:["katp"],sitagliptin:["dpp4"],semaglutide:["glp1"],
+  empagliflozin:["sglt2"],pioglitazone:["ppar"],levotiroxina:["tr"],metimazolo:["tpo"],prednisone:["gr"],desametasone:["gr"],idrocortisone:["gr","mr"],
+  alendronato:["fpps"],amoxicillina:["pbp"],amoxiclav:["pbp"],penicillina:["pbp"],ceftriaxone:["pbp"],meropenem:["pbp"],vancomicina:["dala"],
+  claritromicina:["r50"],azitromicina:["r50"],linezolid:["r50"],doxiciclina:["r30"],levofloxacina:["gyr"],cotrimox:["dhfr"],
+  fluconazolo:["cyp51"],ketoconazolo:["cyp51"],rifampicina:["rnap"],ritonavir:["hivp"]};
+// note sul meccanismo, quando il nome del bersaglio da solo non basta
+const DTG_NOTE={naloxone:"È un antagonista: occupa il recettore senza attivarlo e sposta gli oppioidi.",flumazenil:"È un antagonista del sito delle benzodiazepine.",
+  codeina:"Agisce soprattutto dopo la trasformazione in morfina da parte del CYP2D6.",tramadolo:"Agonista µ debole (soprattutto il metabolita) e inibitore della ricaptazione di serotonina e noradrenalina.",
+  buprenorfina:"Agonista parziale del recettore µ.",aspirina:"Acetila in modo irreversibile la COX; a basse dosi l'effetto conta sulla COX-1 piastrinica.",
+  eparina:"Potenzia l'antitrombina, che inattiva trombina e fattore Xa.",enoxaparina:"Potenzia l'antitrombina, con effetto prevalente sul fattore Xa.",
+  fondaparinux:"Si lega all'antitrombina e fa inibire in modo selettivo il fattore Xa.",tranexamico:"Blocca i siti di legame del plasminogeno alla fibrina: frena la fibrinolisi.",
+  alteplase:"Attiva il plasminogeno a plasmina: scioglie il trombo.",sacval:"Il sacubitril inibisce la neprilisina; il valsartan blocca il recettore AT1.",
+  idrocortisone:"Agisce sul recettore dei glucocorticoidi e, alle dosi sostitutive, anche su quello dei mineralcorticoidi.",
+  prednisone:"È un profarmaco: il fegato lo trasforma in prednisolone.",cotrimox:"Il sulfametossazolo inibisce la diidropteroato sintasi, il trimetoprim la diidrofolato reduttasi.",
+  amoxiclav:"L'acido clavulanico non agisce sulle PBP: inibisce le beta-lattamasi che degradano l'amoxicillina.",olanzapina:"Antagonista di D2 e 5-HT2A, oltre ad altri recettori.",clozapina:"Antagonista di D2 e 5-HT2A, oltre ad altri recettori."};
+const tgDrugs=()=>Object.keys(DTG).filter(i=>CARDS[i]);
+const tgGroups=id=>new Set(DTG[id].map(k=>TG[k][1]));
+function exQtgDrug(id,r){
+  const g=tgGroups(id),ok=exPick(DTG[id],r);
+  const wrong=exShuf(Object.keys(TG).filter(k=>!g.has(TG[k][1])),r).slice(0,3);
+  if(wrong.length<3)return null;
+  return {t:"tg",key:"tg:"+id,prompt:`Qual è il bersaglio di <b>${exN(id)}</b>?`,opts:exShuf([ok,...wrong],r).map(k=>({id:k,l:TG[k][0]})),ok,
+    note:`${exN(id)} agisce su: ${DTG[id].map(k=>TG[k][0]).join(", ")}. ${DTG_NOTE[id]||TG[ok][2]}`}}
+function exQtgTarget(k,r){
+  const holders=tgDrugs().filter(i=>DTG[i].includes(k));if(!holders.length)return null;
+  const ok=exPick(holders,r),grp=TG[k][1];
+  const wrong=exShuf(tgDrugs().filter(i=>!tgGroups(i).has(grp)),r).slice(0,3);
+  if(wrong.length<3)return null;
+  return {t:"tt",key:"tt:"+k,prompt:`Quale farmaco agisce su <b>${TG[k][0]}</b>?`,opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i),s:CLS[CARDS[i].cl].n})),ok,
+    note:`${TG[k][2]} Nel gioco agiscono qui: ${holders.map(exN).join(", ")}.${DTG_NOTE[ok]?" "+DTG_NOTE[ok]:""}`}}
+function exQtg(r){for(let n=0;n<40;n++){const q=r()<.6?exQtgDrug(exPick(tgDrugs(),r),r):exQtgTarget(exPick(Object.keys(TG),r),r);if(q)return q}return null}
+function exStartTg(){
+  const r=Math.random,due=exShuf(exDue().filter(k=>k.startsWith("tg:")||k.startsWith("tt:")),r).slice(0,4);
+  const qs=due.map(k=>exQfromKey(k,r)).filter(Boolean).map(q=>(q.rev=1,q));
+  while(qs.length<10){const q=exQtg(r);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
+  EX={mode:"tg",qs,i:0,ok:0,ans:null,errs:[]};render()}
+
 // ---------- sessioni ----------
 let EX=null;
 function exStartInd(){
@@ -2452,7 +2555,7 @@ function exStartDaily(){
   const E=exState(),t=exToday();
   if(E.daily[t]){EX={mode:"dailydone"};render();return}
   const r=exRng(hash("sola-dosis-giro-"+t)),qs=[];
-  for(let k=0;qs.length<10&&k<200;k++){const q=qs.length%3===2?exQpair(r):exQind(r);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
+  for(let k=0;qs.length<10&&k<200;k++){const q=qs.length%3===2?exQpair(r):qs.length%3===1?exQtg(r):exQind(r);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
   const rr=Math.random;
   exDue().slice(0,3).forEach(k=>{if(qs.some(x=>x.key===k))return;const q=exQfromKey(k,rr);if(q){q.rev=1;qs.push(q)}});
   EX={mode:"daily",qs,i:0,ok:0,ans:null,errs:[],day:t};render()}
@@ -2485,9 +2588,9 @@ function exQuizHTML(){
     const lines=`${EX.mode==="daily"?`<div class="stats"><div class="stat"><b>${okN}/${EX.qs.length}</b><span>risposte giuste</span></div><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div></div>`:""}
       <p>${EX.done.msg}</p>${capMsg}
       ${errs.length?`<div class="rev"><h3>${ic("repeat")} Da ripassare</h3><p class="note">Tornano domani, poi dopo 3, 7, 14 e 30 giorni finché non le sbagli più.</p><ul>${errs.map(q=>`<li>${q.prompt.replace(/<[^>]+>/g,"")} <b>${q.opts.find(o=>o.id===q.ok).l}</b></li>`).join("")}</ul></div>`:""}`;
-    const btns=`<button class="btn primary big" data-ex="home">Continua</button>${EX.mode==="ind"?`<button class="btn big" data-ex="ind">Altre 10 domande</button>`:""}`;
+    const btns=`<button class="btn primary big" data-ex="home">Continua</button>${EX.mode==="ind"||EX.mode==="tg"?`<button class="btn big" data-ex="${EX.mode}">Altre 10 domande</button>`:""}`;
     const score=okN===EX.qs.length?"Tutto giusto!":okN>=EX.qs.length*.7?"Ottimo lavoro!":okN>=EX.qs.length*.4?"Buon allenamento!":"Ogni errore è un ripasso";
-    return exDoneHTML(EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:"Indicazioni",EX.done.got,lines,btns,score)}
+    return exDoneHTML(EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":"Indicazioni",EX.done.got,lines,btns,score)}
   const q=EX.qs[EX.i],a=EX.ans,sel=EX.sel;
   const L="ABCD";
   const opt=(o,j)=>{let c="opt";if(a){if(o.id===q.ok)c+=" good";else if(o.id===a)c+=" bad";else c+=" dim"}else if(o.id===sel)c+=" sel";
@@ -2500,7 +2603,7 @@ function exQuizHTML(){
       <div class="fb-t">${good?"":`Risposta giusta: <b>${q.opts.find(o=>o.id===q.ok).l}</b>. `}${q.note}${lgn}${ik&&ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div>
       <button class="btn big ${good?"primary":"red"}" data-ex="next">Continua</button></div></div>`}
   else foot=`<div class="qz-foot"><div class="in"><button class="btn primary big" data-ex="check" ${sel?"":"disabled"}>Verifica</button></div></div>`;
-  const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:"Indicazioni";
+  const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":"Indicazioni";
   return `<div class="qz">${exTop(EX.i+(a?1:0),EX.qs.length,`${EX.i+1}/${EX.qs.length}`)}
     <div class="qz-body"><p class="qz-kick">${q.rev?`${ic("repeat")} Ripasso`:k}</p>
     <p class="qz-q">${q.prompt}</p>
@@ -2534,6 +2637,7 @@ function exHomeHTML(){
     <div class="path">
       ${node("daily","visit","green",`Giro visita del ${exLabel(t)}`,"10 domande uguali per tutti oggi, più il tuo ripasso.",dd?`Fatto: ${dd.ok} su ${dd.n}`:"2 crediti per risposta giusta, +5 da 8 in su",dd?"done":"now")}
       ${node("ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica, nei due sensi.","1 credito per risposta giusta")}
+      ${node("tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare, nei due sensi.","1 credito per risposta giusta")}
       ${node("cp","pair","red","Coppie pericolose","Trova sul carrello le associazioni a rischio.","2 crediti per combinazione, 1 in meno per errore")}
     </div>
     <p class="note">Gli esercizi liberi danno al massimo ${EX_CAP} crediti al giorno; il giro visita non ha limite.</p></div>`}
@@ -2557,6 +2661,7 @@ app.addEventListener("click",e=>{
   if(k==="daily"){exStartDaily();return}
   if(k==="ind"){exStartInd();return}
   if(k==="cp"){exStartCp();return}
+  if(k==="tg"){exStartTg();return}
   if(k==="check"){exCheck();return}
   if(k==="next"){exNext();return}
   if(k==="cpok"){EX.tables[EX.round].last=null;render();return}
@@ -2592,7 +2697,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-6</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-7</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;

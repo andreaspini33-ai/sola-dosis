@@ -1149,7 +1149,7 @@ const IC={home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
   pair:'<circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>',
   visit:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/>',
   repeat:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M20 4v5h-5M4 20v-5h5"/>',
-  play:'<path d="M7 4l13 8-13 8z"/>'};
+  play:'<path d="M7 4l13 8-13 8z"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'};
 const ic=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||""}</svg>`;
 const SPRIG=`<svg class="sprig" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 128C52 96 78 60 118 14"/><path d="M48 98c-14-1-24-9-27-23 14 0 24 9 27 23z"/><path d="M62 80c-4-14 1-26 13-34 4 14-1 26-13 34z"/><path d="M76 62c-14-3-21-14-21-28 13 3 21 14 21 28z"/><path d="M92 42c-1-13 5-22 17-28 1 13-5 22-17 28z"/><circle cx="118" cy="14" r="5"/><circle cx="104" cy="22" r="3.5"/></svg>`;
 const NAV=[["menu","Home","home"],["ecm","Formazione","cap"],["duello","Testa a testa","scale"],["bustine","Forniture","box"],["collezione","Armadio","cab"]];
@@ -1175,6 +1175,7 @@ function renderMenu(){
     <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti ECM</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
     <h3 class="sect-h">Allenati</h3>
     ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","1 credito per risposta giusta")}
+    ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","1 credito per risposta giusta")}
     ${tile("ecm:cp","pair","red","Coppie pericolose","Trova le associazioni a rischio sul carrello.","2 crediti per combinazione trovata")}
     <h3 class="sect-h">Gioca</h3>
     ${tile("duello","scale","plum","Testa a testa","Come negli studi head-to-head: due terapie sullo stesso paziente, vince la strategia migliore.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
@@ -1192,7 +1193,7 @@ document.querySelector(".brand h1").addEventListener("click",()=>{tab="menu";ren
 app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||tab!=="menu")return;const k=b.dataset.go;
   if(k==="tut"){tab="duello";startTutorial();return}
   if(k==="resume"){tab="duello";duelHidden=false;render();return}
-  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():exStartCp();window.scrollTo(0,0);return}
+  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():m==="tg"?exStartTg():exStartCp();window.scrollTo(0,0);return}
   tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
