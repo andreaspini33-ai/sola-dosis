@@ -31,6 +31,14 @@
 - Sim (IA contro IA, 400 partite): controllo finale ~62% scompenso, ~75% FA, ~64% postop; chi ignora i rischi perde quasi sempre.
 - Il vecchio duello e la partita guidata sono ancora nel codice ma non raggiungibili dal menu; la guida va rifatta.
 
+## Formazione ECM (esercizi da soli, dal 7/10/2026, in prova)
+- Codice in src/es.js (inserito al posto di /*@@ES@@*/). Tab interno "ecm", voce 2 della Scheda tecnica.
+- Indicazioni: domande nei due sensi da DIS.ind. Distrattori = farmaci di classe diversa da tutti gli indicati, meno le coppie plausibili in EX_NOT e i corticosteroidi.
+- Coppie pericolose: 3 carrelli da 6 farmaci, 1-3 combinazioni tra le 8 interazioni. Esclusi farmaci (EX_POOL_OUT) e coppie (exAmbiguous) con interazioni reali non contate dal gioco; inibitore + indice ristretto solo per le coppie in EX_PK.
+- Giro visita del giorno: 10 domande uguali per tutti (seme = data), più fino a 3 di ripasso personale. Ripasso alla Leitner in S.ex.rev (1, 3, 7, 14, 30 giorni).
+- Crediti: esercizi liberi max 30 al giorno; giro visita 2 per giusta + 5 di bonus da 8 in su, una volta al giorno.
+- Da correggere nel modello del duello: il tag inhib + nti conta come interazione anche coppie senza base (es. valproato o antifungini con litio).
+
 ## Grafica
 - Tema unico chiaro "erbario" (carta #F3EDE0, inchiostro #2B2418, titoli Cormorant Garamond, menu in corsivo sottolineato). Nessuna modalità scura: Andrea l'ha trovata buia.
 - Schermata iniziale: tavola botanica (papavero, digitale, salice) disegnata a tratto. Carte: stile "Banco di farmacia", proporzioni 63:88 in bustine e collezione.

@@ -11,7 +11,7 @@ import hashlib, json, os, shutil, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
-FILES = ["gioco.html", "tt.js", "head.html", "pwa.html", "sw.js", "manifest.webmanifest", "VERSION"]
+FILES = ["gioco.html", "tt.js", "es.js", "head.html", "pwa.html", "sw.js", "manifest.webmanifest", "VERSION"]
 
 def read(n):
     with open(os.path.join(SRC, n), encoding="utf-8") as f:
@@ -30,7 +30,7 @@ def build(dest, env):
     version = read("VERSION").strip()
     tag = {"prova": (" · prova", " (prova)", " prova"), "pubblica": ("", "", "")}[env]
     os.makedirs(dest, exist_ok=True)
-    page = read("head.html") + read("gioco.html").replace("/*@@TT@@*/", read("tt.js")) + "\n" + read("pwa.html") + "\n</html>\n"
+    page = read("head.html") + read("gioco.html").replace("/*@@TT@@*/", read("tt.js")).replace("/*@@ES@@*/", read("es.js")) + "\n" + read("pwa.html") + "\n</html>\n"
     page = page.replace("__VERSION__", version).replace("__ENV__", tag[0])
     if env == "prova":
         page = page.replace("<title>Sola Dosis</title>", "<title>Sola Dosis (prova)</title>")
