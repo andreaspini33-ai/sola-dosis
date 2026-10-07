@@ -33,7 +33,7 @@
 
 ## Formazione ECM (esercizi da soli, dal 7/10/2026, in prova)
 - Codice in src/es.js (inserito al posto di /*@@ES@@*/). Tab interno "ecm", voce 2 della Scheda tecnica.
-- Indicazioni: domande nei due sensi da DIS.ind. Distrattori = farmaci di classe diversa da tutti gli indicati, meno le coppie plausibili in EX_NOT e i corticosteroidi.
+- Indicazioni: domande nei due sensi da DIS.ind; risposta giusta solo se l'indicazione è esplicita nell'RCP AIFA (EX_GEN = coppie generiche, verifica del 7/10/2026 confermata da Andrea; doc "Sola Dosis · Verifica delle indicazioni sugli RCP AIFA"). Distrattori = farmaci di classe diversa da tutti gli indicati, meno le coppie plausibili in EX_NOT e i corticosteroidi.
 - Coppie pericolose: 3 carrelli da 6 farmaci, 1-3 combinazioni tra le 8 interazioni. Esclusi farmaci (EX_POOL_OUT) e coppie (exAmbiguous) con interazioni reali non contate dal gioco; inibitore + indice ristretto solo per le coppie in EX_PK.
 - Giro visita del giorno: 10 domande uguali per tutti (seme = data), più fino a 3 di ripasso personale. Ripasso alla Leitner in S.ex.rev (1, 3, 7, 14, 30 giorni).
 - Crediti: esercizi liberi max 30 al giorno; giro visita 2 per giusta + 5 di bonus da 8 in su, una volta al giorno.

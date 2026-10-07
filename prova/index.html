@@ -825,27 +825,27 @@ const ACTS=[
 ];
 // Condizioni cliniche: carte campo, una sola in gioco per entrambi i giocatori
 const DIS=[
-{id:"d_postop",r:"C",c:1,n:"Dolore postoperatorio",cat:"analg",ind:["paracetamolo","paracod","ibuprofene","naprossene","diclofenac","etoricoxib","ketorolac","codeina","tramadolo","morfina","fentanil","ossicodone","buprenorfina","celecoxib"],f:"È il modello clinico da cui vengono gli NNT degli analgesici del gioco."},
-{id:"d_emicrania",r:"C",c:1,n:"Attacco di emicrania",cat:"analg",ind:["sumatriptan","ibuprofene","naprossene","diclofenac","paracetamolo"],f:"Triptani e FANS sono trattamenti dell'attacco acuto."},
-{id:"d_fa",r:"U",c:1,n:"Fibrillazione atriale",cat:"cardio",ind:["warfarin","dabigatran","metoprololo","digossina","apixaban","rivaroxaban","edoxaban","acenocumarolo","bisoprololo","amiodarone"],f:"Si controllano la frequenza ventricolare e il rischio tromboembolico."},
-{id:"d_scompenso",r:"U",c:1,n:"Scompenso cardiaco",cat:"cardio",ind:["ramipril","metoprololo","furosemide","digossina","bisoprololo","enalapril","sacval","spironolattone","empagliflozin"],f:"ACE-inibitori, beta-bloccanti e diuretici sono la base della terapia."},
+{id:"d_postop",r:"C",c:1,n:"Dolore postoperatorio",cat:"analg",ind:["paracetamolo","paracod","ibuprofene","naprossene","diclofenac","etoricoxib","ketorolac","codeina","tramadolo","morfina","fentanil","ossicodone","buprenorfina"],f:"È il modello clinico da cui vengono gli NNT degli analgesici del gioco."},
+{id:"d_emicrania",r:"C",c:1,n:"Attacco di emicrania",cat:"analg",ind:["sumatriptan","ibuprofene","naprossene","paracetamolo"],f:"Triptani e FANS sono trattamenti dell'attacco acuto."},
+{id:"d_fa",r:"U",c:1,n:"Fibrillazione atriale",cat:"cardio",ind:["warfarin","dabigatran","metoprololo","digossina","apixaban","rivaroxaban","edoxaban","acenocumarolo","amiodarone"],f:"Si controllano la frequenza ventricolare e il rischio tromboembolico."},
+{id:"d_scompenso",r:"U",c:1,n:"Scompenso cardiaco",cat:"cardio",ind:["ramipril","furosemide","digossina","bisoprololo","enalapril","sacval","spironolattone","empagliflozin"],f:"ACE-inibitori, beta-bloccanti e diuretici sono la base della terapia."},
 {id:"d_dm2",r:"C",c:1,n:"Diabete di tipo 2",cat:"endo",ind:["metformina","insulina","glargine","gliclazide","sitagliptin","empagliflozin","semaglutide","pioglitazone"],f:"Si parte dalla metformina; l'insulina arriva quando non basta."},
 {id:"d_polmonite",r:"C",c:1,n:"Polmonite comunitaria",cat:"anti",ind:["amoxicillina","claritromicina","penicillina","amoxiclav","ceftriaxone","azitromicina","levofloxacina","doxiciclina"],f:"Beta-lattamici e macrolidi sono le classi di riferimento."},
-{id:"d_ansia",r:"C",c:1,n:"Ansia generalizzata",cat:"snc",ind:["sertralina","diazepam","escitalopram","venlafaxina","alprazolam","lorazepam"],f:"SSRI in prima linea; benzodiazepine solo per brevi periodi."},,
-{"id": "d_neuro", "r": "U", "c": 1, "n": "Dolore neuropatico", "cat": "analg", "ind": ["pregabalin", "carbamazepina", "venlafaxina", "tramadolo", "ossicodone"], "f": "Gabapentinoidi e inibitori della ricaptazione di serotonina e noradrenalina sono tra le prime scelte."},
+{id:"d_ansia",r:"C",c:1,n:"Ansia generalizzata",cat:"snc",ind:["diazepam","escitalopram","venlafaxina","alprazolam","lorazepam","pregabalin"],f:"SSRI in prima linea; benzodiazepine solo per brevi periodi."},,
+{"id": "d_neuro", "r": "U", "c": 1, "n": "Dolore neuropatico", "cat": "analg", "ind": ["pregabalin","carbamazepina","tramadolo","ossicodone"], "f": "Gabapentinoidi e inibitori della ricaptazione di serotonina e noradrenalina sono tra le prime scelte."},
 {"id": "d_depressione", "r": "C", "c": 1, "n": "Depressione maggiore", "cat": "snc", "ind": ["sertralina", "fluoxetina", "escitalopram", "venlafaxina", "litio"], "f": "Antidepressivi; il litio come potenziamento nelle forme resistenti."},
-{"id": "d_epilessia", "r": "C", "c": 1, "n": "Epilessia", "cat": "snc", "ind": ["carbamazepina", "valproato", "levetiracetam", "lorazepam", "diazepam", "midazolam"], "f": "Antiepilettici di mantenimento; benzodiazepine per le crisi prolungate."},
+{"id": "d_epilessia", "r": "C", "c": 1, "n": "Epilessia", "cat": "snc", "ind": ["carbamazepina","valproato","levetiracetam","lorazepam","diazepam","midazolam","pregabalin"], "f": "Antiepilettici di mantenimento; benzodiazepine per le crisi prolungate."},
 {"id": "d_schizofrenia", "r": "U", "c": 1, "n": "Schizofrenia", "cat": "snc", "ind": ["aloperidolo", "olanzapina", "clozapina"], "f": "Antipsicotici; clozapina nelle forme resistenti."},
 {"id": "d_ipertensione", "r": "C", "c": 1, "n": "Ipertensione arteriosa", "cat": "cardio", "ind": ["ramipril", "enalapril", "losartan", "amlodipina", "idroclorotiazide", "bisoprololo", "spironolattone"], "f": "ACE-inibitori o sartani, calcio-antagonisti e tiazidici sono la base; spironolattone nelle forme resistenti."},
 {"id": "d_tvp", "r": "C", "c": 1, "n": "Trombosi venosa profonda", "cat": "emo", "ind": ["eparina", "enoxaparina", "fondaparinux", "warfarin", "acenocumarolo", "apixaban", "rivaroxaban", "edoxaban", "dabigatran"], "f": "Anticoagulanti parenterali e orali."},
-{"id": "d_sca", "r": "U", "c": 1, "n": "Sindrome coronarica acuta", "cat": "emo", "ind": ["aspirina", "clopidogrel", "prasugrel", "ticagrelor", "enoxaparina", "fondaparinux", "eparina", "alteplase", "atorvastatina", "rosuvastatina", "metoprololo", "bisoprololo"], "f": "Doppia antiaggregazione, anticoagulazione, statina ad alta intensità; fibrinolisi se l'angioplastica non è disponibile in tempo."},
+{"id": "d_sca", "r": "U", "c": 1, "n": "Sindrome coronarica acuta", "cat": "emo", "ind": ["aspirina","clopidogrel","prasugrel","ticagrelor","enoxaparina","fondaparinux","eparina","alteplase","metoprololo"], "f": "Doppia antiaggregazione, anticoagulazione, statina ad alta intensità; fibrinolisi se l'angioplastica non è disponibile in tempo."},
 {"id": "d_emorragia", "r": "U", "c": 1, "n": "Emorragia maggiore", "cat": "emo", "ind": ["tranexamico", "vitk", "protamina", "idarucizumab"], "f": "Antifibrinolitici e antidoti degli anticoagulanti."},
 {"id": "d_ivu", "r": "C", "c": 1, "n": "Infezione delle vie urinarie", "cat": "anti", "ind": ["cotrimox", "amoxiclav", "ceftriaxone", "levofloxacina", "meropenem"], "f": "La scelta dipende da sede, gravità e resistenze locali."},
-{"id": "d_sepsi", "r": "U", "c": 1, "n": "Sepsi", "cat": "anti", "ind": ["meropenem", "vancomicina", "linezolid", "ceftriaxone", "idrocortisone", "fluconazolo"], "f": "Antibiotici ad ampio spettro entro un'ora; idrocortisone nello shock refrattario."},
-{"id": "d_osteo", "r": "C", "c": 1, "n": "Osteoporosi", "cat": "endo", "ind": ["alendronato", "colecalciferolo"], "f": "Bisfosfonati con adeguato apporto di vitamina D e calcio."},
+{"id": "d_sepsi", "r": "U", "c": 1, "n": "Sepsi", "cat": "anti", "ind": ["meropenem","vancomicina","ceftriaxone","fluconazolo"], "f": "Antibiotici ad ampio spettro entro un'ora; idrocortisone nello shock refrattario."},
+{"id": "d_osteo", "r": "C", "c": 1, "n": "Osteoporosi", "cat": "endo", "ind": ["alendronato"], "f": "Bisfosfonati con adeguato apporto di vitamina D e calcio."},
 {"id": "d_ipotiroidismo", "r": "C", "c": 1, "n": "Ipotiroidismo", "cat": "endo", "ind": ["levotiroxina"], "f": "Terapia sostitutiva con levotiroxina."},
-{"id": "d_ipertiroidismo", "r": "C", "c": 1, "n": "Ipertiroidismo", "cat": "endo", "ind": ["metimazolo", "bisoprololo"], "f": "Tionamidi; beta-bloccanti per i sintomi."},
-{"id": "d_surrene", "r": "U", "c": 1, "n": "Insufficienza surrenalica", "cat": "endo", "ind": ["idrocortisone", "prednisone", "desametasone"], "f": "Sostituzione glucocorticoide."}
+{"id": "d_ipertiroidismo", "r": "C", "c": 1, "n": "Ipertiroidismo", "cat": "endo", "ind": ["metimazolo","metoprololo"], "f": "Tionamidi; beta-bloccanti per i sintomi."},
+{"id": "d_surrene", "r": "U", "c": 1, "n": "Insufficienza surrenalica", "cat": "endo", "ind": ["idrocortisone","desametasone"], "f": "Sostituzione glucocorticoide."}
 ];
 const CURE=20;
 
@@ -2098,6 +2098,14 @@ const EX_NOT=new Set(["prednisone|d_polmonite","idrocortisone|d_polmonite","desa
   "pregabalin|d_ansia","pregabalin|d_epilessia","aspirina|d_emicrania","metoprololo|d_emicrania","bisoprololo|d_emicrania",
   "metoprololo|d_ansia","bisoprololo|d_ansia","adrenalina|d_sepsi","morfina|d_sca","fentanil|d_sca","paracetamolo|d_sca",
   "amitriptilina|d_neuro","litio|d_ansia","olanzapina|d_depressione","clozapina|d_depressione"]);
+// Coppie che negli RCP AIFA rientrano solo in una dicitura generica (verifica del 7/10/2026):
+// non diventano mai risposta giusta, e restano escluse dai distrattori perché sono in DIS.ind.
+const EX_GEN=new Set(["paracod|d_postop","ibuprofene|d_postop","naprossene|d_postop","etoricoxib|d_postop","codeina|d_postop",
+  "tramadolo|d_postop","fentanil|d_postop","buprenorfina|d_postop","paracetamolo|d_emicrania","metoprololo|d_fa","acenocumarolo|d_fa",
+  "spironolattone|d_scompenso","penicillina|d_polmonite","doxiciclina|d_polmonite","carbamazepina|d_neuro","tramadolo|d_neuro",
+  "ossicodone|d_neuro","litio|d_depressione","acenocumarolo|d_tvp","aspirina|d_sca","eparina|d_sca","meropenem|d_sepsi",
+  "vancomicina|d_sepsi","ceftriaxone|d_sepsi","fluconazolo|d_sepsi","desametasone|d_surrene"]);
+const exExp=(drugId,dis)=>dis.ind.includes(drugId)&&!EX_GEN.has(drugId+"|"+dis.id);
 const EX_NODIS=new Set(["prednisone","idrocortisone","desametasone"]); // i corticosteroidi si usano in troppe condizioni
 function exClasses(dis){const s=new Set([dis.cat]);dis.ind.forEach(i=>CARDS[i]&&s.add(CARDS[i].cl));return s}
 function exSafeWrong(drugId,dis){
@@ -2105,14 +2113,15 @@ function exSafeWrong(drugId,dis){
   if(dis.ind.includes(drugId)||EX_NODIS.has(drugId)||EX_NOT.has(drugId+"|"+dis.id))return false;
   return !exClasses(dis).has(d.cl)}
 function exQcond(dis,r){
-  const ok=exPick(dis.ind.filter(i=>CARDS[i]),r);
+  const exp=dis.ind.filter(i=>CARDS[i]&&exExp(i,dis));if(!exp.length)return null;
+  const ok=exPick(exp,r);
   const wrong=exShuf(DRUGS.map(d=>d.id).filter(i=>exSafeWrong(i,dis)),r).slice(0,3);
   if(wrong.length<3)return null;
   return {t:"ic",key:"ic:"+dis.id,prompt:`Quale farmaco è indicato per <b>${dis.n}</b>?`,
     opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i),s:CLS[CARDS[i].cl].n})),ok,
     note:`${dis.f} Indicati nel gioco: ${dis.ind.filter(i=>CARDS[i]).map(exN).join(", ")}.`}}
 function exQdrug(drugId,r){
-  const all=EX_DIS(),okD=all.filter(x=>x.ind.includes(drugId));if(!okD.length)return null;
+  const all=EX_DIS(),okD=all.filter(x=>exExp(drugId,x));if(!okD.length)return null;
   const ok=exPick(okD,r);
   const wrong=exShuf(all.filter(x=>exSafeWrong(drugId,x)),r).slice(0,3);
   if(wrong.length<3)return null;
@@ -2353,7 +2362,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-1</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-2</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;

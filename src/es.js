@@ -24,6 +24,14 @@ const EX_NOT=new Set(["prednisone|d_polmonite","idrocortisone|d_polmonite","desa
   "pregabalin|d_ansia","pregabalin|d_epilessia","aspirina|d_emicrania","metoprololo|d_emicrania","bisoprololo|d_emicrania",
   "metoprololo|d_ansia","bisoprololo|d_ansia","adrenalina|d_sepsi","morfina|d_sca","fentanil|d_sca","paracetamolo|d_sca",
   "amitriptilina|d_neuro","litio|d_ansia","olanzapina|d_depressione","clozapina|d_depressione"]);
+// Coppie che negli RCP AIFA rientrano solo in una dicitura generica (verifica del 7/10/2026):
+// non diventano mai risposta giusta, e restano escluse dai distrattori perché sono in DIS.ind.
+const EX_GEN=new Set(["paracod|d_postop","ibuprofene|d_postop","naprossene|d_postop","etoricoxib|d_postop","codeina|d_postop",
+  "tramadolo|d_postop","fentanil|d_postop","buprenorfina|d_postop","paracetamolo|d_emicrania","metoprololo|d_fa","acenocumarolo|d_fa",
+  "spironolattone|d_scompenso","penicillina|d_polmonite","doxiciclina|d_polmonite","carbamazepina|d_neuro","tramadolo|d_neuro",
+  "ossicodone|d_neuro","litio|d_depressione","acenocumarolo|d_tvp","aspirina|d_sca","eparina|d_sca","meropenem|d_sepsi",
+  "vancomicina|d_sepsi","ceftriaxone|d_sepsi","fluconazolo|d_sepsi","desametasone|d_surrene"]);
+const exExp=(drugId,dis)=>dis.ind.includes(drugId)&&!EX_GEN.has(drugId+"|"+dis.id);
 const EX_NODIS=new Set(["prednisone","idrocortisone","desametasone"]); // i corticosteroidi si usano in troppe condizioni
 function exClasses(dis){const s=new Set([dis.cat]);dis.ind.forEach(i=>CARDS[i]&&s.add(CARDS[i].cl));return s}
 function exSafeWrong(drugId,dis){
@@ -31,14 +39,15 @@ function exSafeWrong(drugId,dis){
   if(dis.ind.includes(drugId)||EX_NODIS.has(drugId)||EX_NOT.has(drugId+"|"+dis.id))return false;
   return !exClasses(dis).has(d.cl)}
 function exQcond(dis,r){
-  const ok=exPick(dis.ind.filter(i=>CARDS[i]),r);
+  const exp=dis.ind.filter(i=>CARDS[i]&&exExp(i,dis));if(!exp.length)return null;
+  const ok=exPick(exp,r);
   const wrong=exShuf(DRUGS.map(d=>d.id).filter(i=>exSafeWrong(i,dis)),r).slice(0,3);
   if(wrong.length<3)return null;
   return {t:"ic",key:"ic:"+dis.id,prompt:`Quale farmaco è indicato per <b>${dis.n}</b>?`,
     opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i),s:CLS[CARDS[i].cl].n})),ok,
     note:`${dis.f} Indicati nel gioco: ${dis.ind.filter(i=>CARDS[i]).map(exN).join(", ")}.`}}
 function exQdrug(drugId,r){
-  const all=EX_DIS(),okD=all.filter(x=>x.ind.includes(drugId));if(!okD.length)return null;
+  const all=EX_DIS(),okD=all.filter(x=>exExp(drugId,x));if(!okD.length)return null;
   const ok=exPick(okD,r);
   const wrong=exShuf(all.filter(x=>exSafeWrong(drugId,x)),r).slice(0,3);
   if(wrong.length<3)return null;
