@@ -671,6 +671,20 @@ body.focus main{padding-top:0}
 .more{margin:6px 0 0;color:var(--muted);font-size:.88rem}
 .ans{margin:0 0 8px}
 .overlay{z-index:80}
+
+.qvis{display:flex;align-items:center;gap:14px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px;margin:-6px 0 18px}
+.qvis .pic{flex:none;width:52px;height:52px;border-radius:16px;background:var(--plum-l);color:var(--plum);display:grid;place-items:center}.qvis .pic svg{width:28px;height:28px}
+.qvis small{display:block;font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.qvis b{display:block;font-weight:900;font-size:1.05rem}.qvis span{display:block;color:var(--muted);font-size:.9rem;line-height:1.3}
+.qvis.mol{flex-direction:column;gap:6px;padding:10px 14px 10px;background-image:linear-gradient(#F1F4F6 1px,transparent 1px),linear-gradient(90deg,#F1F4F6 1px,transparent 1px);background-size:14px 14px;background-color:#fff}
+.qvis.mol .qart{position:relative;width:100%;height:150px;color:#1B2229}
+.qvis.mol .qart svg{position:absolute;inset:0;width:100%;height:100%}
+.qvis.mol small{align-self:flex-start;text-transform:none;letter-spacing:0;font-size:.78rem}
+.combo{display:inline-flex;align-items:center;gap:4px;color:var(--green-d);background:var(--green-l);border-radius:99px;padding:3px 9px;font-weight:900;animation:pop .35s cubic-bezier(.2,1.6,.4,1)}.combo svg{width:15px;height:15px}
+.qz-foot.good .badge{animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.opt:hover:not(:disabled):not(.sel){border-color:var(--line-d);background:#FFFDF8}
+.qz-q{font-size:1.5rem}
+@media (min-width:700px){.qz-q{font-size:1.75rem}.opts{grid-template-columns:1fr 1fr}.opt{min-height:64px}}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
@@ -2327,20 +2341,48 @@ function exSafeWrong(drugId,dis){
   const d=CARDS[drugId];if(!d||d.type!=="drug")return false;
   if(dis.ind.includes(drugId)||EX_NODIS.has(drugId)||EX_NOT.has(drugId+"|"+dis.id))return false;
   return !exClasses(dis).has(d.cl)}
+
+// Distrattori difficili: stessa area terapeutica, ma sicuramente non indicati secondo la sezione 4.1 degli RCP letti il 7/10/2026.
+// Esclusi i farmaci la cui 4.1 copre la condizione anche se non è nelle liste del gioco (es. furosemide e metoprololo nell'ipertensione).
+const EX_HARD={
+  d_dm2:["levotiroxina","metimazolo","alendronato","colecalciferolo"],
+  d_ipotiroidismo:["metimazolo","alendronato","insulina","metformina","gliclazide","sitagliptin","pioglitazone","empagliflozin","semaglutide"],
+  d_ipertiroidismo:["metformina","insulina","alendronato","gliclazide"],
+  d_osteo:["metformina","levotiroxina","metimazolo","insulina","gliclazide","sitagliptin"],
+  d_surrene:["levotiroxina","metimazolo","metformina","alendronato"],
+  d_fa:["amlodipina","furosemide","idroclorotiazide","atorvastatina","rosuvastatina","ramipril","enalapril","losartan","clopidogrel","prasugrel","ticagrelor","enoxaparina"],
+  d_scompenso:["amlodipina","atorvastatina","rosuvastatina"],
+  d_ipertensione:["atorvastatina","rosuvastatina","digossina","amiodarone"],
+  d_sca:["furosemide","idroclorotiazide","digossina","amlodipina","dabigatran","edoxaban","apixaban","tranexamico"],
+  d_tvp:["clopidogrel","prasugrel","ticagrelor","tranexamico"],
+  d_emorragia:["clopidogrel","warfarin","apixaban","eparina","alteplase"],
+  d_postop:["sumatriptan","pregabalin"],
+  d_emicrania:["pregabalin","celecoxib","etoricoxib"],
+  d_neuro:["sumatriptan","ketorolac","celecoxib","etoricoxib"],
+  d_ansia:["olanzapina","levetiracetam","carbamazepina","valproato","fluoxetina"],
+  d_depressione:["diazepam","levetiracetam","aloperidolo","pregabalin"],
+  d_epilessia:["sertralina","fluoxetina","escitalopram","aloperidolo","olanzapina","venlafaxina"],
+  d_schizofrenia:["sertralina","fluoxetina","diazepam","levetiracetam","valproato","carbamazepina","pregabalin"],
+  d_polmonite:["fluconazolo","ritonavir","ketoconazolo"],
+  d_ivu:["claritromicina","azitromicina","linezolid","vancomicina","ritonavir"]
+};
+const exHard=(drugId,disId)=>(EX_HARD[disId]||[]).includes(drugId)&&CARDS[drugId]&&!EX_DIS().find(x=>x.id===disId).ind.includes(drugId);
 function exQcond(dis,r){
   const exp=dis.ind.filter(i=>CARDS[i]&&exExp(i,dis));if(!exp.length)return null;
   const ok=exPick(exp,r);
-  const wrong=exShuf(DRUGS.map(d=>d.id).filter(i=>exSafeWrong(i,dis)),r).slice(0,3);
+  const hd=exShuf((EX_HARD[dis.id]||[]).filter(i=>exHard(i,dis.id)),r).slice(0,2);
+  const wrong=[...hd,...exShuf(DRUGS.map(d=>d.id).filter(i=>exSafeWrong(i,dis)),r)].slice(0,3);
   if(wrong.length<3)return null;
   const lg=Object.keys(EX_LG).filter(k=>k.endsWith("|"+dis.id)).map(k=>k.split("|")[0]).filter(i=>CARDS[i]&&!dis.ind.includes(i));
   if(lg.length&&r()<.5)wrong[2]=exPick(lg,r);
-  return {t:"ic",key:"ic:"+dis.id,prompt:`Quale farmaco è indicato per <b>${dis.n}</b>?`,
+  return {t:"ic",key:"ic:"+dis.id,prompt:`Quale farmaco è indicato per <b>${dis.n[0].toLowerCase()+dis.n.slice(1)}</b>?`,
     opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i)})),ok,
     note:`${dis.f} Indicati nel gioco: ${dis.ind.filter(i=>CARDS[i]).map(exN).join(", ")}.`}}
 function exQdrug(drugId,r){
   const all=EX_DIS(),okD=all.filter(x=>exExp(drugId,x));if(!okD.length)return null;
   const ok=exPick(okD,r);
-  const wrong=exShuf(all.filter(x=>exSafeWrong(drugId,x)),r).slice(0,3);
+  const hd=exShuf(all.filter(x=>exHard(drugId,x.id)),r).slice(0,2);
+  const wrong=[...hd,...exShuf(all.filter(x=>exSafeWrong(drugId,x)&&!hd.includes(x)),r)].slice(0,3);
   if(wrong.length<3)return null;
   const lg=all.filter(x=>exLG(drugId,x.id)&&!x.ind.includes(drugId));
   if(lg.length&&r()<.5)wrong[2]=exPick(lg,r);
@@ -2542,7 +2584,7 @@ function exQtgTarget(k,r){
   const ok=exPick(holders,r),grp=TG[k][1];
   const wrong=exShuf(tgDrugs().filter(i=>!tgGroups(i).has(grp)),r).slice(0,3);
   if(wrong.length<3)return null;
-  return {t:"tt",key:"tt:"+k,prompt:`Quale farmaco agisce su <b>${TG[k][0]}</b>?`,opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i)})),ok,
+  return {t:"tt",key:"tt:"+k,prompt:`Quale farmaco agisce su questo bersaglio: <b>${TG[k][0]}</b>?`,opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i)})),ok,
     note:`${TG[k][2]} Nel gioco agiscono qui: ${holders.map(exN).join(", ")}.`}}
 function exQtg(r){for(let n=0;n<40;n++){const q=r()<.6?exQtgDrug(exPick(tgDrugs(),r),r):exQtgTarget(exPick(Object.keys(TG),r),r);if(q)return q}return null}
 function exStartTg(){
@@ -2598,6 +2640,14 @@ function exWhy(q){
   else if(q.t==="cp"){id=q.int;const ik=CARDS[q.int];txt=`<b>${ik.n}</b>: ${ik.f}${ik.q?`<details><summary>Fonte</summary>${ik.q.map(x=>quote(Q[x].q,Q[x].s)).join("")}</details>`:""}`}
   if(!id||!CARDS[id])return txt;
   return `<div class="why"><button class="qthumb" data-detail="${id}" aria-label="Apri la scheda di ${CARDS[id].n}"><span class="cell">${cardHTML(CARDS[id],"full",{extra:"tcg"})}</span><span class="qlink">${ic("info")} Scheda tecnica</span></button><div class="wt"><h4>Perché</h4>${txt}</div></div>`}
+
+function exVisual(q){
+  const k=q.key.slice(3);
+  if(q.t==="ic"){const P=(typeof PATIENTS!=="undefined"&&PATIENTS[k])||null,d=EX_DIS().find(x=>x.id===k);
+    return `<div class="qvis pt"><span class="pic">${ic("visit")}</span><div><small>Cartella clinica</small><b>${P?`${P[0]}, ${P[1]} anni`:"Paziente"}</b><span>${d.n}</span></div></div>`}
+  if((q.t==="id"||q.t==="tg")&&CARDS[k]){return `<div class="qvis mol"><div class="qart">${g(CARDS[k])}</div><small>${exN(k)}${typeof SMETA!=="undefined"&&SMETA[k]?` · ${SMETA[k][0]}`:""}</small></div>`}
+  if(q.t==="tt")return `<div class="qvis pt"><span class="pic">${ic("target")}</span><div><small>Bersaglio</small><b>${TG[k][0]}</b><span>${TG[k][2]}</span></div></div>`;
+  return ""}
 function exQuizHTML(){
   if(EX.done){
     const errs=EX.qs.filter(q=>q.res===false),okN=EX.qs.filter(q=>q.res).length;
@@ -2621,9 +2671,9 @@ function exQuizHTML(){
       <button class="btn big ${good?"primary":"red"}" data-ex="next">Continua</button></div></div>`}
   else foot=`<div class="qz-foot"><div class="in"><button class="btn primary big" data-ex="check" ${sel?"":"disabled"}>Verifica</button></div></div>`;
   const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":"Indicazioni";
-  return `<div class="qz">${exTop(EX.i+(a?1:0),EX.qs.length,`${EX.i+1}/${EX.qs.length}`)}
+  return `<div class="qz">${exTop(EX.i+(a?1:0),EX.qs.length,EX.combo>=2?`<span class="combo">${ic("leaf")}${EX.combo} di fila</span>`:`${EX.i+1}/${EX.qs.length}`)}
     <div class="qz-body"><p class="qz-kick">${q.rev?`${ic("repeat")} Ripasso`:k}</p>
-    <p class="qz-q">${q.prompt}</p>
+    <p class="qz-q">${q.prompt}</p>${exVisual(q)}
     <div class="opts">${q.opts.map(opt).join("")}</div></div>${foot}</div>`}
 function exCpHTML(){
   const T=EX.tables[EX.round];
@@ -2664,7 +2714,7 @@ function renderEcm(){
     app.innerHTML=exDoneHTML("Giro visita","0",`<p>Hai già fatto il giro visita di oggi (${d.ok} su ${d.n}). Il prossimo è domani: intanto puoi allenarti con Indicazioni e Coppie pericolose.</p>`,`<button class="btn primary big" data-ex="home">Torna alla formazione</button>`,"Già fatto oggi")}
   else if(EX.mode==="cp")app.innerHTML=exCpHTML();
   else app.innerHTML=exQuizHTML()}
-function exCheck(){const q=EX.qs[EX.i];if(EX.ans||!EX.sel)return;EX.ans=EX.sel;q.res=EX.ans===q.ok;if(q.res)EX.ok++;
+function exCheck(){const q=EX.qs[EX.i];if(EX.ans||!EX.sel)return;EX.ans=EX.sel;q.res=EX.ans===q.ok;if(q.res)EX.ok++;EX.combo=q.res?(EX.combo||0)+1:0;
   exMark(q.key,q.res);save();sfx(q.res?"cure":"hit");render()}
 function exNext(){EX.ans=null;EX.sel=null;EX.i++;if(EX.i>=EX.qs.length)exEndQuiz();else{render();window.scrollTo(0,0)}}
 app.addEventListener("click",e=>{
@@ -2714,7 +2764,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-9</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-11</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;
