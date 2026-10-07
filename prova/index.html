@@ -513,6 +513,7 @@ td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:n
 .ex-fb{margin-top:12px;padding:10px 12px;border-left:3px solid var(--good);background:var(--surface);font-size:.92rem}
 .ex-fb.bad{border-left-color:var(--danger)}
 .ex-fb details,.ex-found details{margin-top:6px;font-size:.85rem}
+.ex-lg{margin-top:10px;padding-top:8px;border-top:1px dotted var(--line);font-size:.88rem}.ex-lg small{display:block;color:var(--muted);font-size:.75rem;margin-top:4px}
 .ex-err{padding-left:18px;font-size:.92rem}.ex-err li{margin:4px 0}
 .ex-note{color:var(--muted);font-size:.8rem;margin-top:14px;max-width:68ch}
 .ex-count{font-family:"JetBrains Mono",var(--f-mono);font-size:.75rem;color:var(--muted);margin:0 0 10px}
@@ -2106,6 +2107,39 @@ const EX_GEN=new Set(["paracod|d_postop","ibuprofene|d_postop","naprossene|d_pos
   "ossicodone|d_neuro","litio|d_depressione","acenocumarolo|d_tvp","aspirina|d_sca","eparina|d_sca","meropenem|d_sepsi",
   "vancomicina|d_sepsi","ceftriaxone|d_sepsi","fluconazolo|d_sepsi","desametasone|d_surrene"]);
 const exExp=(drugId,dis)=>dis.ind.includes(drugId)&&!EX_GEN.has(drugId+"|"+dis.id);
+
+// Coppie fuori RCP ma presenti nelle linee guida (ricerca del 7/10/2026). Possono uscire come risposta sbagliata:
+// se lo studente le sceglie, la spiegazione dice che l'RCP non le prevede e cita la linea guida.
+// sec = testo letto su una fonte secondaria (slide, riassunti), da verificare sul documento originale.
+Object.assign(SRC,{
+  lg_esc_sca23:{a:"Byrne RA, et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44(38):3720-3826",sh:"ESC 2023, sindromi coronariche acute",doi:"10.1093/eurheartj/ehad191"},
+  lg_esc_fa24:{a:"Van Gelder IC, et al. 2024 ESC Guidelines for the management of atrial fibrillation. Eur Heart J 2024;45(36):3314-3414",sh:"ESC 2024, fibrillazione atriale",doi:"10.1093/eurheartj/ehae176"},
+  lg_esc_hf21:{a:"McDonagh TA, et al. 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure. Eur Heart J 2021;42(36):3599-3726",sh:"ESC 2021, scompenso cardiaco",doi:"10.1093/eurheartj/ehab368"},
+  lg_nice_gad:{a:"NICE. Generalised anxiety disorder and panic disorder in adults: management. Clinical guideline CG113, 2011 (ultimo aggiornamento aprile 2026)",sh:"NICE CG113",url:"https://www.nice.org.uk/guidance/cg113/chapter/1-Guidance"},
+  lg_neupsig25:{a:"Soliman N, et al. Pharmacotherapy and non-invasive neuromodulation for neuropathic pain: a systematic review and meta-analysis. Lancet Neurol 2025;24(5):413-428",sh:"NeuPSIG 2025 (Soliman et al.)",doi:"10.1016/S1474-4422(25)00068-7"},
+  lg_ssc26:{a:"Prescott HC, et al. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026. Crit Care Med 2026;54(4):725-812",sh:"Surviving Sepsis Campaign 2026",doi:"10.1097/CCM.0000000000007075"},
+  lg_eta18:{a:"Kahaly GJ, et al. 2018 European Thyroid Association Guideline for the Management of Graves' Hyperthyroidism. Eur Thyroid J 2018;7:167-186",sh:"ETA 2018, morbo di Graves",doi:"10.1159/000490384"},
+  lg_es_pai16:{a:"Bornstein SR, et al. Diagnosis and Treatment of Primary Adrenal Insufficiency: An Endocrine Society Clinical Practice Guideline. J Clin Endocrinol Metab 2016;101(2):364-389",sh:"Endocrine Society 2016",doi:"10.1210/jc.2015-1710"},
+  lg_nogg24:{a:"Gregson CL, et al. The 2024 UK clinical guideline for the prevention and treatment of osteoporosis. Arch Osteoporos 2025;20:119",sh:"NOGG 2024",doi:"10.1007/s11657-025-01588-3"},
+  lg_prospect24:{a:"Lirk P, et al. PROSPECT guideline for laparoscopic colorectal surgery. Eur J Anaesthesiol 2024;41:161-173",sh:"PROSPECT 2024, chirurgia colorettale",doi:"10.1097/EJA.0000000000001945"}
+});
+const EX_LG={
+  "atorvastatina|d_sca":{s:"lg_esc_sca23",q:"It is recommended that high-dose statin therapy is initiated or continued as early as possible, regardless of initial LDL-C values.",g:"Classe I, livello A",sec:1},
+  "rosuvastatina|d_sca":{s:"lg_esc_sca23",q:"It is recommended that high-dose statin therapy is initiated or continued as early as possible, regardless of initial LDL-C values.",g:"Classe I, livello A",sec:1},
+  "bisoprololo|d_sca":{s:"lg_esc_sca23",q:"Beta-blockers are recommended in ACS patients with LVEF ≤40% regardless of HF symptoms.",g:"Classe I, livello A; non nomina il bisoprololo",sec:1},
+  "bisoprololo|d_fa":{s:"lg_esc_fa24",q:"Beta-blockers, diltiazem, verapamil, or digoxin are recommended as first-choice drugs to control heart rate and reduce symptoms in patients with AF and left ventricular ejection fraction (LVEF) > 40%.",g:"controllo della frequenza; classe non verificata",sec:1},
+  "metoprololo|d_scompenso":{s:"lg_esc_hf21",q:"Beta-blockers have been shown to reduce mortality and morbidity in patients with HFrEF, in addition to treatment with an ACE-I and diuretic.",g:"il metoprololo con prove è il succinato a rilascio prolungato (tabella 8); la linea guida ESC 2026 sullo scompenso non è stata ancora letta"},
+  "sertralina|d_ansia":{s:"lg_nice_gad",q:"If a person with GAD chooses drug treatment, offer a selective serotonin reuptake inhibitor (SSRI). Consider offering sertraline first because it is the most cost-effective drug, but note that at the time of publication (January 2011) sertraline did not have UK marketing authorisation for this indication.",g:"raccomandazione 1.2.23"},
+  "venlafaxina|d_neuro":{s:"lg_neupsig25",q:"a strong recommendation for use of TCAs, α2δ-ligands, and SNRIs as first-line treatments",g:"dall'abstract; la tabella 2 nomina la venlafaxina tra gli SNRI di prima linea"},
+  "idrocortisone|d_sepsi":{s:"lg_ssc26",q:"For adults with septic shock, we 'suggest' using IV corticosteroids.",g:"raccomandazione condizionale, certezza bassa; solo nello shock settico",sec:1},
+  "bisoprololo|d_ipertiroidismo":{s:"lg_eta18",q:"Propranolol (20–40 mg every 6 h) or longer acting beta-blockers (i.e., atenolol/bisoprolol), are useful to control adrenergic symptoms such as palpitations and tremor, especially in the early stages before ATD take effect.",g:"per i sintomi adrenergici, insieme ai farmaci antitiroidei"},
+  "prednisone|d_surrene":{s:"lg_es_pai16",q:"As an alternative to hydrocortisone, we suggest using prednisolone (3–5 mg/d), administered orally once or twice daily, especially in patients with reduced compliance.",g:"la linea guida nomina il prednisolone, di cui il prednisone è il profarmaco"},
+  "colecalciferolo|d_osteo":{s:"lg_nogg24",q:"Offer calcium and/or vitamin D supplementation as an adjunct to anti-osteoporosis drug treatment, if dietary calcium is low and/or vitamin D insufficiency is a risk, respectively (Strong recommendation).",g:"complemento della terapia, non trattamento dell'osteoporosi"},
+  "celecoxib|d_postop":{s:"lg_prospect24",q:"Paracetamol and NSAIDs/COX-2 specific inhibitors are recommended as basic analgesia for colonic surgery; paracetamol is recommended for rectal surgery; these should be administered pre-operatively or intra-operatively and continued postoperatively (unless contraindicated)",g:"nomina la classe, non il celecoxib"}
+};
+const exLG=(drugId,disId)=>EX_LG[drugId+"|"+disId];
+function exLGnote(drugId,disId,chosen){const L=exLG(drugId,disId);if(!L)return"";const d=EX_DIS().find(x=>x.id===disId);
+  return `<div class="ex-lg"><b>${chosen?"Attenzione":"Da sapere"}:</b> ${exN(drugId)} non ha l'indicazione «${d.n.toLowerCase()}» nell'RCP AIFA, ma le linee guida lo usano (${L.g}).${quote(L.q,L.s)}${L.sec?`<small>Testo letto su una fonte secondaria, da verificare sul documento originale.</small>`:""}<small>Nel gioco la risposta giusta segue l'RCP.</small></div>`}
 const EX_NODIS=new Set(["prednisone","idrocortisone","desametasone"]); // i corticosteroidi si usano in troppe condizioni
 function exClasses(dis){const s=new Set([dis.cat]);dis.ind.forEach(i=>CARDS[i]&&s.add(CARDS[i].cl));return s}
 function exSafeWrong(drugId,dis){
@@ -2117,6 +2151,8 @@ function exQcond(dis,r){
   const ok=exPick(exp,r);
   const wrong=exShuf(DRUGS.map(d=>d.id).filter(i=>exSafeWrong(i,dis)),r).slice(0,3);
   if(wrong.length<3)return null;
+  const lg=Object.keys(EX_LG).filter(k=>k.endsWith("|"+dis.id)).map(k=>k.split("|")[0]).filter(i=>CARDS[i]&&!dis.ind.includes(i));
+  if(lg.length&&r()<.5)wrong[2]=exPick(lg,r);
   return {t:"ic",key:"ic:"+dis.id,prompt:`Quale farmaco è indicato per <b>${dis.n}</b>?`,
     opts:exShuf([ok,...wrong],r).map(i=>({id:i,l:exN(i),s:CLS[CARDS[i].cl].n})),ok,
     note:`${dis.f} Indicati nel gioco: ${dis.ind.filter(i=>CARDS[i]).map(exN).join(", ")}.`}}
@@ -2125,6 +2161,8 @@ function exQdrug(drugId,r){
   const ok=exPick(okD,r);
   const wrong=exShuf(all.filter(x=>exSafeWrong(drugId,x)),r).slice(0,3);
   if(wrong.length<3)return null;
+  const lg=all.filter(x=>exLG(drugId,x.id)&&!x.ind.includes(drugId));
+  if(lg.length&&r()<.5)wrong[2]=exPick(lg,r);
   return {t:"id",key:"id:"+drugId,prompt:`<b>${exN(drugId)}</b> (${CLS[CARDS[drugId].cl].n.toLowerCase()}): per quale condizione è indicato?`,
     opts:exShuf([ok,...wrong],r).map(x=>({id:x.id,l:x.n})),ok:ok.id,
     note:`Nel gioco ${exN(drugId)} è indicato per: ${okD.map(x=>x.n.toLowerCase()).join("; ")}.`}}
@@ -2279,7 +2317,8 @@ function exQuizHTML(){
     return `<button class="${c}" data-exo="${o.id}" ${a?"disabled":""}><span>${o.l}</span>${o.s?`<small>${o.s}</small>`:""}</button>`};
   let fb="";
   if(a){const good=a===q.ok,ik=q.int&&CARDS[q.int];
-    fb=`<div class="ex-fb ${good?"good":"bad"}"><b>${good?"Giusto.":"Non è così."}</b> ${q.note}
+    const lgn=q.t==="ic"?q.opts.map(o=>exLGnote(o.id,q.key.slice(3),o.id===a)).join(""):q.t==="id"?q.opts.map(o=>exLGnote(q.key.slice(3),o.id,o.id===a)).join(""):"";
+    fb=`<div class="ex-fb ${good?"good":"bad"}"><b>${good?"Giusto.":"Non è così."}</b> ${q.note}${lgn}
       ${ik&&ik.q?`<details><summary>Fonte</summary>${ik.q.map(k=>quote(Q[k].q,Q[k].s)).join("")}</details>`:""}</div>
       <div class="row" style="margin-top:10px"><button class="btn primary" data-ex="next">${EX.i+1<EX.qs.length?"Avanti":"Vedi il risultato"}</button></div>`}
   const k=EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:"Indicazioni";
@@ -2362,7 +2401,7 @@ render();showSplash();
 #sd-foot b{font-weight:600}
 </style>
 <div id="sd-update" role="status" aria-live="polite"><span>È disponibile una nuova versione di Sola Dosis.</span><button type="button" id="sd-update-btn">Aggiorna</button></div>
-<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-2</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
+<footer id="sd-foot">Sola Dosis · versione <b>2026.10.07-3</b> · prova · uso didattico: valori stimati e regole sono scelte di gioco, non indicazioni cliniche.</footer>
 <script>
 (function(){
   if(!("serviceWorker" in navigator))return;
