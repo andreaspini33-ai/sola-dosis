@@ -681,6 +681,28 @@ body.focus main{padding-top:0}
 .opts.mols .opt .L{align-self:flex-start;width:26px;height:26px}
 .molopt{display:block;position:relative;height:120px;color:#1B2229;background:#fff;border-radius:10px;background-image:linear-gradient(#F1F4F6 1px,transparent 1px),linear-gradient(90deg,#F1F4F6 1px,transparent 1px);background-size:12px 12px}
 .molopt svg{position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px)}
+
+/* LEZIONI */
+.lz-h{font-weight:900;font-size:1.5rem;line-height:1.2;margin:6px 0 10px}
+.lz-b{font-size:1.08rem;line-height:1.5;margin:0 0 14px}
+.lz-tag{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;padding:4px 10px;border-radius:99px;background:var(--ochre-l);color:#8A5A0A;font-weight:800;font-size:.78rem}.lz-tag svg{width:15px;height:15px}
+.lz-seg{flex:1;display:flex;gap:4px}.lz-seg i{flex:1;height:10px;border-radius:99px;background:var(--surface-2)}.lz-seg i.on{background:var(--green)}.lz-seg i.cur{background:var(--green-l);box-shadow:inset 0 0 0 2px var(--green)}
+.lz-w{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:12px 12px 14px;margin-bottom:12px}
+.lz-plot svg{width:100%;height:auto;display:block}
+.dr .gl{stroke:#EFE7D6;stroke-width:1}.dr .half{stroke:var(--green);stroke-dasharray:4 4;stroke-width:1.5}
+.dr .ax{font:600 9px var(--f-ui);fill:var(--muted)}.dr .axt{font:700 9px var(--f-ui);fill:var(--muted)}
+.dr .cv{fill:none;stroke-width:3;stroke-linecap:round}.dr .cv.dash{stroke-dasharray:5 5;stroke-width:2}
+.dr .lb{font:800 10px var(--f-ui)}.dr .mk{stroke:var(--line-d);stroke-dasharray:3 3}.dr .pt{stroke:#fff;stroke-width:2;transition:cy .1s}
+.lz-read{text-align:center;margin:6px 0 10px;font-size:1rem}
+.lz-sl{display:block}.lz-sl span{display:block;font-weight:800;font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.lz-sl input{width:100%;accent-color:var(--green);height:30px}
+.lz-w .btn{margin-top:10px;width:100%}
+.lz-ok{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px;border-radius:14px;background:var(--green-l);color:var(--green-d);font-size:.95rem;animation:pop .35s cubic-bezier(.2,1.6,.4,1)}.lz-ok svg{flex:none;width:22px;height:22px;stroke-width:3}.lz-ok span{color:var(--ink)}
+.lz-cards{display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 12px}
+.lz-opts{margin-top:4px}
+.lz-sum{padding-left:20px;font-size:1rem;line-height:1.5}.lz-sum li{margin:8px 0}
+.lz-tile.soon{opacity:.6;cursor:default}
+.lz-notes{display:block;margin:-6px 0 12px 4px}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
@@ -1211,6 +1233,8 @@ function renderMenu(){
       <p>${dd?"Il prossimo è domani. Intanto puoi allenarti con gli esercizi liberi.":`Le stesse domande per tutti oggi.${due?` Più ${Math.min(3,due)} di ripasso per te.`:""} Da 5 a 30 crediti secondo il punteggio.`}</p>
       <button class="btn light" data-go="${dd?"ecm":"ecm:daily"}">${dd?"Allenati":"Inizia"}</button></div>
     <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
+    <h3 class="sect-h">Impara</h3>
+    ${tile("lez","book","sky","Lezioni","Lezioni brevi e interattive: prevedi, muovi i cursori, guarda cosa succede.",(()=>{const D=S.lz||{},n=LZ_LESSONS.filter(l=>!l.soon).length,d=LZ_LESSONS.filter(l=>D[l.id]).length;return `${d} su ${n} completate · nuova: Recettori e curva dose-risposta`})())}
     <h3 class="sect-h">Allenati</h3>
     ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","da 5 a 30 crediti a sessione")}
     ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","da 5 a 30 crediti a sessione")}
@@ -1226,12 +1250,13 @@ function renderMenu(){
       ${tile("fonti","book","sky","Bibliografia","","fonti e metodo")}
     </div></div>`;
 }
-function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);document.body.classList.toggle("focus",tab==="ecm"&&!!EX);if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({menu:renderMenu,duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc,ecm:renderEcm})[tab]()}
+function render(){document.body.classList.toggle("in-duel",tab==="duello"&&!!G&&!duelHidden);document.body.classList.toggle("focus",(tab==="ecm"&&!!EX)||(tab==="lez"&&!!LZ&&(LZ.view==="run"||LZ.view==="done")));if(!G||tab!=="duello"){const c=document.getElementById("coach");if(c)c.innerHTML=""}renderTop();({menu:renderMenu,duello:renderDuel,bustine:renderPacks,collezione:renderCol,mazzo:renderDeck,fonti:renderSrc,ecm:renderEcm,lez:renderLez})[tab]()}
 document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;render()});
 document.querySelector(".brand h1").addEventListener("click",()=>{tab="menu";render()});
 app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||tab!=="menu")return;const k=b.dataset.go;
   if(k==="tut"){tab="duello";startTutorial();return}
   if(k==="resume"){tab="duello";duelHidden=false;render();return}
+  if(k==="lez"){tab="lez";LZ={view:"list"};render();window.scrollTo(0,0);return}
   if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():m==="tg"?exStartTg():m==="mol"?exStartMol():exStartCp();window.scrollTo(0,0);return}
   tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
@@ -1950,5 +1975,6 @@ function showSplash(){
 
 /*@@TT@@*/
 /*@@ES@@*/
+/*@@LZ@@*/
 render();showSplash();
 </script>
