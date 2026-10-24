@@ -703,6 +703,19 @@ body.focus main{padding-top:0}
 .lz-sum{padding-left:20px;font-size:1rem;line-height:1.5}.lz-sum li{margin:8px 0}
 .lz-tile.soon{opacity:.6;cursor:default}
 .lz-notes{display:block;margin:-6px 0 12px 4px}
+
+.lz-phase{display:flex;align-items:center;gap:8px;margin:0;font-weight:800;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.lz-phase span{padding:3px 10px;border-radius:99px;background:var(--tl);color:var(--tc);letter-spacing:.05em}
+.lz-seg i.ph-teoria.on{background:var(--sky)}.lz-seg i.ph-caso.on{background:var(--plum)}.lz-seg i.ph-ripasso.on{background:var(--ochre)}.lz-seg i.ph-appunti.on{background:var(--teal)}
+.defs{display:grid;gap:8px;margin-bottom:14px}
+.def{background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--sky);border-radius:14px;padding:10px 12px}
+.def b{display:block;font-weight:900;font-size:1.02rem;color:var(--sky)}.def span{display:block;font-size:.98rem;line-height:1.45;margin-top:2px}
+.lz-ex{background:var(--ochre-l);border:2px solid #F0D9A6;border-radius:16px;padding:12px 14px}
+.lz-exk{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#8A5A0A}.lz-exk svg{width:16px;height:16px}
+.lz-ex p{margin:6px 0 8px;font-size:1rem;line-height:1.45}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mcol{display:grid;gap:8px;align-content:start}
+.mi{text-align:left;background:var(--surface);color:var(--ink);border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;padding:11px 10px;font-weight:800;font-size:.92rem;line-height:1.25;min-height:56px}
+.mi.sel{border-color:var(--sky);background:var(--sky-l)}.mi.ok{border-color:#BFDDC9;background:var(--green-l);color:var(--green-d);opacity:.85}.mi.bad{border-color:var(--red);background:var(--red-l);animation:shake .35s}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
@@ -1234,7 +1247,7 @@ function renderMenu(){
       <button class="btn light" data-go="${dd?"ecm":"ecm:daily"}">${dd?"Allenati":"Inizia"}</button></div>
     <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
     <h3 class="sect-h">Impara</h3>
-    ${tile("lez","book","sky","Lezioni","Lezioni brevi e interattive: prevedi, muovi i cursori, guarda cosa succede.",(()=>{const D=S.lz||{},n=LZ_LESSONS.filter(l=>!l.soon).length,d=LZ_LESSONS.filter(l=>D[l.id]).length;return `${d} su ${n} completate · nuova: Recettori e curva dose-risposta`})())}
+    ${tile("lez","book","sky","Lezioni","Lezioni brevi e interattive: prevedi, muovi i cursori, guarda cosa succede.",(()=>{const D=S.lz||{},n=LZ_LESSONS.filter(l=>!l.soon).length,d=LZ_LESSONS.filter(l=>D[l.id]).length;return `${d} su ${n} completate · si parte dalle basi`})())}
     <h3 class="sect-h">Allenati</h3>
     ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","da 5 a 30 crediti a sessione")}
     ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","da 5 a 30 crediti a sessione")}
