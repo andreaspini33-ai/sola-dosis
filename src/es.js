@@ -1,6 +1,7 @@
-// =================== FORMAZIONE ECM (esercizi da soli) ===================
+// =================== FORMAZIONE (esercizi da soli) ===================
 // Indicazioni, Coppie pericolose, Giro visita del giorno con ripasso dilazionato.
-const EX_CAP=30;                 // crediti massimi al giorno dagli esercizi liberi
+const EX_CAP=60;                 // crediti massimi al giorno dagli esercizi liberi
+const exReward=f=>Math.max(5,Math.round(30*Math.max(0,Math.min(1,f)))); // 5 se va male, 30 se è tutto giusto
 const EX_BOX=[1,3,7,14,30];      // giorni di attesa nel ripasso (scatole alla Leitner)
 const EX_MESI=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 function exToday(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -133,6 +134,8 @@ function exQfromKey(key,r){
   if(t==="cp")return exQpair(r,id);
   if(t==="tg")return DTG[id]&&CARDS[id]?exQtgDrug(id,r):null;
   if(t==="tt")return TG[id]?exQtgTarget(id,r):null;
+  if(t==="mv")return SMETA[id]&&CARDS[id]?exQmolV(id,r):null;
+  if(t==="mn")return SMETA[id]&&CARDS[id]?exQmolN(id,r):null;
   return null}
 
 // ---------- Coppie pericolose ----------
@@ -325,6 +328,39 @@ function exStartTg(){
   while(qs.length<10){const q=exQtg(r);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
   EX={mode:"tg",qs,i:0,ok:0,ans:null,errs:[]};render()}
 
+
+// ---------- Molecole ----------
+// Struttura 2D dalle carte (SMILES di Wikipedia, formula ricalcolata). Esclusi i medicinali con più principi attivi.
+const MOL_OUT=new Set(["sacval","cotrimox","amoxiclav","paracod","iperico","litio","vitk","adrenalina"]);
+const molDrugs=()=>DRUGS.filter(d=>SMETA[d.id]&&!MOL_OUT.has(d.id)).map(d=>d.id);
+// come riconoscerla: tratti strutturali tipici (chimica farmaceutica di base, da verificare)
+const MOLF_TAG={betalatt:"l'anello beta-lattamico: quattro atomi, con un azoto e un carbonile",benzo:"il nucleo benzodiazepinico: un anello benzenico fuso con un anello a sette atomi che contiene due azoti",
+  hmg:"la catena laterale diidrossi-acida che imita l'HMG-CoA",betabloc:"la catena ariloxipropanolamminica: un anello aromatico legato tramite un ossigeno a CH2-CH(OH)-CH2-NH",
+  coxib:"un gruppo solfonammide o metilsolfone su un anello aromatico, senza gruppo acido",triptano:"il nucleo indolico, lo stesso della serotonina",avk:"il nucleo 4-idrossicumarinico",
+  sglt2:"un anello di glucosio legato direttamente a un sistema aromatico (C-glucoside)",sulfonil:"il gruppo sulfonilurea",cortis:"lo scheletro steroideo a quattro anelli fusi"};
+const MOLF_ID={morfina:"lo scheletro pentaciclico del morfinano",codeina:"lo scheletro del morfinano, con un metossile al posto dell'ossidrile fenolico della morfina",
+  ossicodone:"lo scheletro del morfinano",buprenorfina:"lo scheletro del morfinano con un ponte in più e un gruppo ciclopropilmetilico",naloxone:"lo scheletro del morfinano con un gruppo allilico sull'azoto",
+  fentanil:"una 4-anilidopiperidina",ibuprofene:"il gruppo acido arilpropionico",naprossene:"il gruppo acido arilpropionico su un naftalene",diclofenac:"un acido fenilacetico legato a un anello con due atomi di cloro",
+  losartan:"il bifenil-tetrazolo dei sartani",levofloxacina:"il nucleo chinolonico con un fluoro e un acido carbossilico",claritromicina:"un grande anello lattonico a 14 atomi con due zuccheri",
+  azitromicina:"un grande anello lattonico a 15 atomi con un azoto (azalide)",ramipril:"un dipeptide con un estere etilico: è un profarmaco",enalapril:"un dipeptide con un estere etilico: è un profarmaco",
+  furosemide:"un gruppo solfonammide e un anello furanico",idroclorotiazide:"il nucleo benzotiadiazinico con due solfonammidi",levotiroxina:"due anelli aromatici con quattro atomi di iodio",
+  metformina:"una biguanide, senza anelli",aspirina:"un acido salicilico acetilato",paracetamolo:"un'acetanilide con un ossidrile in para"};
+const molF=id=>MOLF_ID[id]||(CARDS[id].tags.map(t=>MOLF_TAG[t]).find(Boolean))||"";
+function exQmolV(id,r){
+  const pool=molDrugs().filter(i=>i!==id),same=exShuf(pool.filter(i=>CARDS[i].cl===CARDS[id].cl),r).slice(0,2);
+  const wrong=[...same,...exShuf(pool.filter(i=>!same.includes(i)),r)].slice(0,3);
+  return {t:"mv",key:"mv:"+id,prompt:"Di quale farmaco è questa molecola?",opts:exShuf([id,...wrong],r).map(i=>({id:i,l:exN(i)})),ok:id}}
+function exQmolN(id,r){
+  const pool=molDrugs().filter(i=>i!==id),same=exShuf(pool.filter(i=>CARDS[i].cl===CARDS[id].cl),r).slice(0,2);
+  const wrong=[...same,...exShuf(pool.filter(i=>!same.includes(i)),r)].slice(0,3);
+  return {t:"mn",key:"mn:"+id,prompt:`Qual è la struttura di <b>${exN(id)}</b>?`,opts:exShuf([id,...wrong],r).map(i=>({id:i,l:`<span class="molopt">${g(CARDS[i])}</span>`,name:exN(i)})),ok:id,mol:1}}
+function exQmol(r){const id=exPick(molDrugs(),r);return r()<.55?exQmolV(id,r):exQmolN(id,r)}
+function exStartMol(){
+  const r=Math.random,due=exShuf(exDue().filter(k=>k.startsWith("mv:")||k.startsWith("mn:")),r).slice(0,4);
+  const qs=due.map(k=>exQfromKey(k,r)).filter(Boolean).map(q=>(q.rev=1,q));
+  while(qs.length<10){const q=exQmol(r);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
+  EX={mode:"mol",qs,i:0,ok:0,ans:null,errs:[]};render()}
+
 // ---------- sessioni ----------
 let EX=null;
 function exStartInd(){
@@ -345,13 +381,13 @@ function exEndQuiz(){
   const E=exState();let got=0,msg="";
   if(EX.mode==="daily"){
     const base=EX.qs.filter(q=>!q.rev),okb=base.filter(q=>q.res).length;
-    got=exAward(okb*2+(okb>=8?5:0),false);
+    got=exAward(exReward(okb/base.length),false);
     const y=exLabel(EX.day);
     const prev=Object.keys(E.daily).sort().pop();
     E.streak=(prev&&exDayN(EX.day)-exDayN(prev)===1)?(E.streak||0)+1:1;
     E.daily[EX.day]={ok:okb,n:base.length};save();
-    msg=okb>=8?"Con 8 risposte giuste o più hai preso anche il bonus di 5 crediti.":"Con 8 risposte giuste o più c'è un bonus di 5 crediti. Domani ci riprovi."}
-  else{got=exAward(EX.ok,true);msg=`${EX.ok} risposte giuste su ${EX.qs.length}.`}
+    msg=okb===base.length?"Tutto giusto: il massimo dei crediti.":"I crediti crescono con le risposte giuste: 30 se sono tutte giuste. Domani ci riprovi."}
+  else{got=exAward(exReward(EX.ok/EX.qs.length),true);msg=`${EX.ok} risposte giuste su ${EX.qs.length}. I crediti vanno da 5 a 30 secondo il punteggio.`}
   EX.done={got,msg};render()}
 
 // ---------- disegno (stile amichevole: barra di avanzamento, Verifica, riscontro dal basso) ----------
@@ -360,7 +396,7 @@ function exStreak(){const E=exState(),last=Object.keys(E.daily).sort().pop();if(
 const exTop=(n,tot,k)=>`<div class="qz-top"><button class="qz-x" data-ex="home" aria-label="Esci">${ic("x")}</button><div class="qz-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${tot}" aria-valuenow="${n}"><i style="width:${Math.max(4,n/tot*100)}%"></i></div><span class="qz-n">${k}</span></div>`;
 function exDoneHTML(title,got,lines,btns,score){
   return `<div class="done"><div class="burst">${SPRIG}</div><p class="qz-kick">${title}</p><h2 class="sec">${score}</h2>
-    <div class="won">+${got}<span>crediti ECM</span></div><div class="done-l">${lines}</div></div>
+    <div class="won">+${got}<span>crediti</span></div><div class="done-l">${lines}</div></div>
     <div class="qz-foot"><div class="in btns">${btns}</div></div>`}
 
 function exWhy(q){
@@ -371,6 +407,8 @@ function exWhy(q){
   else if(q.t==="tg"||q.t==="tt"){id=q.t==="tg"?k:q.ok;const tk=q.t==="tg"?q.ok:k,Xt=TGX[tk]||["",TG[tk][2]];
     txt=`<b>${exN(id)}</b>: ${DTG_WHY[id]||""}${DTG[id].length>1?`<p class="more">Agisce anche su: ${DTG[id].filter(x=>x!==tk).map(x=>TG[x][0]).join(", ")}.</p>`:""}
 `;after=`<div class="tgx"><h5>${ic("target")} Il bersaglio: ${TG[tk][0]}</h5><dl><dt>Dove si trova</dt><dd>${Xt[0]}</dd><dt>Come funziona</dt><dd>${Xt[1]}</dd></dl></div>`}
+  else if(q.t==="mv"||q.t==="mn"){id=k;const M=SMETA[id],f=molF(id);
+    txt=`<b>${exN(id)}</b>: formula ${M[0]} · PubChem CID ${M[1]}.${f?`<p class="more">Come riconoscerla: ${f}.</p>`:""}${!q.res&&q.t==="mn"?`<p class="more">Quella che hai scelto è ${q.opts.find(o=>o.id===EX.ans).name}.</p>`:""}`}
   else if(q.t==="cp"){id=q.int;const ik=CARDS[q.int];txt=`<b>${ik.n}</b>: ${ik.f}${ik.q?`<details><summary>Fonte</summary>${ik.q.map(x=>quote(Q[x].q,Q[x].s)).join("")}</details>`:""}`}
   if(!id||!CARDS[id])return txt+after;
   return `<div class="why"><button class="qthumb" data-detail="${id}" aria-label="Apri la scheda di ${CARDS[id].n}"><span class="cell">${cardHTML(CARDS[id],"full",{extra:"tcg"})}</span><span class="qlink">${ic("info")} Scheda tecnica</span></button><div class="wt"><h4>Perché</h4>${txt}</div></div>${after}`}
@@ -380,6 +418,7 @@ function exVisual(q){
   if(q.t==="ic"){const P=(typeof PATIENTS!=="undefined"&&PATIENTS[k])||null,d=EX_DIS().find(x=>x.id===k);
     return `<div class="qvis pt"><span class="pic">${ic("visit")}</span><div><small>Cartella clinica</small><b>${P?`${P[0]}, ${P[1]} anni`:"Paziente"}</b><span>${d.n}</span></div></div>`}
   if((q.t==="id"||q.t==="tg")&&CARDS[k]){return `<div class="qvis mol"><div class="qart">${g(CARDS[k])}</div><small>${exN(k)}${typeof SMETA!=="undefined"&&SMETA[k]?` · ${SMETA[k][0]}`:""}</small></div>`}
+  if(q.t==="mv")return `<div class="qvis mol big"><div class="qart">${g(CARDS[k])}</div><small>${SMETA[k][0]}</small></div>`;
   if(q.t==="tt")return `<div class="qvis pt"><span class="pic">${ic("target")}</span><div><small>Bersaglio</small><b>${TG[k][0]}</b><span>${TG[k][2]}</span></div></div>`;
   return ""}
 function exQuizHTML(){
@@ -388,10 +427,10 @@ function exQuizHTML(){
     const capMsg=EX.mode!=="daily"&&exState().got>=EX_CAP?`<p class="note">Hai raggiunto il massimo di oggi per gli esercizi liberi (${EX_CAP} crediti).</p>`:"";
     const lines=`${EX.mode==="daily"?`<div class="stats"><div class="stat"><b>${okN}/${EX.qs.length}</b><span>risposte giuste</span></div><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div></div>`:""}
       <p>${EX.done.msg}</p>${capMsg}
-      ${errs.length?`<div class="rev"><h3>${ic("repeat")} Da ripassare</h3><p class="note">Tornano domani, poi dopo 3, 7, 14 e 30 giorni finché non le sbagli più.</p><ul>${errs.map(q=>`<li>${q.prompt.replace(/<[^>]+>/g,"")} <b>${q.opts.find(o=>o.id===q.ok).l}</b></li>`).join("")}</ul></div>`:""}`;
-    const btns=`<button class="btn primary big" data-ex="home">Continua</button>${EX.mode==="ind"||EX.mode==="tg"?`<button class="btn big" data-ex="${EX.mode}">Altre 10 domande</button>`:""}`;
+      ${errs.length?`<div class="rev"><h3>${ic("repeat")} Da ripassare</h3><p class="note">Tornano domani, poi dopo 3, 7, 14 e 30 giorni finché non le sbagli più.</p><ul>${errs.map(q=>`<li>${q.prompt.replace(/<[^>]+>/g,"")} <b>${q.opts.find(o=>o.id===q.ok).name||q.opts.find(o=>o.id===q.ok).l}</b></li>`).join("")}</ul></div>`:""}`;
+    const btns=`<button class="btn primary big" data-ex="home">Continua</button>${EX.mode==="ind"||EX.mode==="tg"||EX.mode==="mol"?`<button class="btn big" data-ex="${EX.mode}">Altre 10 domande</button>`:""}`;
     const score=okN===EX.qs.length?"Tutto giusto!":okN>=EX.qs.length*.7?"Ottimo lavoro!":okN>=EX.qs.length*.4?"Buon allenamento!":"Ogni errore è un ripasso";
-    return exDoneHTML(EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":"Indicazioni",EX.done.got,lines,btns,score)}
+    return exDoneHTML(EX.mode==="daily"?`Giro visita del ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":EX.mode==="mol"?"Molecole":"Indicazioni",EX.done.got,lines,btns,score)}
   const q=EX.qs[EX.i],a=EX.ans,sel=EX.sel;
   const L="ABCD";
   const opt=(o,j)=>{let c="opt";if(a){if(o.id===q.ok)c+=" good";else if(o.id===a)c+=" bad";else c+=" dim"}else if(o.id===sel)c+=" sel";
@@ -401,14 +440,14 @@ function exQuizHTML(){
     const lgn=q.t==="ic"?q.opts.map(o=>exLGnote(o.id,q.key.slice(3),o.id===a)).join(""):q.t==="id"?q.opts.map(o=>exLGnote(q.key.slice(3),o.id,o.id===a)).join(""):"";
     const msg=(good?EX_OK:EX_KO)[EX.i%(good?EX_OK:EX_KO).length];
     foot=`<div class="qz-foot ${good?"good":"bad"}"><div class="in"><div class="fb-h"><span class="badge">${ic(good?"check":"x")}</span>${msg}</div>
-      <div class="fb-t">${good?"":`<p class="ans">Risposta giusta: <b>${q.opts.find(o=>o.id===q.ok).l}</b></p>`}${exWhy(q)}${lgn}</div>
+      <div class="fb-t">${good?"":`<p class="ans">Risposta giusta: <b>${q.opts.find(o=>o.id===q.ok).name||q.opts.find(o=>o.id===q.ok).l}</b></p>`}${exWhy(q)}${lgn}</div>
       <button class="btn big ${good?"primary":"red"}" data-ex="next">Continua</button></div></div>`}
   else foot=`<div class="qz-foot"><div class="in"><button class="btn primary big" data-ex="check" ${sel?"":"disabled"}>Verifica</button></div></div>`;
-  const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":"Indicazioni";
+  const k=EX.mode==="daily"?`Giro visita · ${exLabel(EX.day)}`:EX.mode==="tg"?"Bersagli":EX.mode==="mol"?"Molecole":"Indicazioni";
   return `<div class="qz">${exTop(EX.i+(a?1:0),EX.qs.length,EX.combo>=2?`<span class="combo">${ic("leaf")}${EX.combo} di fila</span>`:`${EX.i+1}/${EX.qs.length}`)}
     <div class="qz-body"><p class="qz-kick">${q.rev?`${ic("repeat")} Ripasso`:k}</p>
     <p class="qz-q">${q.prompt}</p>${exVisual(q)}
-    <div class="opts">${q.opts.map(opt).join("")}</div></div>${foot}</div>`}
+    <div class="opts${q.mol?" mols":""}">${q.opts.map(opt).join("")}</div></div>${foot}</div>`}
 function exCpHTML(){
   const T=EX.tables[EX.round];
   if(EX.done){const tot=EX.tables.reduce((z,T)=>z+T.combos.length,0),fnd=EX.tables.reduce((z,T)=>z+(T.gave?0:T.found.length),0);
@@ -433,15 +472,16 @@ function exCpHTML(){
 function exHomeHTML(){
   const E=exState(),t=exToday(),dd=E.daily[t],due=exDue().length,left=Math.max(0,EX_CAP-E.got);
   const node=(k,icon,col,tt,d,x,state)=>`<button class="pnode ${state||""}" data-ex="${k}" style="--tc:var(--${col});--tl:var(--${col}-l)"><span class="pc">${state==="done"?ic("check"):ic(icon)}</span><span class="pt"><b>${tt}</b><span>${d}</span>${x?`<small>${x}</small>`:""}</span></button>`;
-  return `<div class="home"><p class="hello">Formazione ECM</p><h2 class="sec">Allenati un po' ogni giorno</h2>
+  return `<div class="home"><p class="hello">Formazione</p><h2 class="sec">Allenati un po' ogni giorno</h2>
     <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${left}</b><span>crediti liberi rimasti oggi</span></div><div class="stat"><b>${due}</b><span>da ripassare</span></div></div>
     <div class="path">
-      ${node("daily","visit","green",`Giro visita del ${exLabel(t)}`,"10 domande uguali per tutti oggi, più il tuo ripasso.",dd?`Fatto: ${dd.ok} su ${dd.n}`:"2 crediti per risposta giusta, +5 da 8 in su",dd?"done":"now")}
-      ${node("ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica, nei due sensi.","1 credito per risposta giusta")}
-      ${node("tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare, nei due sensi.","1 credito per risposta giusta")}
-      ${node("cp","pair","red","Coppie pericolose","Trova sul carrello le associazioni a rischio.","2 crediti per combinazione, 1 in meno per errore")}
+      ${node("daily","visit","green",`Giro visita del ${exLabel(t)}`,"10 domande uguali per tutti oggi, più il tuo ripasso.",dd?`Fatto: ${dd.ok} su ${dd.n}`:"da 5 a 30 crediti, una volta al giorno",dd?"done":"now")}
+      ${node("ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica, nei due sensi.","da 5 a 30 crediti a sessione")}
+      ${node("tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare, nei due sensi.","da 5 a 30 crediti a sessione")}
+      ${node("mol","flask","plum","Molecole","Riconosci il farmaco dalla struttura, e la struttura dal nome.","da 5 a 30 crediti a sessione")}
+      ${node("cp","pair","red","Coppie pericolose","Trova sul carrello le associazioni a rischio.","da 5 a 30 crediti a sessione")}
     </div>
-    <p class="note">Gli esercizi liberi danno al massimo ${EX_CAP} crediti al giorno; il giro visita non ha limite.</p></div>`}
+    <p class="note">Ogni sessione dà da 5 a 30 crediti secondo il punteggio. Gli esercizi liberi danno al massimo ${EX_CAP} crediti al giorno; il giro visita si conta a parte.</p></div>`}
 function renderEcm(){
   if(!EX)app.innerHTML=exHomeHTML();
   else if(EX.mode==="dailydone"){const d=exState().daily[exToday()];
@@ -463,6 +503,7 @@ app.addEventListener("click",e=>{
   if(k==="ind"){exStartInd();return}
   if(k==="cp"){exStartCp();return}
   if(k==="tg"){exStartTg();return}
+  if(k==="mol"){exStartMol();return}
   if(k==="check"){exCheck();return}
   if(k==="next"){exNext();return}
   if(k==="cpok"){EX.tables[EX.round].last=null;render();return}
@@ -477,7 +518,7 @@ app.addEventListener("click",e=>{
   if(k==="giveup"){const T=EX.tables[EX.round];T.combos.forEach((c,i)=>{if(!T.found.includes(i))T.found.push(i)});T.gave=1;T.sel=[];
     T.last={k:"info",h:"Ecco le risposte",t:"Le combinazioni che mancavano sono qui sotto. Questo carrello non dà altri crediti."};render();return}
   if(k==="cpnext"){if(EX.round<2){EX.round++;EX.tables.push(exTable(Math.random));render()}
-    else{const tot=EX.tables.reduce((z,T)=>z+T.combos.length,0);const got=exAward(EX.pts,true);
+    else{const tot=EX.tables.reduce((z,T)=>z+T.combos.length,0);const got=exAward(exReward(EX.pts/(tot*2)),true);
       EX.done={got,msg:`Punti ${EX.pts} su ${tot*2} possibili.${exState().got>=EX_CAP?" Hai raggiunto il massimo di oggi per gli esercizi liberi.":""}`};render()}
     window.scrollTo(0,0);return}
 });

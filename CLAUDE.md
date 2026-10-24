@@ -41,7 +41,9 @@
 - Nei Bersagli il Perché chiude con la scheda del bersaglio (TGX: dove si trova e come funziona, 47 voci scritte da Claude, da verificare).
 - Coppie pericolose: 3 carrelli da 6 farmaci, 1-3 combinazioni tra le 8 interazioni. Esclusi farmaci (EX_POOL_OUT) e coppie (exAmbiguous) con interazioni reali non contate dal gioco; inibitore + indice ristretto solo per le coppie in EX_PK.
 - Giro visita del giorno: 10 domande uguali per tutti (seme = data), più fino a 3 di ripasso personale. Ripasso alla Leitner in S.ex.rev (1, 3, 7, 14, 30 giorni).
-- Crediti: esercizi liberi max 30 al giorno; giro visita 2 per giusta + 5 di bonus da 8 in su, una volta al giorno.
+- Crediti (dal 24/10/2026, scelta di Andrea): ogni sessione dà da 5 a 30 crediti in proporzione al punteggio (exReward); esercizi liberi max 60 al giorno, giro visita a parte. Il nome «crediti ECM» è stato tolto (rischio di confusione con gli ECM veri): ora solo «crediti».
+- Molecole (dal 24/10/2026): struttura → farmaco e nome → struttura (4 strutture), 80 farmaci con SMETA, 2 distrattori della stessa classe; nel Perché formula, CID e «come riconoscerla» (MOLF_TAG/MOLF_ID, da verificare).
+- Piano concordato il 24/10/2026: fase 1 senza server (più esercizi, collezione, lezioni brevi sbloccate dalla padronanza e non dal caso); fase 2 account e lezioni video con trascrizione e riassunto; fase 3 dispense degli studenti ed eventuale pagamento solo dopo parere dell'ateneo (conflitto di interessi, autorizzazioni RTT).
 - Da correggere nel modello del duello: il tag inhib + nti conta come interazione anche coppie senza base (es. valproato o antifungini con litio).
 
 - Dose giusta (in preparazione): dose abituale dell'adulto dalla 4.2 dell'RCP del medicinale originatore (banca dati AIFA, che include i prodotti EMA); segnalare generici con dosaggi diversi e la presenza di una dose di carico. Doc "Sola Dosis · Dosaggi per indicazione dagli RCP". Serve il computer di Andrea collegato (browser integrato) per scaricare i PDF.

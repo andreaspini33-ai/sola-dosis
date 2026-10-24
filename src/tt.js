@@ -209,7 +209,7 @@ function ttReferto(w,msg,prize){const pr=ttProfile();const [A,B]=G.p;
   return `<div class="overlay"><div class="box referto">
     <span class="rf-k">Referto del trial · ${pr.who}, ${pr.age} anni · ${pr.dxl}</span>
     <h3>${w===0?"Vince il tuo braccio":w===1?"Vince il braccio B":"Pareggio"}</h3>
-    <p>${msg} Ricevi <b>${prize} crediti ECM</b>.</p>
+    <p>${msg} Ricevi <b>${prize} crediti</b>.</p>
     <table class="rf-tab"><thead><tr><th></th><th>Braccio A (tu)</th><th>Braccio B</th></tr></thead><tbody>
       ${row("Controllo nel tempo",ttSpark(A.hist)+`<br>${A.hist.join(" · ")}%`,ttSpark(B.hist)+`<br>${B.hist.join(" · ")}%`)}
       ${row("Punti di controllo",A.pts,B.pts)}${row("Eventi avversi",A.ae,B.ae)}${row(`Beneficio netto (punti − ${TT.AEW} × eventi)`,ttNet(A),ttNet(B))}

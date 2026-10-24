@@ -482,7 +482,7 @@ th{font-family:var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-sp
 td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .refs{font-size:.8rem;display:grid;gap:6px;padding-left:18px;max-width:80ch}
 
-/* FORMAZIONE ECM */
+/* FORMAZIONE */
 .ex{max-width:640px}
 .ex-h{font-family:var(--f-serif);font-size:1.3rem;margin:18px 0 4px}
 .ex-bar{height:4px;background:var(--surface-2);margin:4px 0 14px}.ex-bar i{display:block;height:100%;background:var(--ink)}
@@ -674,6 +674,13 @@ body.focus main{padding-top:0}
 .tgx{margin-top:10px;background:rgba(255,255,255,.75);border:2px solid rgba(0,0,0,.06);border-radius:14px;padding:10px 12px}
 .tgx h5{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-weight:900;font-size:.95rem;color:var(--teal)}.tgx h5 svg{width:18px;height:18px;flex:none}
 .tgx dl{margin:0;display:grid;gap:2px}.tgx dt{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:4px}.tgx dd{margin:0;font-size:.9rem}
+
+.qvis.mol.big .qart{height:200px}
+.opts.mols{grid-template-columns:1fr 1fr}
+.opts.mols .opt{flex-direction:column;align-items:stretch;padding:8px;gap:6px;min-height:0}
+.opts.mols .opt .L{align-self:flex-start;width:26px;height:26px}
+.molopt{display:block;position:relative;height:120px;color:#1B2229;background:#fff;border-radius:10px;background-image:linear-gradient(#F1F4F6 1px,transparent 1px),linear-gradient(90deg,#F1F4F6 1px,transparent 1px);background-size:12px 12px}
+.molopt svg{position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px)}
 @media (prefers-reduced-motion:reduce){.pnode.now .pc,.opt.bad,.qz-foot,.done .burst{animation:none!important}}
 </style>
 
@@ -1180,7 +1187,7 @@ const IC={home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
   pair:'<circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>',
   visit:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/>',
   repeat:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M20 4v5h-5M4 20v-5h5"/>',
-  play:'<path d="M7 4l13 8-13 8z"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'};
+  play:'<path d="M7 4l13 8-13 8z"/>',flask:'<path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M7 15h10"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'};
 const ic=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||""}</svg>`;
 const SPRIG=`<svg class="sprig" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 128C52 96 78 60 118 14"/><path d="M48 98c-14-1-24-9-27-23 14 0 24 9 27 23z"/><path d="M62 80c-4-14 1-26 13-34 4 14-1 26-13 34z"/><path d="M76 62c-14-3-21-14-21-28 13 3 21 14 21 28z"/><path d="M92 42c-1-13 5-22 17-28 1 13-5 22-17 28z"/><circle cx="118" cy="14" r="5"/><circle cx="104" cy="22" r="3.5"/></svg>`;
 const NAV=[["menu","Home","home"],["ecm","Formazione","cap"],["duello","Testa a testa","scale"],["bustine","Forniture","box"],["collezione","Armadio","cab"]];
@@ -1201,13 +1208,14 @@ function renderMenu(){
     ${G&&!G.over&&!G.tut?`<button class="tile resume" data-go="resume" style="--tc:var(--plum);--tl:var(--plum-l)"><span class="ico">${ic("play")}</span><span class="tb"><b>Partita in corso</b><span>Riprendi da dove eri rimasto.</span></span><span class="go">${ic("arrow")}</span></button>`:""}
     <div class="daycard">${SPRIG}<span class="k">Giro visita del ${exLabel(t)}</span>
       <h3>${dd?`Fatto: ${dd.ok} su ${dd.n}`:"10 domande, circa 5 minuti"}</h3>
-      <p>${dd?"Il prossimo è domani. Intanto puoi allenarti con gli esercizi liberi.":`Le stesse domande per tutti oggi.${due?` Più ${Math.min(3,due)} di ripasso per te.`:""} 2 crediti per ogni risposta giusta.`}</p>
+      <p>${dd?"Il prossimo è domani. Intanto puoi allenarti con gli esercizi liberi.":`Le stesse domande per tutti oggi.${due?` Più ${Math.min(3,due)} di ripasso per te.`:""} Da 5 a 30 crediti secondo il punteggio.`}</p>
       <button class="btn light" data-go="${dd?"ecm":"ecm:daily"}">${dd?"Allenati":"Inizia"}</button></div>
-    <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti ECM</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
+    <div class="stats"><div class="stat"><b>${exStreak()}</b><span>giorni di fila</span></div><div class="stat"><b>${S.crediti}</b><span>crediti</span></div><div class="stat"><b>${pc}%</b><span>armadio pieno</span><div class="bar"><i style="width:${pc}%"></i></div></div></div>
     <h3 class="sect-h">Allenati</h3>
-    ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","1 credito per risposta giusta")}
-    ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","1 credito per risposta giusta")}
-    ${tile("ecm:cp","pair","red","Coppie pericolose","Trova le associazioni a rischio sul carrello.","2 crediti per combinazione trovata")}
+    ${tile("ecm:ind","pill","sky","Indicazioni","Abbina farmaco e condizione clinica.","da 5 a 30 crediti a sessione")}
+    ${tile("ecm:tg","target","teal","Bersagli","Abbina il farmaco al suo bersaglio molecolare.","da 5 a 30 crediti a sessione")}
+    ${tile("ecm:mol","flask","plum","Molecole","Riconosci il farmaco dalla sua struttura.","da 5 a 30 crediti a sessione")}
+    ${tile("ecm:cp","pair","red","Coppie pericolose","Trova le associazioni a rischio sul carrello.","da 5 a 30 crediti a sessione")}
     <h3 class="sect-h">Gioca</h3>
     ${tile("duello","scale","plum","Testa a testa","Come negli studi head-to-head: due terapie sullo stesso paziente, vince la strategia migliore.",`${S.wins} vittorie · ${S.losses} sconfitte`)}
     <h3 class="sect-h">La tua farmacia</h3>
@@ -1224,7 +1232,7 @@ document.querySelector(".brand h1").addEventListener("click",()=>{tab="menu";ren
 app.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b||tab!=="menu")return;const k=b.dataset.go;
   if(k==="tut"){tab="duello";startTutorial();return}
   if(k==="resume"){tab="duello";duelHidden=false;render();return}
-  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():m==="tg"?exStartTg():exStartCp();window.scrollTo(0,0);return}
+  if(k.startsWith("ecm:")){tab="ecm";const m=k.slice(4);m==="daily"?exStartDaily():m==="ind"?exStartInd():m==="tg"?exStartTg():m==="mol"?exStartMol():exStartCp();window.scrollTo(0,0);return}
   tab=k;render();window.scrollTo(0,0)});
 ov.addEventListener("click",e=>{if(e.target.dataset.close){ov.innerHTML="";return}
   const b=e.target.closest("[data-ov]");if(!b)return;ov.innerHTML="";
@@ -1424,7 +1432,7 @@ function refertoHTML(res,win,msg,prize){
   return `<div class="overlay"><div class="box referto">
     <span class="rf-k">Referto · ${st.turns} turn${st.turns===1?"o":"i"}</span>
     <h3>${win?(res==="cure"?"Paziente curato":"Vittoria"):"Sconfitta"}</h3>
-    <p>${msg} Ricevi <b>${prize} crediti ECM</b>.</p>
+    <p>${msg} Ricevi <b>${prize} crediti</b>.</p>
     <dl>
       <div><dt>Pazienti</dt><dd>${pts.length?pts.map(id=>{const p=patientOf(id);return `${p.who}, ${p.age} anni · ${CARDS[id].n}`}).join("<br>"):"Nessuna condizione è stata messa in campo."}</dd></div>
       <div><dt>Appropriatezza</dt><dd>${tot?`${ind} farmac${ind===1?"o":"i"} su ${tot} erano indicat${ind===1?"o":"i"} per la condizione in campo al momento della prescrizione.${noind.length?` Non indicati: ${noind.join(", ")}.`:""}`:"Non hai prescritto farmaci."}</dd></div>
@@ -1502,7 +1510,7 @@ const TUT=[
  {t:"Più farmaci, più risposta",x:"Hai 3 dosi: gioca Ibuprofene. Anche lui è indicato.",hl:'[data-hand][data-cid="ibuprofene"]',gate:'[data-hand][data-cid="ibuprofene"]',done:()=>!!myB("ibuprofene")},
  {t:"Attaccare",x:"Ora attacca: tocca Tramadolo, poi premi «Attacca con 1». Il rivale deciderà se parare.",hl:'[data-unit][data-cid="tramadolo"], [data-attack]',gate:'[data-unit][data-cid="tramadolo"], [data-attack]',done:()=>{const t=myB("tramadolo");return !t||t.tap||!t.can}},
  {t:"Impegnato",x:"Dopo l'attacco Tramadolo resta impegnato e non potrà parare nel turno del rivale; un farmaco con Vigilanza, come Metoprololo, invece sì. Attaccare o tenersi pronti a parare è la scelta di ogni turno.",next:1},
- {t:"Tocca a te",x:"Hai le basi. Toccando una carta nell'Armadio farmaceutico vedi da dove vengono i suoi numeri. Continua la partita da solo: ricevi 30 crediti ECM per aver completato la guida.",next:1,end:1},
+ {t:"Tocca a te",x:"Hai le basi. Toccando una carta nell'Armadio farmaceutico vedi da dove vengono i suoi numeri. Continua la partita da solo: ricevi 30 crediti per aver completato la guida.",next:1,end:1},
 ];
 const TUTAI=[{play:["metoprololo"]},{play:[],attack:1}];
 function startTutorial(){duelHidden=false;
@@ -1586,7 +1594,7 @@ function renderDuel(){
     app.innerHTML=`<h2 class="sec">Testa a testa</h2>
       <p class="ts-def"><i>Head-to-head</i>: studio che confronta direttamente due terapie attive, invece di confrontarne una con il placebo. Qui le due terapie sono le vostre strategie.</p>
       <p class="sub">La partita parte senza condizione clinica in campo. Chi gioca una carta condizione decide il contesto: i farmaci indicati di entrambi ricevono +1 efficacia e accumulano risposta terapeutica. Vinci se la tua risposta arriva a ${CURE} oppure se l'omeostasi del rivale scende a zero.</p>
-      ${S.tut||(G&&!G.over)?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti ECM.</span></div>`}
+      ${S.tut||(G&&!G.over)?"":`<div class="patient first" style="margin-bottom:12px"><b>Prima volta?</b><span>Una partita guidata di pochi turni ti mostra dosi, condizioni, attacco e parata. Vale 30 crediti.</span></div>`}
       ${G&&!G.over?`<div class="patient first" style="margin-bottom:12px"><b>Partita in corso</b><span>Hai lasciato una partita a metà: riprendila da dove eri rimasto.</span></div><div class="row" style="margin-top:12px"><button class="btn primary" id="resume">Riprendi la partita</button><button class="btn" id="go" ${ok?"":"disabled"}>Nuova partita</button>`:`<div class="row" style="margin-top:12px"><button class="btn ${S.tut?"":"primary"}" id="tut">Partita guidata</button><button class="btn ${S.tut?"primary":""}" id="go" ${ok?"":"disabled"}>Inizia la partita</button>`}
       <span class="meta">${ok?`Piano terapeutico pronto: ${DECK_SIZE} carte, ${S.deck.filter(i=>CARDS[i].type==="dis").length} condizioni cliniche`:`Il piano terapeutico ha ${S.deck.length} carte su ${DECK_SIZE}. Completalo nella scheda Piano terapeutico.`}</span></div>
       <h3 class="sub3">Come si gioca</h3>
@@ -1600,7 +1608,7 @@ function renderDuel(){
         <div><b>Recettori.</b> Restano in gioco (massimo 2) e potenziano i farmaci che agiscono su di essi. <b>Interazioni.</b> Sono istantanei: funzionano solo se il rivale ha in campo la combinazione a rischio, ma puoi giocarle anche nel suo turno, appena mette in campo il farmaco che la completa. Per farlo ti servono dosi di riserva: quelle che non spendi nel tuo turno restano disponibili fino all'inizio del turno successivo. Un avviso arancione ti segnala quando sei tu a esporti.</div>
         <div><b>Scienziati e azioni.</b> Uno scienziato prende dal mazzo una carta legata alla sua scoperta (Fleming un beta-lattamico, Vane un FANS). Revisione sistematica fa pescare 2 carte, Nota AIFA fa scartare il rivale, Prontuario trova un farmaco indicato per il paziente, Riposizionamento riporta in mano un farmaco eliminato. Trial di fase III confronta un tuo farmaco con uno del rivale che ha un'indicazione in comune ed elimina quello con efficacia + tollerabilità più bassa: può anche darti torto.</div>
         <div><b>Abilità.</b> Rapido attacca nel turno in cui entra. Vigilanza: attaccare non lo impegna, quindi può parare anche nel turno del rivale. Antagonista elimina il gruppo bersaglio. Inibitore aumenta l'efficacia delle tue carte, Induttore riduce quella delle rivali. Indice ristretto costa 1 di omeostasi per turno.</div>
-        <div><b>Ricompense.</b> Guarigione 50 crediti ECM, vittoria 40, sconfitta 15. Una fornitura costa ${PACK_COST}.</div>
+        <div><b>Ricompense.</b> Guarigione 50 crediti, vittoria 40, sconfitta 15. Una fornitura costa ${PACK_COST}.</div>
       </div>`;
     const b=document.getElementById("go");if(b)b.onclick=startDuel;
     const tb=document.getElementById("tut");if(tb)tb.onclick=startTutorial;
